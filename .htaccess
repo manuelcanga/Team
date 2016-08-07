@@ -1,0 +1,21 @@
+DirectoryIndex index.php
+
+RewriteEngine on
+
+RewriteBase /
+
+#RewriteCond %{REQUEST_URI} !^/foro/.*$
+RewriteCond %{REQUEST_URI} !^(.+)\.(zip)$
+RewriteCond %{REQUEST_URI} !^(.+)\.(mp3|ogg)$
+RewriteCond %{REQUEST_URI} !^(.+)\.(swf|flv|mp4)$
+RewriteCond %{REQUEST_URI} !^(.+)\.(css|js)$
+RewriteCond %{REQUEST_URI} !(.+)\.(eot|svg|ttf|woff|woff2)$
+RewriteCond %{REQUEST_URI} !^(.+)\.(gif|jpg|jpeg|png|ico)$
+RewriteRule $ index.php [NC]
+
+#Directivas muy utiles
+SetEnv REGISTER_GLOBALS 0
+SetEnv MAGIC_QUOTES 0 
+
+
+

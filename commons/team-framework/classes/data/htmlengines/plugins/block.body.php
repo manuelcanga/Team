@@ -1,0 +1,137 @@
+<?php
+/**
+New Licence bsd:
+Copyright (c) <2012>, Manuel Jesus Canga Muñoz
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright
+      notice, this list of conditions and the following disclaimer in the
+      documentation and/or other materials provided with the distribution.
+    * Neither the name of the trasweb.net nor the
+      names of its contributors may be used to endorse or promote products
+      derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS IS' AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL Manuel Jesus Canga Muñoz BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+*/
+
+/*
+ * Smarty plugin
+ * -------------------------------------------------------------
+ * File:     block.body
+ * Type:     block
+ * Name:     body
+ * Purpose:  output a body tag
+ * -------------------------------------------------------------
+ */
+
+function smarty_block_body($params, $content, Smarty_Internal_Template $template, &$repeat)
+{
+	$controller = \team\Context::get('CONTROLLER');
+
+	
+
+	$out = '';
+	if($repeat) { //open tag
+		return $out;
+	}else {//close tag
+
+		/* ******************** TOP CSS Y JS FILES *************** */
+		//TOP CSS
+		$css_files =  \team\Filter::apply('\team\css\top', []);
+
+		if(!empty($css_files) ) {
+			foreach($css_files as $id => $file) {
+				$out .="<link href='{$file}' rel='stylesheet'/>";
+			}
+		}
+		
+		//TOP JS
+		$js_files =  \team\Filter::apply('\team\js\top', []);
+
+		if(!empty($js_files) ) {
+			foreach($js_files as $id => $file) {
+				$out .=	"<script src='{$file}'></script>";
+			}
+		}
+
+		/* ******************** /TOP CSS Y JS FILES *************** */
+
+
+		//Atributos del body
+		$package = \team\Context::get('PACKAGE');
+		$component = \team\Context::get('COMPONENT');
+		$response = \team\Context::get('RESPONSE');
+
+		$default = [
+			 'id' =>  $package.'_'.$component,
+			 'data-package' => $package,
+			 'data-response' => $response,
+		];
+
+		if (isset($controller) ) {
+			$class = $controller->getBodyClasses($response);
+			if(isset($params['class']) ) {
+				$params['class'] = trim($class.' '.$params['class']);
+			}else {
+				$params['class'] = trim($class);
+			}
+		}
+
+
+		$out .= '</head><body';
+		$params =  \team\Filter::apply('\team\tag\body\params', $params + $default);
+		foreach($params as $attr => $value) {
+				$out .= " {$attr}='{$value}'";
+		}
+		$out .= '>';
+
+
+		$out .=  trim(\team\Filter::apply('\team\tag\body', $content, $params, $template));
+
+
+		/* ******************** BOTTOM CSS Y JS FILES *************** */
+
+		//BOTTOM CSS
+		$css_files =  \team\Filter::apply('\team\css\bottom', []);
+
+		if(!empty($css_files) ) {
+			foreach($css_files as $id => $file) {
+				$out .="<link href='{$file}' rel='stylesheet'/>";
+			}
+		}
+		
+		//BOTTOM JS
+		$js_files =  \team\Filter::apply('\team\js\bottom', []);
+
+		if(!empty($js_files) ) {
+			foreach($js_files as $id => $file) {
+				$out .=	"<script src='{$file}'></script>";
+			}
+		}
+
+		/* ******************** /BOTTOM CSS Y JS FILES *************** */
+		$out =  trim(\team\Filter::apply('\team\tag\endbody', $out, $params, $template));
+
+		$out .= '</body>';
+
+
+
+		return $out;
+	}
+
+
+}
