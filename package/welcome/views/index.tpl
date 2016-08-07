@@ -4,6 +4,8 @@
 {body}
 	<h1>Welcome to TEAM Framework !</h1>
 	
-	{mobile}<p>You mobile look great!</p>{/mobile}
+	{mobile}<p>TEAM look great on mobile!</p>{/mobile}
+	
+	{desktop}<p>TEAM look great on PC or Tablet!</p>{/desktop}
 {/body}
 {/html}
