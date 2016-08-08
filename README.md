@@ -4,6 +4,10 @@ TEAM es un framework PHP enfocado en la reutilización de código y el trabajo e
 
 No esperes que TEAM te proporcione nuevas herramientas o gran cantidad de mejoras en nuevas versiones. Este framework no irá evolucionando hasta cubrir todas las necesidades,sino que cada nueva versión se centrará en abarcar los aspectos básicos de un proyecto web y hacer más usable el código que ya hay. Por otra parte, no se quedará estancado en antiguas versiones. Cada versión mayor tratará de tener como requisitos mínimos las últimas versiones del software web en que se basa.
 
+# Documentaciòn
+
+* [Guía rápida de TEAM](https://trasweb.net/blog/desarrollo-a-medida/guia-rapida-de-team)
+
 # Requisitos 
 
 * PHP 7.x
