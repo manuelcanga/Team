@@ -49,10 +49,6 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 
     private $gui = null;
 
-	//PATH hacia las plantillas
-	private $theme = '';
-	private $withTheme = false;
-
 	static function __initialize() {
 //		\Classes::addLoader("smartyAutoload");
 
@@ -72,19 +68,13 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
         class_alias('Smarty_Internal_Resource_File', 'Smarty_Resource_Commons', true);
         class_alias('Smarty_Internal_Resource_File', 'Smarty_Resource_Package', true);
         class_alias('Smarty_Internal_Resource_File', 'Smarty_Resource_Root', true);
-        class_alias('Smarty_Internal_Resource_File', 'Smarty_Resource_Theme', true);
         class_alias('Smarty_Internal_Resource_File', 'Smarty_Resource_Team', true);
 
 	}
 
     function __construct() {
-    
 		//Le añadimos una referencia a la GUI Actual.
         $this->gui = \team\Context::get("CONTROLLER");
-		$this->withTheme = \team\Context::get('_THEME_', false);
-		$this->theme = $this->withTheme?: _SITE_;
-
-
 
     }
 
@@ -179,10 +169,7 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 		else
 			$component = \team\Context::get('COMPONENT');
 
-		$package = '';
-		if(!$this->withTheme) {
-      	  $package = '/'.\team\Context::getPackage();
-		}
+       $package = '/'.\team\Context::getPackage();
 
 
 
@@ -196,25 +183,15 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
             case 'commons':
             case 'package':
  				 $found_type =  true;
-				if($this->withTheme) {
-              	  $template =  $this->theme."/views/{$name}";
-				}else {
-              	  $template =  $this->theme."{$package}/commons/views/{$name}";
-				}
+              	  $template =  _SITE_."{$package}/commons/views/{$name}";
 				break;
             case 'root':
   				 $found_type =  true;
-              	  $template =  $this->theme."/commons/views/{$name}";
+              	  $template =  _SITE_."/commons/views/{$name}";
                 break;
-            case 'theme': 
-  				 $found_type =  true;
-              	 $template =  $this->theme."{$package}/{$name}";
-				 break;
-					
-            default:			
          	case 'component':
   				  $found_type =  true;
-	               $template =  $this->theme."{$package}/{$component}/views/{$name}";	
+	               $template =  _SITE_."{$package}/{$component}/views/{$name}";	
             break;
 
         }
@@ -241,11 +218,6 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 		$package = $_CONTEXT['PACKAGE'];
 		$component = $_CONTEXT['COMPONENT'];
 		$response = $_CONTEXT['RESPONSE'];
-			
-		/** Añadimos los sitios donde buscar los "tools": Filters(modifiers), Shortcodes(functions) y Tasks(blocks) */
-		if($this->withTheme) {
-			$_engine->addPluginsDir($this->theme.'/commons/views/plugins');
-		}
 
 		$_engine->addPluginsDir(_SITE_.'/'.$package.'/'.$component.'/views/plugins');
 		$_engine->addPluginsDir(_SITE_.'/'.$package.'/commons/views/plugins');
@@ -274,7 +246,7 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 
 		
 		//Un componente sólo vería sus cosas, aún así puede usar root: package: etc
-		$_engine->template_dir = "{$this->theme}/";
+		$_engine->template_dir = _SITE_.'/';
 
 		//Creamos un directorio temporal que evite las posibles colisiones de temporales smarty entre sitios
 		if(!file_exists(_TEMPORARY_DIRECTORY_."/smarty/compile") ) {
@@ -321,20 +293,8 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 		//lo mismo que el anterior pero para vistas
 		if(!$is_string &&  $view_exists && strpos($_data['view'], ':') ) return $_data["view"];
 
-		//themes is only for a package. So, they don't have package in template path.
-		//for this reason we have to remove it
-		if($this->withTheme) {
 
-			$package = \team\Context::get('PACKAGE').'/';
-			if($is_layout && 0 === strpos($_data['layout'], $package) ) {
-				 $_data['layout'] = substr($_data['layout'], strlen($package) );
-			}
-			if($view_exists && 0 === strpos($_data['view'], $package) ) {
-				 $_data['view'] = substr($_data['view'], strlen($package) );
-			}
-		}
-
-		$is_view =  $view_exists &&  file_exists($this->theme."/".$_data["view"].".tpl");
+		$is_view =  $view_exists &&  file_exists(_SITE_."/".$_data["view"].".tpl");
 
 
 		$template = '';
@@ -342,14 +302,14 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 			 $template = "eval:".$_data["view"];
 		}else if($is_layout) {
             $layout = $_data["layout"].".tpl";
-			$template = $this->theme."/".$layout;
+			$template = _SITE_."/".$layout;
             if(!file_exists($template)) {
                 \Team::system("Not found layout in {$template}",  "\\team\\gui\\ViewNotFound");
                 $template = '';
             }
 		}else if (!$is_layout && $is_view ) {
             $view = $_data["view"].".tpl";
-			$template = $this->theme."/".$view;
+			$template = _SITE_."/".$view;
             if(!file_exists($template)) {
                 \Team::system("Not found view in {$template}",  "\\team\\gui\\ViewNotFound");
                 $template = '';

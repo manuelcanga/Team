@@ -114,7 +114,7 @@ function parse_action($request) {
         //_SELF_  debe empezar y terminar  / y terminar con  /
         $_CONTEXT["_SELF_"] =  $_CONTEXT["_AREA_"].\team\Sanitize::trim( $args->_self_, '/');
         unset($args->_self_); //ya no lo necesitamos, está en context
-        
+
         \team\Debug::trace("Acabado el proceso de analisis de url", $args);
 
       // $_CONTEXT->debug();

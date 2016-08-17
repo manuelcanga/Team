@@ -37,11 +37,6 @@
   También permite crear pequeños comandos cli que no necesitan ser organizados en paquetes/componentes 
 */
 if(function_exists('__main') ) {
-	//El usuario quiere hacer su propia organización de archivos
-	if(!defined('_THEME_')) {
-		\team\Context::set('_THEME_', _SITE_);
-	}
-
 	\team\Task::join('\team\main', function ($args, $_CONTEXT) {
 		$this->finish();
 

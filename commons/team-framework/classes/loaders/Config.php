@@ -82,10 +82,6 @@ class Config {
         //Avisamos a los Start de todos los paquetes de que se va a inicializar el raiz
         \team\Event::system('/', 'Start', '/commons/config/scripts/', '\team\packages');
 
-        if($_THEME_ = \team\Context::get('_THEME_', false) ) {
-            \team\FileSystem::load("/Start.php", $_THEME_ );
-        }
-
         //Llamamos al evento Start de Team framework( ya que es como un componente "virtual" )
         \team\FileSystem::load($this->scripts_path.'/Start.php', _TEAM_);
 
@@ -156,10 +152,6 @@ class Config {
             //Inicializamos el paquete en cuestión
             \team\FileSystem::load('/'.$package.'/commons'.$this->scripts_path.'/Initialize.php');
 
-            if($_THEME_ = \team\Context::get('_THEME_', false) ) {
-                \team\FileSystem::load("/functions.php", $_THEME_ );
-            }
-
             //El resultado lo cacheamos para futuras peticiones
             $this->cache["\\{$package}"] = \team\Context::getState();
         }
@@ -182,11 +174,6 @@ class Config {
             //Cogemos también los archivos de configuración acorde al tipo de acción que se va a lanzar( ojo, el namespace sigue fijado al componente )
             $vars = $this->loadFiles(\team\CONFIG_PATH.$path."/config/{$type}/", '\config\\'.$package, $profile);
             \team\Context::add($vars);
-
-            //Remember: _THEME_s only is for a Package.
-            if($_THEME_ = \team\Context::get('_THEME_', false) ) {
-                \team\FileSystem::load("/{$component}-functions.php", $_THEME_ );
-            }
 
             \team\Event::send("\\team\\component\\{$package}", $component, $package);
             \team\Event::send("\\team\\initialize\\{$package}\\{$component}");
