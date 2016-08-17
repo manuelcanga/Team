@@ -149,12 +149,6 @@ class Config {
             $vars = $this->loadFiles(\team\CONFIG_PATH.$path."/commons/config/{$type}/", '\config\\'.$package, $profile);
             \team\Context::add($vars);
 
-            //Mandamos un aviso Start a todos los componentes de que se va  a inicializar el paquete $package
-            \team\Event::system("/{$package}/", 'Start', '/config/scripts/',  "\\team\\{$package}\\components");
-
-            //Mandamos un aviso a root de  {nombre-paquete}
-            \team\FileSystem::load('/commons'.$this->scripts_path.'/'.$package.'.php');
-
             //Lanzamos evento de inicialización paquetes
             \team\Event::send('\team\package',$package);
             \team\Event::send("\\team\\initialize\\{$package}");
@@ -194,10 +188,7 @@ class Config {
                 \team\FileSystem::load("/{$component}-functions.php", $_THEME_ );
             }
 
-            //Mandamos un aviso a package de  {nombre-compnente} se va a inicializar
-            \team\FileSystem::load("/{$package}{$this->scripts_path}/{$component}.php");
-
-            \team\Event::send("\\team\component\\{$package}", $component, $package);
+            \team\Event::send("\\team\\component\\{$package}", $component, $package);
             \team\Event::send("\\team\\initialize\\{$package}\\{$component}");
 
             //Initializamos el componente
