@@ -163,7 +163,7 @@ try {
 	
 	
 	
-	$args = \team\Task('\team\url', array() )->with($_CONTEXT["REQUEST_URI"]);
+	$args = \team\Task('\team\url', array() )->with($_SERVER["REQUEST_URI"]);
 	
 
 	//Es necesario que un worker se haga cargo de la creación del primer response( o main )

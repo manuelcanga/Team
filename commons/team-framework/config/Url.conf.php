@@ -59,16 +59,16 @@ class Url  extends \team\Config {
         global $_CONTEXT;
 	
         if(!isset($this->DOMAIN) ) {
-            $this->DOMAIN =  trim($_CONTEXT["SERVER_NAME"], '/');
+            $this->DOMAIN =  trim($_SERVER["SERVER_NAME"], '/');
         }
         
         if(!isset($this->PROTOCOL) ) {
-            $this->PROTOCOL =  empty($_CONTEXT['HTTPS'])? 'http://' : 'https://';
+            $this->PROTOCOL =  empty($_SERVER['HTTPS'])? 'http://' : 'https://';
         }
 	
         
         if(!isset($this->REQUEST_METHOD) ) {
-            $method  = $_CONTEXT['HTTP_X_HTTP_METHOD_OVERRIDE']?? $_REQUEST['_method']?? $_CONTEXT["REQUEST_METHOD"];
+            $method  = $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']?? $_SERVER['_method']?? $_SERVER["REQUEST_METHOD"];
 
             $this->REQUEST_METHOD =  strtoupper($method);
         }

@@ -56,8 +56,8 @@ class Config {
         //Obtenemos los contextos guardados hasta ahora( provenientes de la inicialización del sistema )
         $context= $_CONTEXT->getState();
 
-        //Al ser el primer nivel, inicializamos con las variables del enviroment, server y si hubiera constantes de usuario
-        $init_vars = $context + get_defined_constants(true)['user'] + $_SERVER + $_ENV ;
+        //Al ser el primer nivel, inicializamos con las constantes de usuario(si las hubiera )
+        $init_vars = $context + get_defined_constants(true)['user'];
 
         //Namespace asociado al contexto
         $init_vars["NAMESPACE"] =  '\\';
