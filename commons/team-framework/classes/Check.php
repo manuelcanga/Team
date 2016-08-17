@@ -54,7 +54,7 @@ abstract class Check
 
 		@return devuelve $number si es un número natural positivo sino devuelve $default
 	*/
-	static public function id($number, int $default = null ): int
+	static public function id($number, int $default = null ) /* :?int */
 	{
 		if(isset($number) && ctype_digit("$number") && $number >= 0) {
 			return (int) $number;
@@ -74,7 +74,7 @@ abstract class Check
 
 		@return devuelve $number si es un número natural positivo sino devuelve $default
 	*/
-	static public function number($number,int $default = null): int
+	static public function number($number,int $default = null) /* :?int */
 	{
 		
 
@@ -97,7 +97,7 @@ abstract class Check
 
 		@return devuelve $number si es un número natural positivo sino devuelve $default
 	*/
-	static public function real($number,float $default = null): float
+	static public function real($number,float $default = null) /* :?float */
 	{
 		if(isset($number) && is_numeric($number) ) 
 			return (float) $number;
