@@ -14,7 +14,7 @@ class Gui extends \team\Gui {
 	/**
 	  Default response
 	*/
-    public function index() {        
+    public function index() {
 		$this->title = 'Index response '.$this->title;
     }
     
