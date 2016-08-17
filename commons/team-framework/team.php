@@ -86,15 +86,17 @@ if(!defined('team\\CONFIG_PATH') ) {
 
 
 /**
-  Directory used to save temporary files: logs, caches, etc 
-   @since 0.1  
+  Directory used to save temporary files: logs, caches, etc
+   @since 0.1
 */
 if(!defined('_TEMPORARY_DIRECTORY_') ) {
-	define('_TEMPORARY_DIRECTORY_', \_TEAM_.'/data/sites/'.SITE_ID);
+	define('_TEMPORARY_DIRECTORY_', \_TEAM_.'/data/');
 
-	if(!file_exists(_TEMPORARY_DIRECTORY_) )
-		mkdir( _TEMPORARY_DIRECTORY_, 0777, true);
+	if(!file_exists(_TEMPORARY_DIRECTORY_) ) {
+        mkdir(_TEMPORARY_DIRECTORY_, 0777, true);
+    }
 }
+
 
 
 /**
