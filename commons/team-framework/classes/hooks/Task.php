@@ -230,17 +230,5 @@ class Task implements \ArrayAccess{
 	}
 
 
-
-	public static function __callStatic($name, $arguments) {
-		$name = '\template\tasks\\'.ltrim($name, "_");
-		$data = $arguments[0];
-
-		$data["content"] = $arguments[1];
-		$data["smarty"] = $arguments[2];
-		$data["repeat"] = $arguments[3];
-
-
-		return Task($name, $data["content"])->with($data);
-	}
 }
  

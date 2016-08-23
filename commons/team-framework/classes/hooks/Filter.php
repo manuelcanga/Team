@@ -262,12 +262,6 @@ class Filter {
         return self::$last;
     }
 
-	//Si llamamos a un método de filter que no sea add ni apply, es que seguramente vengamos de la vista
-	public static function __callStatic($name, $arguments) {	
-		$name = '\template\filters\\'.ltrim($name, "_");
-
-		return self::apply($name, $arguments[0] );
-	}
 
     public static function debug() {
         \team\Debug::me(self::$filters);
