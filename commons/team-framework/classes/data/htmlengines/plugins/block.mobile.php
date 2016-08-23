@@ -42,7 +42,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 function smarty_block_mobile($params, $content, Smarty_Internal_Template $template, &$repeat)
 {
 
-    if(!\team\Gui::getUserAgentInfo('mobile')) {
+    if(!\team\Gui::checkUserAgent('mobile')) {
 		$repeat= false;
 		return '';
 	}

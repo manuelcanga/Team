@@ -43,7 +43,7 @@ function smarty_block_desktop($params, $content, Smarty_Internal_Template $templ
 {
 
 
-    if(!\team\Gui::getUserAgentInfo('desktop')) {
+    if(!\team\Gui::checkUserAgent('desktop')) {
 		$repeat= false;
 		return '';
 	}

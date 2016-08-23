@@ -81,7 +81,7 @@ class Pagination implements \ArrayAccess,  \Iterator{
 
 	 function __construct( $_elements_for_page = 10, $data = [], $initializer = 'onInitialize' ) {
 
-        if(\team\Gui::getUserAgentInfo('mobile')) {
+        if(\team\Gui::checkUserAgent('mobile')) {
             $this->range = 2;
         }
 

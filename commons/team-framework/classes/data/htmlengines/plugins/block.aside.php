@@ -50,7 +50,7 @@ function smarty_block_aside($params, $content, Smarty_Internal_Template $templat
 	}
 
 	if(!$mobile) {
-		$browser = $controller::getUserAgentInfo();
+		$browser = $controller::checkUserAgent();
 		if($browser['mobile']) {
 			$repeat= false;
 			return '';

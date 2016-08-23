@@ -57,9 +57,11 @@ class Gui extends Controller {
     function ___unload($result, $response) {
         $result = parent::___unload($result, $response);
 
-        if($this->view && $this->isMain()){
+        if( $this->isMain() ) {
+            if($this->view){
 
-            $this->addViewToPlace('main_view', $this->view, [], $isolate=false, 50);
+                $this->addViewToPlace('main_view', $this->view, [], $isolate=false, 50);
+            }
         }
 
         return $result;
@@ -160,7 +162,7 @@ class Gui extends Controller {
     /* ____________ UserAgent ___________ */
 
 
-    static function getUserAgentInfo($key = null) {
+    static function checkUserAgent($key = null) {
         static $user_agent;
 
         if(isset($user_agent) )  {
@@ -172,6 +174,8 @@ class Gui extends Controller {
         $mobile = false;
         $computer = false;
         $tablet = false;
+        $device = 'computer';
+        $navigator = 'explorer';
 
         if(!empty($http_user_agent) ) {
             $is_mobile = strpos($http_user_agent, 'Mobile') !== false;
@@ -180,8 +184,8 @@ class Gui extends Controller {
             //¿is tablet?
             if ( stripos($http_user_agent, 'Tablet') !== false || ($is_android && !$is_mobile)
                 || strpos($http_user_agent, 'Kindle') !== false ) {
-                $tablet =  true;
-                $navigator = "tablet";
+               $tablet =  true;
+                $device = $navigator = "tablet";
             }
 
             //¿is mobile?
@@ -190,7 +194,7 @@ class Gui extends Controller {
                     || strpos($http_user_agent, 'Opera Mini') !== false
                     || strpos($http_user_agent, 'Opera Mobi') !== false ) ) {
                 $mobile = true;
-                $navigator = "mobile";
+                $device = $navigator = "mobile";
             }
 
             //¿is desktop?
@@ -207,7 +211,8 @@ class Gui extends Controller {
 
         }
 
-        $user_agent = ['navigator' => $navigator, 'computer' => $computer, 'mobile' => $mobile,'tablet' => $tablet, 'desktop' => ($computer || $tablet) ];
+
+        $user_agent = ['navigator' => $navigator, 'device' => $device, 'computer' => $computer, 'mobile' => $mobile,'tablet' => $tablet, 'desktop' => ($computer || $tablet) ];
 
         $user_agent = \team\Filter::apply('\team\user_agent', $user_agent);
 
@@ -216,15 +221,17 @@ class Gui extends Controller {
     }
 
 
-    function getNavigator() {return  self::getUserAgentInfo('navigator'); }
+    function getNavigator() {return  self::checkUserAgent('navigator'); }
 
-    function isMobile() { return  self::getUserAgentInfo('mobile'); }
+    function getDevice() {return  self::checkUserAgent('device'); }
 
-    function isDesktop() { return  self::getUserAgentInfo('desktop'); }
+    function isMobile() { return  self::checkUserAgent('mobile'); }
 
-    function isComputer() { return  self::getUserAgentInfo('computer'); }
+    function isDesktop() { return  self::checkUserAgent('desktop'); }
 
-    function isTablet() { return  self::getUserAgentInfo('tablet'); }
+    function isComputer() { return  self::checkUserAgent('computer'); }
+
+    function isTablet() { return  self::checkUserAgent('tablet'); }
 
     function getBodyClasses($classes = '') {
 

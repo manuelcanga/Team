@@ -83,10 +83,11 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 
 			$_data['_']["USER"] = \team\User::getCurrent();
 			$_data['_']['notices'] = \Team::getCurrent();
-                        $_data['_']['userAgent'] =  ($this->gui)?  $this->gui::getUserAgentInfo() : [];
 			$_data['_CONTEXT'] = $_CONTEXT;
+            $_data['USER_AGENT'] =  ($this->gui)?  $this->gui::checkUserAgent() : [];
 
-			//Lanzamos un evento de inicio de transformacion de plantilla
+
+        //Lanzamos un evento de inicio de transformacion de plantilla
 		//	$event = \Event('Transform', '\team\view')->ocurred($data);
 
 			if(isset($_data['layout']) ) {
