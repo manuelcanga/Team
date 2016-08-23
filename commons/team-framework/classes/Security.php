@@ -65,24 +65,6 @@ class Security {
 	}
 
 
-	/**
-		Devuelve la ip del cliente que ha hecho la petición contra team-framework
-	*/
-	public static function getIP() {
-		static $ip = null;
-
-		if(isset($ip) ) return $ip;
-
-       $sources = ['HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR' ];
-
-		foreach($sources as $source) {
-			if(isset($_SERVER[$source]) && \team\Check::ip($_SERVER[$source]) ) {
-				return $ip = $_SERVER[$source];
-			}
-		}
-	}
-
-
 
 }
 ?>
