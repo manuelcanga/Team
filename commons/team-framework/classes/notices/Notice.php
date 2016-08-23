@@ -121,7 +121,7 @@ class Notice {
                 $canceled = \Team::event($code, $type, $data, $msg);
             }
 
-			$canceled = ($canceled)?: \Team::event('\team\\'.strtolower($type), $code, self::ERROR, $data, $msg); 
+			$canceled = ($canceled)?: \Team::event('\team\\'.strtolower($type), $code, self::ERROR, $data, $msg);
 			if($canceled) return $canceled;
 		}
 

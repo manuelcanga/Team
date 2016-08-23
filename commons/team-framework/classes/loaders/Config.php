@@ -43,7 +43,7 @@ class Config {
 
     private $cache = array();
 
-    private $scripts_path = '/config/scripts';
+    private $scripts_path = '/events';
 
     public  function __construct()
     {
@@ -57,13 +57,13 @@ class Config {
 
         //Namespace asociado al contexto
         $init_vars["NAMESPACE"] =  '\\';
-        
+
         \team\Context::add($init_vars);
 
         //Añadimos también las variables de configuración base
         $team_vars = $this->loadFiles(_TEAM_.'/config', '\config\team');
         $profile = $team_vars['PROFILE'];
-        
+
          \team\Context::add($team_vars);
 
         //Ahora, hacemos lo mismo con root.
@@ -76,7 +76,7 @@ class Config {
 
 
         //Avisamos a los Start de todos los paquetes de que se va a inicializar el raiz
-        \team\FileSystem::notify('/', 'Start', '/commons/config/scripts/', '\team\packages');
+        \team\FileSystem::notify('/', 'Start', '/commons'.$this->scripts_path, '\team\packages');
 
         //Llamamos al evento Start de Team framework( ya que es como un componente "virtual" )
         \team\FileSystem::load($this->scripts_path.'/Start.php', _TEAM_);
