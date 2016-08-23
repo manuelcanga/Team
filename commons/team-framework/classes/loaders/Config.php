@@ -80,7 +80,7 @@ class Config {
 
 
         //Avisamos a los Start de todos los paquetes de que se va a inicializar el raiz
-        \team\Event::system('/', 'Start', '/commons/config/scripts/', '\team\packages');
+        \team\FileSystem::notify('/', 'Start', '/commons/config/scripts/', '\team\packages');
 
         //Llamamos al evento Start de Team framework( ya que es como un componente "virtual" )
         \team\FileSystem::load($this->scripts_path.'/Start.php', _TEAM_);

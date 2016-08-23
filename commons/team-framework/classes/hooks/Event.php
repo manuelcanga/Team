@@ -88,33 +88,5 @@ class Event {
 	}
 
 
-	/**
-		Hacemos notificación de algo ocurrido por sistema de archivos. 
-		Recordad que el nombre del evento es ucfirst. Ej: Initialize
-	*/
-	public static  function system($path, $eventname, $subpath= null,  $dirs_filter = null, $base = _SITE_) {
-
-		$dirs = \team\FileSystem::getDirs($path, $cache=true, $base);
-
-
-		if(!isset($subpath) ) {
-			$subpath = '/events/';
-		}
-
-		if(isset($dirs_filter)) {
-			$dirs = \team\Filter::apply($dirs_filter, $dirs);
-		}
-
-		if(!empty($dirs) ){
-			$path = rtrim($path, '/');
-			foreach($dirs as $dir) {
-				//Cargamos el archivo de configuración
-				\team\FileSystem::load("{$path}/{$dir}{$subpath}{$eventname}.php", $base);
-			}
-		}	
-
-		return $dirs;
-	}
-
 
 }

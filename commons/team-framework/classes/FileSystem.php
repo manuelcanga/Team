@@ -154,7 +154,37 @@ final  class Filesystem
 		return $dirs;
 	}
 
-	public static function toUnits($size) {
+
+    /**
+        Hacemos notificación de algo ocurrido por sistema de archivos.
+        Recordad que el nombre del evento es ucfirst. Ej: Initialize
+     */
+    public static  function notify($path, $eventname, $subpath= null,  $dirs_filter = null, $base = _SITE_) {
+
+        $dirs =  self::getDirs($path, $cache=true, $base);
+
+
+        if(!isset($subpath) ) {
+            $subpath = '/events/';
+        }
+
+        if(isset($dirs_filter)) {
+            $dirs = \team\Filter::apply($dirs_filter, $dirs);
+        }
+
+        if(!empty($dirs) ){
+            $path = rtrim($path, '/');
+            foreach($dirs as $dir) {
+                //Cargamos el archivo de configuración
+                self::load("{$path}/{$dir}{$subpath}{$eventname}.php", $base);
+            }
+        }
+
+        return $dirs;
+    }
+
+
+    public static function toUnits($size) {
 		$units = array( 'B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
 		$power = $size > 0 ? floor(log($size, 1024)) : 0;
 		return number_format($size / pow(1024, $power), 2, '.', ',') . ' ' . $units[$power];
