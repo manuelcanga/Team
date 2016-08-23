@@ -32,7 +32,7 @@ namespace team;
 
 
 
-\team\Classes::load('\team\user\Member', '/classes/user/Member.php', _TEAM_);
+\team\Classes::load('\team\defaults\Member', '/classes/defaults/Member.php', _TEAM_);
 class User {
     /** Definimos la visibilidad */
     const ADMIN = 2 /** Access to private area and admin area. This also is logged */, 
@@ -58,7 +58,7 @@ class User {
       self::$current = \team\Filter::apply('\team\User', null);
 
 	  if(!isset( self::$current ) ) {
-		 self::$current  = new \team\user\Member();
+		 self::$current  = new \team\defaults\Member();
 	  }
     }
 
