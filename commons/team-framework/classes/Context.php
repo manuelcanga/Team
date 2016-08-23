@@ -278,7 +278,7 @@ class Context implements \ArrayAccess  {
 		self::$context->configloader->load($namespace, self::$current['SUBPATH']);
 
 		//Notificamos del nuevo evento. @AMEDIDA
-		//\team\Event::send('\team\context\Set_Namespace', $namespace);
+		//\Team::event('\team\context\Set_Namespace', $namespace);
 	}
 
 	/** Asignamos un valor de configuración.  */

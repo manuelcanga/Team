@@ -86,7 +86,7 @@ class Config {
         \team\FileSystem::load($this->scripts_path.'/Start.php', _TEAM_);
 
         //Lanzamos el evento start del sistema
-        \team\Event::send('\team\start');
+        \Team::event('\team\start');
 
         //Llamamos al initialize del raiz.
         \team\FileSystem::load('/commons'.$this->scripts_path.'/Initialize.php');
@@ -146,8 +146,8 @@ class Config {
             \team\Context::add($vars);
 
             //Lanzamos evento de inicialización paquetes
-            \team\Event::send('\team\package',$package);
-            \team\Event::send("\\team\\initialize\\{$package}");
+            \Team::event('\team\package',$package);
+            \Team::event("\\team\\initialize\\{$package}");
 
             //Inicializamos el paquete en cuestión
             \team\FileSystem::load('/'.$package.'/commons'.$this->scripts_path.'/Initialize.php');
@@ -156,7 +156,7 @@ class Config {
             $this->cache["\\{$package}"] = \team\Context::getState();
         }
 
-        \team\Event::send("\\team\\load\\{$package}}");
+        \Team::event("\\team\\load\\{$package}}");
     }
 
     private function loadComponent($component, $package, $path, $cached) {
@@ -175,8 +175,8 @@ class Config {
             $vars = $this->loadFiles(\team\CONFIG_PATH.$path."/config/{$type}/", '\config\\'.$package, $profile);
             \team\Context::add($vars);
 
-            \team\Event::send("\\team\\component\\{$package}", $component, $package);
-            \team\Event::send("\\team\\initialize\\{$package}\\{$component}");
+            \Team::event("\\team\\component\\{$package}", $component, $package);
+            \Team::event("\\team\\initialize\\{$package}\\{$component}");
 
             //Initializamos el componente
             \team\FileSystem::load($path.$this->scripts_path.'/Initialize.php');
@@ -185,7 +185,7 @@ class Config {
             $this->cache["\\{$package}\\{$component}"] = \team\Context::getState();
         }
 
-        \team\Event::send("\\team\\load\\{$package}\\{$component}");
+        \Team::event("\\team\\load\\{$package}\\{$component}");
     }
 
 

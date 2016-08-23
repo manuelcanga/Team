@@ -38,7 +38,8 @@ $idpost = \team\Task('\post\add', function(& $post_data) {
 Cuando se necesita avisar de que se ha realizado o se va a realizar una tarea. 
 - Se puede cancelar( devolviendo true, en algún hook) la propagación del evento
 - devuelve si se cancelo(true) o no(false) la propagación del evento.
+- Los argumentos son pasados por referencia
 
 
-\team\Event('\post\add', $idpost, $post_data); //Se avisa de que se añadió un nuevo post
+\Team::Event('\post\add', $idpost, $post_data); //Se avisa de que se añadió un nuevo post
 

@@ -4,7 +4,7 @@
 /*
   En el event start, añadimos los hooks necesarios para parsear los datos de entrada y devolverlos para poder ser usado para lanzar la acción main( ver abajo )
 */
-\team\Event::listen('\team\start', function() {
+\Team::addListener('\team\start', function() {
     global $argv, $argc, $_CONTEXT;
 
 	//Es posible lanzar TEAM framework desde terminal

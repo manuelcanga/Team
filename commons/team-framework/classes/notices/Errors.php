@@ -146,7 +146,7 @@ class Errors {
 		}else {
 			//framework's halting
 			\team\Context::close();
-			return 	\team\Event::send('\team\halt', $data);;
+			return 	\Team::event('\team\halt', $data);;
 		}
 
 
@@ -176,7 +176,7 @@ class Errors {
 			}
 		}
 		//Mala suerte, hemos llegado hasta aquí sin que la acción main pudiera hacer nada. Toca buscar ayuda(¿algún awaiter disponible?)
-		echo \team\Event::send('\team\CRITICAL', $data, $type = "CRITICAL");
+		echo \Team::event('\team\CRITICAL', $data, $type = "CRITICAL");
 
 		return true;
 

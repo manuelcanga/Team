@@ -29,11 +29,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 /** **************************************************************************************
-	Sistema de notificaciones/Avisos/Alertas. Muy útil para devolver mensajes fácilmente al usuario
-de la web después de que este haya realizado alguna operación.
-Se basa en proceso, un proceso puede tener éxito o pudo tener un error crítico.
-A su vez, los pasos del proceso, pudieron tener avisos informátivos o avisos de errores(normales).
-También, pudo haber otro tipo de errores, ocasionados por el sistema(fallo de acceso a la bd, un archivo que no se encuentra, ...
+	Sistema de notificaciones/Avisos/Eventos/Alertas. Muy útil para devolver mensajes fácilmente al usuario
+	de la web después de que este haya realizado alguna operación.
+	Se basa en proceso, un proceso puede tener éxito o pudo tener un error crítico.
+	A su vez, los pasos del proceso, pudieron tener avisos informátivos o avisos de errores(normales).
+	También, pudo haber otro tipo de errores, ocasionados por el sistema(fallo de acceso a la bd, un archivo que no se encuentra, ... )
 *************************************************************************************** */
 
 
@@ -47,6 +47,8 @@ class Team
     /**  indice de la cola de mensajes. */
 	static private $index = -1;
 
+	/* Almacen de todos los listeners */
+	private static $listeners = array();
 
 	static public $notices = array();
 	/** Avisos actuales */
@@ -80,7 +82,7 @@ class Team
 	}
 
 	public static function index($index) {
-		return self::notices[$index];
+		return self::$notices[$index];
 	}
 
 	public static function getCurrent() { 
@@ -133,10 +135,63 @@ class Team
 	}
 
 
+	
+
+	/**
+		Añadimos un listener a la espera de un evento 
+		@param namespace $event Evento a esperar
+		@param callable $listeners listener que se queda a la escucha
+		@param int $order Posición en la llamada de eventos
+	*/
+	public static function addListener($event, $listener, $order = 65) {
+		$event = rtrim($event, '\\');
+		if(!is_callable($listener) ) return ;
+		$order = \team\Check::id($order);
+
+		//Si no habia listeners asociados al evento, ahora si
+		self::$listeners[$event] =  isset(self::$listeners[$event])? self::$listener : [];
+
+		//Vamos buscando un hueco libre para el trabajador a partir del orden que pidió
+		for($max_order = 100; isset(self::$listeners[$event][$order]) && $order < $max_order; $order++);
+
+		//Guardamos el listener
+		self::$listeners[$event][$order] = $listener;
+	}
+
+
+
+	/**
+		Aviso de evento. Es una notificación de tipo neutro.	
+		Se recorre todos los listeners hasta que uno devuelva true. En ese momento se para el barrido.
+		Los argumentos, si los hubiera, son pasados por referencia
+		@param namespace $code es el código o namespace del evento ocurrido. 
+		@param $data es un dato que se quiere transmitir con el evento.
+		
+		@return boolean devuelve si algún listener cancelo o no el evento( retornando true: cancela, false/null: no) 
+	*/
+	public static function event($code, &...$data) {
+        $namespace = rtrim($code, '\\');
+
+
+        if(isset(self::$listeners[$namespace])  ) {
+			$data[] = $namespace;	
+
+		    foreach(self::$listeners[$namespace] as $listener) {
+		        //mandamos el trabajo al listener
+		        $result =  $listener(...$data);
+		        if($result) return $result;
+		    }
+		}
+
+		return false;
+	}
+
+
+
 	//Procesa una excepción en el sistema. 
 	public static function systemException(\Exception $exception) {
 	
-        $result = \team\Event::send($exception->getCode(), $exception->getData(), "SYSTEM");
+        $result = \Team::event($exception->getCode(), $exception->getData(), "SYSTEM");
 		if($result) {
 			return $resut;
 		}

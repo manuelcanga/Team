@@ -116,12 +116,14 @@ class Notice {
 
 		if($code) {
 			//Avisamos del error
-			$canceled = \team\Event::send($code,$type, $data, $msg);
-			$canceled = ($canceled)?: \team\Event::send('\team\\'.strtolower($type), $code, self::ERROR, $data, $msg); 
+            $canceled = null;
+            if(isset($code)) {
+                $canceled = \Team::event($code, $type, $data, $msg);
+            }
+
+			$canceled = ($canceled)?: \Team::event('\team\\'.strtolower($type), $code, self::ERROR, $data, $msg); 
 			if($canceled) return $canceled;
 		}
-
-		$msg = \team\Filter::apply('\team\notice', $msg, $code, self::ERROR,  $data);
 
 
 		$this->result = $result;

@@ -112,8 +112,6 @@ require(\_TEAM_.'/classes/Check.php');
 require(\_TEAM_.'/includes/data/Storage.php');
 //La clase Context nos sirve para tener un control de variables de configuracion en funcion del contento
 require(\_TEAM_.'/classes/Context.php'); 
-//Event permite el aviso de sucesos
-require(\_TEAM_.'/classes/hooks/Event.php');
 //La clase Team, Notice y Erros llevan un control de las notificaciones de  avisos y errores del sistema
 require(\_TEAM_.'/classes/notices/Errors.php');
 require(\_TEAM_.'/classes/notices/Notice.php');
@@ -174,7 +172,7 @@ try {
 	//Bajamos el ultimo nivel que queda.
 	\team\Context::close();
 
-	\team\Event::send('\team\end');
+	\Team::event('\team\end');
 
 //Evitamos a toda costa que se quede congelado el sistema
 }catch(\Throwable $e) { 
