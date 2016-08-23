@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace team;
 ;
 
-class Config{
+abstract class Config{
 
     /**
         Corre o llama al metodo setup generico y al del profile actual
