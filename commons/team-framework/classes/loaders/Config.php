@@ -75,8 +75,9 @@ class Config {
         //Si no existe CONFIG_PATH./confg/.installed se debería de lanzar el evento de instalación y quizás llamar a los config con install
 
 
+
         //Avisamos a los Start de todos los paquetes de que se va a inicializar el raiz
-        \team\FileSystem::notify('/', 'Start', '/commons'.$this->scripts_path, '\team\packages');
+        \team\FileSystem::notify('/', 'Start', '/commons'.$this->scripts_path.'/', '\team\packages');
 
         //Llamamos al evento Start de Team framework( ya que es como un componente "virtual" )
         \team\FileSystem::load($this->scripts_path.'/Start.php', _TEAM_);

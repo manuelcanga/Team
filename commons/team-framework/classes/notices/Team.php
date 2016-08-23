@@ -190,8 +190,9 @@ class Team
 
 	//Procesa una excepción en el sistema. 
 	public static function systemException(\Exception $exception) {
-	
-        $result = \Team::event($exception->getCode(), $exception->getData(), "SYSTEM");
+
+        $error_type = "SYSTEM";
+        $result = \Team::event($exception->getCode(), $exception->getData(), $error_type);
 		if($result) {
 			return $resut;
 		}
