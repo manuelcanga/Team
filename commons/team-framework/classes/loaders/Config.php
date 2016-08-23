@@ -33,10 +33,6 @@ namespace team\loaders;
 
 namespace team\loaders;
 
-if(!defined('\team\CONFIG_PATH') ) {
-    define('\team\CONFIG_PATH', _SITE_);
-}
-
 /**
 Se encarga de obtener y cargar todos los archivos de configuración de cada namespace.
 Así como de ejecutar los initialize de cada namespace para que adapten los archivos de configuración al gusto

@@ -29,9 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 namespace team;
-
-/** Para mayor seguridad, se puede establecer un path distinto para todos los archivos de configuracion. */
-define("CONFIG_PATH", \team\CONFIG_PATH);
+;
 
 class Config{
 
