@@ -129,11 +129,24 @@ class Errors {
 		$error = error_get_last();
 		$data = new \team\Data();
 		$data->namespace = \team\Context::get('NAMESPACE');
+		$critical = true;
+
 
 		if(isset($error['type']) && $error['type'] >= 0) {	
 
 			$_errno = $error['type'];
-			$data->code = self::$php_errors_code[$_errno]??  $error['type'];
+		
+			//Hemos podido llegar aquí por culpa de algun error en zona no-framework de algún usuario
+			//y este error podría no ser crítico
+			if(isset(self::$php_errors_code[$_errno]) ) {
+				$data->code =  self::$php_errors_code[$_errno];
+				$critical = !self::$php_errors_code[$_errno];
+			}else {
+				$data->code =   $error['type'];
+			}
+
+			
+
 			$data->msg = $error['message'];
 			$data->file = $error['file'];
 			$data->line = $error['line'];
@@ -150,15 +163,19 @@ class Errors {
 		}
 
 
-		$data->num_criticals =  ++$num_criticals;
+		if($critical) {
+			$data->num_criticals =  ++$num_criticals;
 		
-
-	    //Only one critical, please
-	    if($data->num_criticals >1 && empty($error) ) return false;
+			//Only one critical, please
+			if($data->num_criticals >1 && empty($error) ) return false;
+		}
 
 
 		\team\Debug::me("[{$data->namespace}][{$data->code}]: {$data->msg}",  '',  $data->file,  $data->line );
 
+		if(!$critical) {
+			return true;
+		}
 
 		//Asignamos un contextlevel para que quien lo recoja sepa si es o no main dónde se produjo el error
 		$data->context  = \team\Context::getCurrent();
