@@ -133,11 +133,12 @@ class NS {
 			$namespace = explode($separator, $namespace);
 		}	
 
+
 	  //Nos aseguramos que todos los valores son correctos
 	   $namespace = array_filter($namespace, function($value) { return \team\Check::key($value, false); });
 
 		//Obtenemos el paquete, componente y acción del namespace
-		list($package, $component) = array_pad($namespace, 2, null);
+		list($package, $component) = array_pad($namespace, 3, null);
 
 		$others = array_slice($namespace, 2);
 

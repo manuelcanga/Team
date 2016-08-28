@@ -48,7 +48,9 @@ function smarty_function_widget($params = [], &$smarty)
 	}
 
 
+	$widget_name = $params['name'];
 	$namespace =  \team\NS::explode($params['name']);
+
 
 	if(isset($namespace['name']) ) {
 		$namespace['response'] = $namespace['name'];
@@ -59,7 +61,27 @@ function smarty_function_widget($params = [], &$smarty)
 
 	//No se ha pasado un componente correcto
 	if(!\team\FileSystem::exists("/".$params['package'].'/'.$params['component']) ) { 
+		\team\Debug::me('Change " to \' in your widget name, please');
 		return ;
+	}
+
+
+	$cache_id = null; 
+	if(isset($params['_cache']) ) {
+		$cache = $params['_cache'];
+		if(is_bool($cache) ) {
+			$cache_id = \team\Sanitize::identifier($widget_name);
+		}else {
+			$cache_id = \team\Sanitize::identifier($cache);
+		}
+
+		$cache_id = trim($cache_id, '_');
+
+
+		$cache = \team\Cache::get($cache_id);
+		if(!empty($cache)) {
+			return $cache;
+		}
 	}
 
 
@@ -75,8 +97,10 @@ function smarty_function_widget($params = [], &$smarty)
 	}
 
 	$class_name = '\\'.$params['package'].'\\'.$params['component'];
+
+
+
 	if(!class_exists($class_name) ) {
-		\team\Debug::me('Change " to \' in your widget name, please');
 		return '';
 	}
 
@@ -84,6 +108,13 @@ function smarty_function_widget($params = [], &$smarty)
 	//team\Debug::out($params);
 
 	$result = trim($controller->retrieveResponse());
+
+	if(isset($cache_id) ) {
+		$cache_time =  $namespace['_cache_time']?? \team\Date::A_DAY;
+		\team\Cache::save($cache_id, $result, $cache_time );
+	}
+
+
 	//Si se paso un parametro assign, se le asigna el resultado ahi
 	if(isset($params['assign']) && !empty($params['assign']) ) {
 		$var = $params['assign'];
