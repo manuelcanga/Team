@@ -55,10 +55,10 @@ class User {
     static function __initialize() {
 		if(isset(self::$current) ) return  ;
 
-      self::$current = \team\Filter::apply('\team\User', null);
+      $user_class =\team\Filter::apply('\team\User', '\team\defaults\Member');
 
-	  if(!isset( self::$current ) ) {
-		 self::$current  = new \team\defaults\Member();
+	  if(isset($user_class) && class_exists($user_class )  ) {
+		 self::$current  = new  $user_class();
 	  }
     }
 
