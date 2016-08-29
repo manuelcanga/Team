@@ -74,11 +74,16 @@ class Actions extends Builder {
 
 
 	public function transform(\team\Data &$_data, & $_controller, $_result ) {
-		
+		if(!empty($_result) ) {
+			//Si lo que se devuelve es un string. Lo consideramos una salida en bruto
+			if(is_string($_result) ) {
+				return $_result;
+			}
 
-		//Si es una operacion y se devuelve un array. Se considera ese el resultado
-		if(!empty($_result) && is_array($_result) ) {
-			$_data->setData($_result);
+			//Si es una operacion y se devuelve un array. Se considera ese el resultado
+			if( is_array($_result) ) {
+				$_data->setData($_result);
+			}
 		}
 
 	//	Event("Pre_Out", '\team\actions')->ocurred($_data);
