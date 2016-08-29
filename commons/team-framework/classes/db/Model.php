@@ -127,7 +127,7 @@ abstract class Model implements \ArrayAccess, \Iterator{
 		@param array $sentences list of params to query. Excepcionally, you can pass a 'order' params(ASC or DESC)
 		@param array $data   list of data to query
 	*/
-    public function getAll(  $sentences = [], $data = [], $table = null) {
+    public function findAll(  $sentences = [], $data = [], $table = null) {
 		$sentences = $sentences?? [];
 		$table = $table ??  static::TABLE;
 
