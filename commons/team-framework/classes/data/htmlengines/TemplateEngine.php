@@ -100,18 +100,17 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 
 			$engine = new \Smarty();
 
-			$this->initializeEngine($engine, $_data);
-
-
 			//Obtenemos la plantilla que vamos a procesar
-			$template_init = $this->getView($_data, $engine );
-				
+			$template= $this->getView($_data );
+
+			$this->initializeEngine($engine, $_data, $template);
+
 			//\team\Debug::out($_data);
 			//Transformamos los datos que tenemos a datos utilizables por smarty
 			$engine_data = $this->transformToEngineData($_data);
 
 
-			$result =  $engine->fetch($template_init, $engine_data);
+			$result =  $engine->fetch($template, $engine_data);
    		    if(!$this->gui || $_CONTEXT["SHOW_VIEWS"]) {
 				return $result;
 			}else {
@@ -213,7 +212,7 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 		Inicializamos el objeto de smarty con la configuracion propia de team
 		@param Smarty $_engine: objeto de smarty que inicializaremos.
 	*/
-	function initializeEngine(\Smarty  $_engine) {
+	function initializeEngine(\Smarty  $_engine, $_data, $_template) {
 		global $_CONTEXT;
 
 		$package = $_CONTEXT['PACKAGE'];
@@ -241,9 +240,8 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 		 $view_cache = (bool)$_CONTEXT['VIEW_CACHE'];
 
 		 $_engine->compile_check = !$view_cache;
-		 $_engine->force_compile = !$view_cache;
 		 $_engine->caching = $view_cache;
-		  $_engine->compile_id =  $package.$component.$response;
+		 $_engine->compile_id =  $package.$component.$response.$_template;
 
 		
 		//Un componente sólo vería sus cosas, aún así puede usar root: package: etc
@@ -270,6 +268,10 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 
  		  $_engine->loadFilter('output', 'trimwhitespace');
 		}
+
+
+		\Team::event('\team\smarty\initializing', $_engine, $_data, $_template);
+
 
 			/** Activar el debug(para administradores):  http://MIDOMAIN.es?debug  */
 		//$smarty->debugging = true;
