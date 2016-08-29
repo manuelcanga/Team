@@ -60,7 +60,7 @@ class Gui extends Controller {
         if( $this->isMain() ) {
             if($this->view){
 
-                $this->addViewToPlace('main_view', $this->view, [], $isolate=false, 50);
+                $this->addViewToPlace($this->view,'main_view',  [], $isolate=false, 50);
             }
         }
 
@@ -104,15 +104,37 @@ class Gui extends Controller {
     }
 
     /**
-     * @param $_file
-     * @param $place lugar al que se quiere añadir la vista. Si empieza por \, se tomará como pipeline el lugar completo.
-     * Si se añadirá a \team\place
-     * @param bool $isolate
-     * @param bool $remove_before_views
-     * @return bool
+     * @param $view vista que se incluirá en el lugar
+     * @param $place punto de anclaje en el que queremos incluir la vista. Si empieza por \, se tomará como pipeline el lugar completo.
+     * Sino se añadirá a \team\place
+     * @param bool $isolate determinada si la plantilla heredará el entorno de la plantilla padre( isolate = false ) o será independiente( isolate = true )
+     * @param bool $order  orden de colocación de la vista respecto a otra en el mismo lugar. 
      */
-    function addViewToPlace($place, $file,  $options = [], $isolate = false, $order = 65) {
-        return \team\Filter::addViewToPlace( $place,$file, $options, $isolate, $order);
+    function addViewToPlace($view, $place,  $options = [], $isolate = false, $order = 65) {
+
+		$view =  \team\FileSystem::stripExtension($view);
+		$idView = \team\Sanitize::identifier($view);
+        $pipeline = ('\\' == $place[0])? $place : '\team\places\\'.$place;
+		 $options =  $options;
+
+        \team\Filter::add($pipeline,function($content, $params, $engine) use ($view, $options, $isolate, $idView) {
+            //    \Debug::out(get_class_methods($engine) );
+            //Si se quiere con todas las variables del padre
+            if($isolate) { //aislado, sólo se quiere las variables que se le pasen
+                $engine->assign($params);
+                $engine->assign($options);
+                $content .= $engine->fetch($view.'.tpl');
+            }else {
+                $father = $engine;
+                $template = $engine->createTemplate($view.'.tpl', $idView, $idView, $father);
+                $template->assign($params);
+                $template->assign($options);
+                $content .= $template->fetch();
+            }
+
+            return $content;
+        }, $order, $idView);
+
     }
 
     function noLayout() {

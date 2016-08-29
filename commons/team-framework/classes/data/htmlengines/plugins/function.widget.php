@@ -76,12 +76,12 @@ function smarty_function_widget($params = [], &$smarty)
 		}
 
 		$cache_id = trim($cache_id, '_');
-
-
 		$cache = \team\Cache::get($cache_id);
+
 		if(!empty($cache)) {
 			return $cache;
 		}
+
 	}
 
 
@@ -111,6 +111,7 @@ function smarty_function_widget($params = [], &$smarty)
 
 	if(isset($cache_id) ) {
 		$cache_time =  $namespace['_cache_time']?? \team\Date::A_DAY;
+
 		\team\Cache::save($cache_id, $result, $cache_time );
 	}
 

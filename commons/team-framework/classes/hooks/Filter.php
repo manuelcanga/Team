@@ -110,45 +110,6 @@ class Filter {
         return self::addFilter($pipeline, ['value' => $value, 'key'=>$key, 'type'=>'keyvalue' ],$order, $idfilter);
     }
 
-    public static function addViewToPlace( $place, $view,  $options = [], $isolate = false, $order = 65) {
-        $_option = '';
-        if(strpos($view, ':')) {
-            list($_option,$file) = explode(':', $view, 2);
-        }
-        $_option = $_option?: null;
-
-
-
-        $idView = rtrim(\team\Context::get('PACKAGE')."-".$_option,'-');
-        $idView .= "-".basename($view);
-
-        if(isset($view)) {
-
-            $pipeline = ('\\' == $place[0])? $place : '\team\places\\'.$place;
-
-            \team\Filter::add($pipeline,function($content, $params, $engine) use ($view, $options, $isolate, $idView) {
-                //    \Debug::out(get_class_methods($engine) );
-                //Si se quiere con todas las variables del padre
-
-                if($isolate) { //aislado, sólo se quiere las variables que se le pasen
-                    $engine->smarty->assign($params);
-                    $engine->smarty->assign($options);
-                    $content .= $engine->fetch($view.'.tpl');
-                }else {
-                    $father = $engine;
-                    $template = $engine->createTemplate($view.'.tpl', $idView, $idView, $father);
-                    $template->assign($params);
-                    $template->assign($options);
-                    $content .= $template->fetch();
-                }
-
-                return $content;
-            }, $order, $idView);
-            return true;
-        }
-        return false;
-    }
-
 
     public static function restore($pipeline) {
         self::$filters[$pipeline] = [];
