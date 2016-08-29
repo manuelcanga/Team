@@ -64,12 +64,21 @@ class Cache {
 		return self::$current->save($key, $value, $time);
 	}
 
+	static  function overwrite($key, $value, $time = 0) {
+		return self::$current->save($key, $value, $time);
+	}
+
+
 	static function exists($key) {
 		return self::$current->exists($key);
 	}
 
 	static  function get($key) {	
 		return self::$current->get($key);
+	}
+
+	static function debug($msg = null) {
+		self::$current->debug($msg);
 	}
 
 

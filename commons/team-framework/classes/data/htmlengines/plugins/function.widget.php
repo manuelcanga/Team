@@ -110,9 +110,14 @@ function smarty_function_widget($params = [], &$smarty)
 	$result = trim($controller->retrieveResponse());
 
 	if(isset($cache_id) ) {
-		$cache_time =  $namespace['_cache_time']?? \team\Date::A_DAY;
+		if(isset($params['_cachetime']) ) {
+			$cache_time =  strtotime($params['_cachetime']);
+		}else {
+			$cache_time =   \team\Date::A_DAY;
+		}
 
-		\team\Cache::save($cache_id, $result, $cache_time );
+
+		\team\Cache::overwrite($cache_id, $result, $cache_time );
 	}
 
 

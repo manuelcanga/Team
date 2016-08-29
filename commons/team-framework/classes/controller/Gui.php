@@ -110,17 +110,39 @@ class Gui extends Controller {
      * @param bool $isolate determinada si la plantilla heredará el entorno de la plantilla padre( isolate = false ) o será independiente( isolate = true )
      * @param bool $order  orden de colocación de la vista respecto a otra en el mismo lugar. 
      */
-    function addViewToPlace($view, $place,  $options = [], $isolate = false, $order = 65) {
+    function addViewToPlace($view, $place,  $_options = [], $isolate = false, $order = 65) {
 
 		$view =  \team\FileSystem::stripExtension($view);
 		$idView = \team\Sanitize::identifier($view);
         $pipeline = ('\\' == $place[0])? $place : '\team\places\\'.$place;
-		 $options =  $options;
+		 $options =  $_options;
 
-        \team\Filter::add($pipeline,function($content, $params, $engine) use ($view, $options, $isolate, $idView) {
+		//Comprobamos si se quiere caché o no
+		$cache_id = null;
+		if(isset($_options['_cache']) ) {
+			$cache = $_options['_cache'];
+			if(is_bool($cache) || 'true' == $cache ) {
+				$cache_id = \team\Sanitize::identifier($idView);
+			}else {
+				$cache_id = \team\Sanitize::identifier($cache);
+			}
+			$cache_id = trim($cache_id, '_');
+		}
+
+
+        \team\Filter::add($pipeline,function($content, $params, $engine) use ($view, $options, $isolate, $idView, $cache_id) {
+
+			//Comprobamos si ya estaba la plantilla cacheada
+			if(isset($cache_id) ) {
+				$cache = \team\Cache::get($cache_id);
+				if(!empty($cache)) {
+					return $cache;
+				}
+			}
+
             //    \Debug::out(get_class_methods($engine) );
             //Si se quiere con todas las variables del padre
-            if($isolate) { //aislado, sólo se quiere las variables que se le pasen
+            if($isolate) { //aislado, sólo se quiere las variables que se le pasen		
                 $engine->assign($params);
                 $engine->assign($options);
                 $content .= $engine->fetch($view.'.tpl');
@@ -131,6 +153,18 @@ class Gui extends Controller {
                 $template->assign($options);
                 $content .= $template->fetch();
             }
+
+			//Si se ha pedido sistema de caché, lo guardamos
+			if(isset($cache_id) ) {
+				if(isset($options['_cachetime']) ) {
+					$cache_time =  strtotime($options['_cachetime']);
+				}else {
+					$cache_time =   \team\Date::A_DAY;
+				}
+
+
+				\team\Cache::overwrite($cache_id, $content, $cache_time );
+			}
 
             return $content;
         }, $order, $idView);

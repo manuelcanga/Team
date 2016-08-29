@@ -42,6 +42,10 @@ class Apc {
 		return apc_clear_cache('user');
 	}
 
+	function overwrite($key, $value, $time = 0) {
+		return apc_store($key, $value, $time);
+	}
+
 	function save($key, $value, $time = 0) {
 		return apc_add($key, $value, $time);
 	}
@@ -54,4 +58,7 @@ class Apc {
 		return  apc_fetch($key);
 	}
 
+	function debug($msg = null) {	
+		  \Debug::me(apc_cache_info('user'), $msg);
+	}
 }
