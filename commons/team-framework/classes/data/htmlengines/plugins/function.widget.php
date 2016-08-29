@@ -69,7 +69,7 @@ function smarty_function_widget($params = [], &$smarty)
 	$cache_id = null; 
 	if(isset($params['_cache']) ) {
 		$cache = $params['_cache'];
-		if(is_bool($cache) ) {
+		if(is_bool($cache) || 'true' == $cache ) {
 			$cache_id = \team\Sanitize::identifier($widget_name);
 		}else {
 			$cache_id = \team\Sanitize::identifier($cache);
