@@ -162,8 +162,35 @@ class Url {
 		//Quitamos el rastro de @ en el string
 		return str_replace('@', '', $url);
 
-	} 
+	}
 
-	
+    /**
+     * Use RegEx to extract URLs from arbitrary content.
+     **
+     * @param string $content Content to extract URLs from.
+     * @return array URLs found in passed string.
+     */
+    static function fromContent($content) {
+        preg_match_all(
+            "#([\"']?)("
+            . "(?:([\w-]+:)?//?)"
+            . "[^\s()<>]+"
+            . "[.]"
+            . "(?:"
+            . "\([\w\d]+\)|"
+            . "(?:"
+            . "[^`!()\[\]{};:'\".,<>«»“”‘’\s]|"
+            . "(?:[:]\d+)?/?"
+            . ")+"
+            . ")"
+            . ")\\1#",
+            $content,
+            $links
+        );
+
+        $links = array_unique( array_map( 'html_entity_decode', $links[2] ) );
+
+        return array_values( $links );
+    }
 
 }
