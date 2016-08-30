@@ -32,8 +32,9 @@ class Collection implements \Iterator, \Countable{
 	/** Create a new Record */
 	function newModel($safeId = 0, $data = []) {
 	 	 $class =  $this->model;
-		 $activeRecord =  new $class($safeId, $data + $this->defaults, false);
- 		 $activeRecord->onNewRecord();
+		 $activeRecord =  new $class($safeId, false);
+ 		 $activeRecord->onNewRecord($safeId, $data + $this->defaults);
+
 		 return $activeRecord;
 	}
 

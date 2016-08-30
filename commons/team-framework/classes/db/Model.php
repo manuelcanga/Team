@@ -34,14 +34,6 @@ namespace team\db;
 /**
 		Simple Model skel
 
-		@TODO en un futuro:
-		Los models tendrá los campos de la entidad. Serán las clases que se pasen a los collections. Es la base para los List y los Gest
-		Los collections servirán para realizar los distintos listados de elementos. Serían los antiguos List. Ej: Noticias
-		Los activeRecord heredarán de algún model que ya tenga definido sus campos. servirá para insertar, modificar y borrar. Serían los antiguos Gest. Ej: GestNoticias
-
-		La clase actual de Collection debería de separarse en dos: Collection que gestionaría las consultas y los filtros( y cuyo resultados se la pasaría a Pagination ) y pagination que hace todos los calculos de paginación a partir de los resultados de Collection y luego crea un PageIterator
-	
-
 */
 abstract class Model implements \ArrayAccess, \Iterator{
     use \team\data\Storage, \team\db\Database;
@@ -59,17 +51,12 @@ abstract class Model implements \ArrayAccess, \Iterator{
 		@param array $data : data for initializing
 		$param string|bool $initializer : method used in order to initialize data. Use false value to avoid initialization
 	*/
-    function __construct($id = 0, $data = [], $initializer = null) {
+    function __construct($id = 0,  $initializer = null) {
 		$initializer = $initializer?? $this->initializer;
-		$data = $data?? [];
-
-		$this->commons($id, $data, $initializer);
 
 		if($initializer && method_exists($this,  $initializer) ) {
 			$this->initializer = $initializer;
-	        $data = $this->$initializer($id, $data);
-		}else {
-			$this->onLoad($id, $data);
+	       $this->$initializer($id);
 		}
 		
     }
@@ -99,7 +86,7 @@ abstract class Model implements \ArrayAccess, \Iterator{
 	protected function load($id , $data = []) {
 		if(!empty($data) ) {
 			$this->setData($data);
-			$this->safeId = $this[static::ID]  = $id;
+			$this[static::ID] = $this->safeId;
 		}
 	}
 
@@ -148,29 +135,16 @@ abstract class Model implements \ArrayAccess, \Iterator{
 
 
 	/* ----------------- EVENTS ----------------- */
-	/*
-		Before initializers
-	*/
-	protected function commons($id, $data, $initializer) {}
 
 	/**
 		Initialize by default
 	*/
-    protected function onInitialize($id, $data =  []) {
-
-		if(!empty($data) ) {
-	 	   $this->import($data);
-		}
-	}
-
-	/** When a initializer is not selected */
-	protected function onLoad($id , $data = []) {
-		$this->load($id, $data);
-	}
-
+    protected function onInitialize($id){}
 
 
 	//This function from Collection for everytime a newRecord is created
-	function onNewRecord() {}
+	function onNewRecord($id, $data) {
+		$this->load($id, $data); 
+	}
 
 }

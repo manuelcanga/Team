@@ -32,14 +32,12 @@ namespace team\db;
 /**
 		Simple ActiveRecord class for Team Framework
 */
-abstract class ActiveRecord extends \team\db\Model implements \ArrayAccess, \Iterator{
-    use \team\data\Storage, \team\db\Database;
-
+abstract class ActiveRecord extends \team\db\Model{
 
 	const DETAILS_URL = '';
 
     protected $safeId = 0;
-
+	
 
 
 	/* ----------------- Checks----------------- */
@@ -81,57 +79,41 @@ abstract class ActiveRecord extends \team\db\Model implements \ArrayAccess, \Ite
 		return \team\Url::to(self::DETAILS_URL, $data, $matches);
 	}
 
-	function setId($id) {
-	//	$this->data[static::ID] = \team\Check::id($id);
-	}
-
-    public function setById($id = 0, $data = [], $customizer = null, $table = null) {
-        $id = $this->checkId($id);
-		$table = $table ??  static::TABLE;
-
-		$data = [static::ID => $id] + $data;
-
-        $query = $this->newQuery($data,  $sentences = []);
-
-        $query->where[] = [ static::ID  =>  ':'.static::ID  ];	
-
-		if(isset($customizer) && is_callable($customizer) ) {
-			$customizer = $customizer->bindTo($this);
-			$query = $customizer($query, $data, $id);
-		}
-	
-		$data = $query->getRow($table);
-
-
-		$result = false;
-		if(!empty($data) ) {
-	    	 $this->setData($data);
-			$result = true;
-		}
-
-		
-		$this[static::ID] = $this->safeId = $id;
-
-		return $result ;
-		
-    }
-
-
 
 	/* ----------------- QUERIES ----------------- */
+
+
+	/**
+		Initialize by default
+	*/
+    protected function initializeIt($id, $sentences = [], $table = null, $data = []) {
+		$table = $table ??  static::TABLE;
+
+	    $query = $this->newQuery([static::ID =>  $id] + $data,  $sentences);
+	    $query->where[] = [ static::ID  =>  ':'.static::ID  ];	
+		$record = $query->getRow($table);
+
+		if(!empty($record) ) {
+			 $this->setData($record);
+		}
+
+		$this[static::ID] = $id;
+
+	}
+
 
 	/**
 		En modo seguro sólo se actualizará un registro
 	*/
 	public function save($sentences = [], $secure = true) {
 		if($this->safeId ) {
-			return $this->update($sentences, $secure);
+			return $this->updateIt($sentences, $secure);
 		}else {
-			return $this->insert($sentences);
+			return $this->insertIt($sentences);
 		}
 	}
 
-	public function update($sentences = [], $secure = true, $table = null ) {
+	public function UpdateIt($sentences = [], $secure = true, $table = null ) {
 		$table = $table ??  static::TABLE;
 
         $query = $this->newQuery($this->data, $sentences );
@@ -148,7 +130,8 @@ abstract class ActiveRecord extends \team\db\Model implements \ArrayAccess, \Ite
 		return $result;
 	}
 
-	public function insert($sentences = [], $table = null) {
+
+	public function insertIt($sentences = [], $table = null) {
 		$table = $table ??  static::TABLE;
 
 		if(!isset($this[static::ID]) ) {
@@ -171,7 +154,7 @@ abstract class ActiveRecord extends \team\db\Model implements \ArrayAccess, \Ite
 		Realiza el borrado en la base de datos.
 		Si $secure es true, no se podrá hacer un delete sin where y los delete con where estarán limitados a un elemento.
 	*/
-	public function remove($sentences = [], $secure = true, $table = null) {
+	public function removeIt($sentences = [], $secure = true, $table = null) {
 		$table = $table ??  static::TABLE;
 
 		if(!$this->safeId ) return false;
@@ -186,18 +169,12 @@ abstract class ActiveRecord extends \team\db\Model implements \ArrayAccess, \Ite
 
 	/* ----------------- EVENTS ----------------- */
 
-	/**
-		Initialize by default
-	*/
-    protected function onInitialize($id, $data =  []) {
+	protected function onInitialize($id) {
         $this->safeId = $this->checkId($id);
 
 		if( $this->safeId) {
-			$this[static::ID] = $this->safeId;
-			$this->setById($id);
+			$this->initializeIt($this->safeId);
 		}
-
-		parent::onInitialize($id, $data);
 	}
 
 } 
