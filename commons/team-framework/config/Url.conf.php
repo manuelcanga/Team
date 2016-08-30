@@ -61,18 +61,31 @@ class Url  extends \team\Config {
         if(!isset($this->DOMAIN) ) {
             $this->DOMAIN =  trim($_SERVER["SERVER_NAME"], '/');
         }
-        
-        if(!isset($this->PROTOCOL) ) {
-            $this->PROTOCOL =  empty($_SERVER['HTTPS'])? 'http://' : 'https://';
-        }
-	
+
         
         if(!isset($this->REQUEST_METHOD) ) {
             $method  = $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']?? $_SERVER['_method']?? $_SERVER["REQUEST_METHOD"];
 
             $this->REQUEST_METHOD =  strtoupper($method);
         }
-        
+
+
+        $is_ssl = false;
+        if ( isset($_SERVER['HTTPS']) ) {
+            if ( 'on' == strtolower($_SERVER['HTTPS']) )
+                $is_ssl = true;
+            if ( '1' == $_SERVER['HTTPS']  )
+                $is_ssl = true;
+        } elseif ( isset($_SERVER['SERVER_PORT']) && ( '443' == $_SERVER['SERVER_PORT'] ) ) {
+            $is_ssl = true;
+        }
+
+        $this->IS_SSL = $is_ssl;
+
+        if(!isset($this->PROTOCOL) ) {
+            $this->PROTOCOL =  $is_ssl? 'https://' : 'http://';
+        }
+
 	}
 }
  
