@@ -89,8 +89,8 @@ abstract class Model implements \ArrayAccess, \Iterator{
 	/** 
 		Create a iterator for registers 
 	*/
-	public function newCollection($registers,  $defaults = [], $collection_class='\team\db\Collection') {
-	        return new $collection_class($registers ,get_class($this), $defaults );
+	public function newCollection($registers,  $defaults = [], $activerecord_class= null) {
+	        return new \team\db\Collection($registers ,$activerecord_class?? get_class($this), $defaults );
 	}
 
 
