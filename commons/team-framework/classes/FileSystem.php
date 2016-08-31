@@ -195,4 +195,70 @@ final  class Filesystem
 	}
 
 
+    /**
+     * Test if a give filesystem path is absolute.
+     *
+     * For example, '/foo/bar', or 'c:\windows'.
+     *
+     * @param string $path File path.
+     * @return bool True if path is absolute, false is not absolute.
+     */
+    public static function isAbsolutePath( $path ) {
+        /*
+         * This is definitive if true but fails if $path does not exist or contains
+         * a symbolic link.
+         */
+        if ( realpath($path) == $path )
+            return true;
+
+        if ( strlen($path) == 0 || $path[0] == '.' )
+            return false;
+
+        // Windows allows absolute paths like this.
+        if ( preg_match('#^[a-zA-Z]:\\\\#', $path) )
+            return true;
+
+        // A path starting with / or \ is absolute; anything else is relative.
+        return ( $path[0] == '/' || $path[0] == '\\' );
+    }
+
+
+    /**
+     * Join two filesystem paths together.
+     *
+     * For example, 'give me $path relative to $base'. If the $path is absolute,
+     * then it the full path is returned.
+     *
+     * @param string $base Base path.
+     * @param string $path Path relative to $base.
+     * @return string The path with the base or absolute path.
+     */
+    function joinPath( $base, $path ) {
+        if ( self::isAbsolutePath($path) )
+            return $path;
+
+        return rtrim($base, '/') . '/' . ltrim($path, '/');
+    }
+
+    /**
+     * Normalize a filesystem path.
+     *
+     * On windows systems, replaces backslashes with forward slashes
+     * and forces upper-case drive letters.
+     * Allows for two leading slashes for Windows network shares, but
+     * ensures that all other duplicate slashes are reduced to a single.
+     *
+     * @param string $path Path to normalize.
+     * @return string Normalized path.
+     */
+    function normalizePath( $path ) {
+        $path = str_replace( '\\', '/', $path );
+        $path = preg_replace( '|(?<=.)/+|', '/', $path );
+        if ( ':' === substr( $path, 1, 1 ) ) {
+            $path = ucfirst( $path );
+        }
+        return $path;
+    }
+
+
 }
