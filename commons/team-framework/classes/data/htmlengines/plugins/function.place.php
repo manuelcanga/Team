@@ -42,13 +42,43 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 function smarty_function_place($params, &$engine)
 {
 
+
     $content = '';
     if(isset($params['name']) && is_string($params['name'])  && !empty($params['name'] )  ) {
 
         $pipeline = ('\\' == $params['name'][0])?	$params['name'] : '\team\places\\'.$params["name"];
 
-        return \team\Filter::apply($pipeline, $content, $params, $engine);
+		$cache_id = null; 
+		if(isset($params['_cache']) ) {
+			$cache = $params['_cache'];
+			if(is_bool($cache) || 'true' == $cache ) {
+				$cache_id = \team\Sanitize::identifier($pipeline);
+			}else {
+				$cache_id = \team\Sanitize::identifier($cache);
+			}
 
+			$cache_id = trim($cache_id, '_');
+			$cache = \team\Cache::get($cache_id);
+
+			if(!empty($cache)) {
+				return $cache;
+			}
+
+		}
+
+        $content =  \team\Filter::apply($pipeline, $content, $params, $engine);
+
+
+		if(isset($cache_id) ) {
+			if(isset($params['_cachetime']) ) {
+				$cache_time =  strtotime($params['_cachetime']);
+			}else {
+				$cache_time =   \team\Date::A_DAY;
+			}
+
+
+			\team\Cache::overwrite($cache_id, $content, $cache_time );
+		}
 	}
 
     return $content;
