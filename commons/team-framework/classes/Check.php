@@ -148,7 +148,20 @@ abstract class Check
 			return $default;
 	}
 
+    /**
+    Validamos si answer es una respuesta positiva o no
+    @param mixed answer es la cadena  que se quiere comprobar si es positiva
+    @return boolean devuelve un boolean indicando si $_answer es un respuesta positiva(true) o no(false)
+     */
+    static public function choice($_answer) {
+        $answer = strtolower($_answer);
 
+        if( '1' === $answer || 1 === $answer || 'on' == $answer || 'y' == $_answer ) {
+            return true;
+        }
+
+        return false;
+    }
 
 
 	/**
