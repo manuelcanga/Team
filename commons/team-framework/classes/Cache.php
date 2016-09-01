@@ -50,6 +50,14 @@ class Cache {
 		  }
     }
 
+    /**
+     * Va verificando uno por uno todos los ids pasados y devuelve el primero de ellos
+     * que sea valido como identificador de caché.
+     *
+     * @param  $ids una lista de identificadores de cachés
+     * @return mixed|null|string
+     *
+     */
     static function checkIds(...$ids) {
       if(empty($ids)) return null;
 
@@ -66,12 +74,13 @@ class Cache {
     }
 
     /**
-     * Comprueba que time sea una duración de tiempo valida. L
+     * Comprueba que time sea una duración de tiempo valida.
      * @param $time Es la duración de tiempo del cache. Esta duración puede ser::
      * - 0: el cache estará habilitado de forma indefinida
      * - [int]: número de segundos que durará.
      * - [string]: cadena con tiempo en forma humana: 3 hours, 1 week, 10 minutes, ...
      * - null: se toma por filtro el valor por defecto de tiempo
+     * @param $cacheid: Es el identificador de caché sobre el que se aplicará la duración de tiempo( $time )
      * @return array|int|string
      */
     static function checkTime($time, $cacheid) {
