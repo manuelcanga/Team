@@ -42,10 +42,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 function smarty_block_cache($params, $content, Smarty_Internal_Template $template, &$repeat)
 {
 
-	$cache_id = null; 
-	if(isset($params['id']) ) {
-		$cache = $params['id'];
-		$cache_id =  trim(\team\Sanitize::identifier($cache), '_');
+	$cache_id = null;
+    if(isset($params['id']) ) {
+        $cache_id = \team\Cache::checkIds($params['id']);
+
 		if(!$cache_id) return $content;
 	}else {
 		return $content;
@@ -63,12 +63,7 @@ function smarty_block_cache($params, $content, Smarty_Internal_Template $templat
 	}
 
 
-	if(isset($params['time']) ) {
-		$cache_time =  strtotime($params['time']);
-	}else {
-		$cache_time =   \team\Date::A_DAY;
-	}
-
+    $cache_time = $params['time']?? null;
 
 	\team\Cache::overwrite($cache_id, $content, $cache_time );
 

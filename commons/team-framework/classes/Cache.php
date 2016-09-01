@@ -50,31 +50,71 @@ class Cache {
 		  }
     }
 
+    static function checkIds(...$ids) {
+      if(empty($ids)) return null;
+
+      foreach($ids as $cacheid) {
+          if(!is_string($cacheid)) continue;
+
+          $new_id = \team\Sanitize::identifier($cacheid);
+          $new_id = trim($new_id);
+
+          if(!empty($new_id)) return $new_id;
+      }
+
+        return null;
+    }
+
+    /**
+     * Comprueba que time sea una duración de tiempo valida. L
+     * @param $time Es la duración de tiempo del cache. Esta duración puede ser::
+     * - 0: el cache estará habilitado de forma indefinida
+     * - [int]: número de segundos que durará.
+     * - [string]: cadena con tiempo en forma humana: 3 hours, 1 week, 10 minutes, ...
+     * - null: se toma por filtro el valor por defecto de tiempo
+     * @return array|int|string
+     */
+    static function checkTime($time, $cacheid) {
+        if(is_numeric($time)) {
+            return $time;
+        }
+
+        $human_time = '+'.ltrim($time, '+'); //2 hours, 1 week, ...
+
+        $time =  strtotime($human_time);
+
+        if(is_null($time)){
+            return \team\Filter::apply('\team\cache\default_time', \team\Date::AN_HOUR, $cacheid);
+        }
+
+        return $time;
+    }
+
 
 	//Borramos un elemento de la caché
-	static function delete($key) {
-		return self::$current->delete($key);
+	static function delete($cacheid) {
+		return self::$current->delete($cacheid);
 	}
 
 	static function clear() {
 		return self::$current->clear();
 	}
 
-	static  function save($key, $value, $time = 0) {
-		return self::$current->save($key, $value, $time);
+	static  function save($cacheid, $value, $time = 0) {
+		return self::$current->save($cacheid, $value, self::checkTime($time, $cacheid));
 	}
 
-	static  function overwrite($key, $value, $time = 0) {
-		return self::$current->save($key, $value, $time);
+	static  function overwrite($cacheid, $value, $time = 0) {
+		return self::$current->overwrite($cacheid, $value, self::checkTime($time, $cacheid));
 	}
 
 
-	static function exists($key) {
-		return self::$current->exists($key);
+	static function exists($cacheid) {
+		return self::$current->exists($cacheid);
 	}
 
-	static  function get($key) {	
-		return self::$current->get($key);
+	static  function get($cacheid) {
+		return self::$current->get($cacheid);
 	}
 
 	static function debug($msg = null) {

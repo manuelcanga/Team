@@ -115,18 +115,12 @@ class Gui extends Controller {
 		$view =  \team\FileSystem::stripExtension($view);
 		$idView = \team\Sanitize::identifier($view);
         $pipeline = ('\\' == $place[0])? $place : '\team\places\\'.$place;
-		 $options =  $_options;
+		$options =  $_options;
 
 		//Comprobamos si se quiere caché o no
 		$cache_id = null;
-		if(isset($_options['_cache']) ) {
-			$cache = $_options['_cache'];
-			if(is_bool($cache) || 'true' == $cache ) {
-				$cache_id = \team\Sanitize::identifier($idView);
-			}else {
-				$cache_id = \team\Sanitize::identifier($cache);
-			}
-			$cache_id = trim($cache_id, '_');
+		if(isset($_options['cache']) ) {
+            $cache_id =  \team\Cache::checkIds($_options['cache'], $idView);
 		}
 
 
@@ -156,11 +150,7 @@ class Gui extends Controller {
 
 			//Si se ha pedido sistema de caché, lo guardamos
 			if(isset($cache_id) ) {
-				if(isset($options['_cachetime']) ) {
-					$cache_time =  strtotime($options['_cachetime']);
-				}else {
-					$cache_time =   \team\Date::A_DAY;
-				}
+                $cache_time = $options['cachetime']?? null;
 
 
 				\team\Cache::overwrite($cache_id, $content, $cache_time );

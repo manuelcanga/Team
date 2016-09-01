@@ -49,16 +49,10 @@ function smarty_function_place($params, &$engine)
         $pipeline = ('\\' == $params['name'][0])?	$params['name'] : '\team\places\\'.$params["name"];
 
 		$cache_id = null; 
-		if(isset($params['_cache']) ) {
-			$cache = $params['_cache'];
-			if(is_bool($cache) || 'true' == $cache ) {
-				$cache_id = \team\Sanitize::identifier($pipeline);
-			}else {
-				$cache_id = \team\Sanitize::identifier($cache);
-			}
+		if(isset($params['cache']) ) {
+            $cache_id =  \team\Cache::checkIds($params['cache'], $pipeline);
 
-			$cache_id = trim($cache_id, '_');
-			$cache = \team\Cache::get($cache_id);
+            $cache = \team\Cache::get($cache_id);
 
 			if(!empty($cache)) {
 				return $cache;
@@ -70,11 +64,7 @@ function smarty_function_place($params, &$engine)
 
 
 		if(isset($cache_id) ) {
-			if(isset($params['_cachetime']) ) {
-				$cache_time =  strtotime($params['_cachetime']);
-			}else {
-				$cache_time =   \team\Date::A_DAY;
-			}
+            $cache_time = $params['cachetime']?? null;
 
 
 			\team\Cache::overwrite($cache_id, $content, $cache_time );
