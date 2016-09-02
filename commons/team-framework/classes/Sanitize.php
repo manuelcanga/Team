@@ -321,7 +321,7 @@ class Sanitize {
 		Nos aseguramos que un determinado string sólo tenga como máximo un caracter por delante y por detrás
 	*/
 	static function trim($str, $char = '/') {
-		$str = trim($str, $char);
+		$str = trim(trim($str), $char);
 
 		if('' === $str || is_null($str)) return $char;
 
@@ -332,14 +332,14 @@ class Sanitize {
 		Nos aseguramos que un determinado carácter no se repita por la izquierda
 	*/
 	static function ltrim($str, $char = '/') {
-			return $char.ltrim($str, $char);
+			return $char.ltrim(trim($str), $char);
 	}
 
 	/*
 		Nos aseguramos que un determinado carácter no se repita por la derecha
 	*/
 	static function rtrim($str, $char = '/') {
-			return rtrim($str, $char).$char;
+			return rtrim(trim($str), $char).$char;
 	}
 
 
