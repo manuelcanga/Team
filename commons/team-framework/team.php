@@ -152,9 +152,18 @@ try {
 
     /**
 	  Se cargan las varibles de configuración y se lanzan los eventos de comienzo del framework
+      Los $_CONTEXT van cambiando en un mismo request según el componente/response que estemos
+      Los $_STORE sería un almacen de datos que permanece inmutable aunque cambiemos de compoent/response pero sólo dura
+            hasta que se acaba el request.
+      @TODO: $_CACHE sería como los stores pero se mantienen inmutables entre distintos request. Normalmente se
+                guardarán en memoria
+      @TODO: $_OPTIONS sería como los $_CACHE pero sus datos pueden ser modificados por el administrador de la página
+                 normalmente bajo un panel de control o CMS. También para aquellos datos que guardarlos en $_CACHE sería
+     *          demasiado costoso.
     */
 	$_CONTEXT = new \team\Context();
-	global $_CONTEXT;
+    $_STORE = new \team\Data();
+	global $_CONTEXT, $_STORE;
 	$_CONTEXT->initialize();
 
      \team\Debug::trace("Se inicializo el contexto. Ya podemos empezar a inicializar todo el framwork");
