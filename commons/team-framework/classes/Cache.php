@@ -65,7 +65,7 @@ class Cache {
           if(!is_string($cacheid)) continue;
 
           $new_id = \team\Sanitize::identifier($cacheid);
-          $new_id = trim($new_id);
+          $new_id = trim(trim($new_id,'_'));
 
           if(!empty($new_id)) return $new_id;
       }
