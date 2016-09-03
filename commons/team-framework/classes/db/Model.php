@@ -76,7 +76,7 @@ abstract class Model implements \ArrayAccess, \Iterator{
 	/** 
 		Create a iterator for registers 
 	*/
-	public function newCollection($registers,  $defaults = [], $activerecord_class= null) {
+	public function newCollection($registers, $activerecord_class= null,  $defaults = []) {
 	        return new \team\db\Collection($registers ,$activerecord_class?? get_class($this), $defaults );
 	}
 
@@ -101,11 +101,9 @@ abstract class Model implements \ArrayAccess, \Iterator{
 	/**
 		Count all rows in table 
 	*/
-	public function countAll($sentences = [], $data = [], $table = null) {
-		$table = $table ??  static::TABLE;
-
+	public function countAll($sentences = [], $data = []) {
         $query =  $this->newQuery($data, $sentences );
-		return $query->getVar('total', $table, 'count('.static::ID.') as total');
+		return $query->getVar('total', static::TABLE, 'count('.static::ID.') as total');
 	}
 
 
@@ -114,9 +112,8 @@ abstract class Model implements \ArrayAccess, \Iterator{
 		@param array $sentences list of params to query. Excepcionally, you can pass a 'order' params(ASC or DESC)
 		@param array $data   list of data to query
 	*/
-    public function findAll(  $sentences = [], $data = [], $table = null) {
+    public function findAll(  $sentences = [], $data = [],  $activerecord_class= null) {
 		$sentences = $sentences?? [];
-		$table = $table ??  static::TABLE;
 
 		$order = 'DESC';
 		if(isset($sentences['order']) ) {
@@ -130,7 +127,7 @@ abstract class Model implements \ArrayAccess, \Iterator{
 
         $query =  $this->newQuery($data + $this->data, $sentences );
 
-        return $this->newCollection($query->getAll($table) );
+        return $this->newCollection($query->getAll(static::TABLE), $activerecord_class );
     }
 
 
