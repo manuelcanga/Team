@@ -33,7 +33,7 @@ class Collection implements \Iterator, \Countable{
 	function newModel($safeId = 0, $data = []) {
 	 	 $class =  $this->model;
 		 $activeRecord =  new $class($safeId, false);
- 		 $activeRecord->onNewRecord($safeId, $data + $this->defaults);
+ 		 $activeRecord->onNewRecord($safeId, (array)$data + (array)$this->defaults);
 
 		 return $activeRecord;
 	}
