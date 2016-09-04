@@ -25,7 +25,7 @@
         {place name='main_view'}
     {else}
         {wrapper class="content"}
-            <main id="content" class="{$type}">
+            <main class="{$type} {#RESPONSE#}"  id="{#COMPONENT#}">
                 {place name='main_view'}
             </main>
         {/wrapper}
