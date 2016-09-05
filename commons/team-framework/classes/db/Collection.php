@@ -61,7 +61,7 @@ class Collection implements \Iterator, \Countable{
 	function newCollection( $args = array(), $operator = 'AND' ) {
 
 		if(!empty($args)) {
-			$filtered = $this->filterRecords($args, $operator);
+			$filtered = $this->filter($args, $operator);
 		}else {
 			$filtered = $this->records;
 		}
