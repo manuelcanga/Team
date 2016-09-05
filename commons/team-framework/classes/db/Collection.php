@@ -38,6 +38,23 @@ class Collection implements \Iterator, \Countable{
 		 return $activeRecord;
 	}
 
+	/** Retrieve records */
+	public function getRecords() {
+		return $this->records;
+	}
+
+
+	/** 
+		Devolvemos sólo una columna de los records 
+	*/
+	public function getColumn($column, $id_column = null) {
+		if(isset($id_column) ) {
+			return array_column($this->records, $column, $id_column);
+		}else {
+			return array_column($this->records, $column);
+		}
+	}
+
 	/** Check if iterator is empty */
 	function __isset($index = 0) {
 		return !empty($this->records) && isset($this->records[$index]);
