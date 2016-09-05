@@ -29,6 +29,49 @@ class Collection implements \Iterator, \Countable{
 		}
     }
 
+	/**
+	 * Extract a slice of fields of current record, given a list of keys.
+	 *
+	 *
+	 * @param array $keys  The list of keys.
+	 * @return array The array slice.
+	 */
+	function fields($keys ) {
+		$array =  $this->records[$this->index];
+
+		$slice = [];
+		foreach ( $keys as $key )
+			if ( isset( $array[ $key ] ) )
+				$slice[ $key ] = $array[ $key ];
+
+		return $slice;
+	}
+
+	/**
+	 * Return a Collection with a filtereed list of records, based on a set of key => value arguments.
+	 *
+	 * @param array  $args     Optional. An array of key => value arguments to match
+	 *                         against each object. Default empty array.
+	 * @param string $operator Optional. The logical operation to perform. 'AND' means
+	 *                         all elements from the array must match. 'OR' means only
+	 *                         one element needs to match. 'NOT' means no elements may
+	 *                         match. Default 'AND'.
+	 * @return Collection Collection of found values.
+	 */
+	function newCollection( $args = array(), $operator = 'AND' ) {
+
+		if(!empty($args)) {
+			$filtered = $this->filterRecords($args, $operator);
+		}else {
+			$filtered = $this->records;
+		}
+
+
+		return new $this($filtered, $this->model, $this->defaults);
+	}
+
+	/***** Rerieve Model ******/
+
 	/** Create a new Record */
 	function newModel($safeId = 0, $data = []) {
 	 	 $class =  $this->model;
@@ -37,6 +80,12 @@ class Collection implements \Iterator, \Countable{
 
 		 return $activeRecord;
 	}
+
+
+
+
+	/***** Filteres of records ******/
+
 
 	/** Retrieve records */
 	public function getRecords() {
@@ -99,29 +148,9 @@ class Collection implements \Iterator, \Countable{
 		return $filtered;
 	}
 
-	/**
-	 * Filters the list of records, based on a set of key => value arguments.
-	 *
-	 * @param array  $args     Optional. An array of key => value arguments to match
-	 *                         against each object. Default empty array.
-	 * @param string $operator Optional. The logical operation to perform. 'AND' means
-	 *                         all elements from the array must match. 'OR' means only
-	 *                         one element needs to match. 'NOT' means no elements may
-	 *                         match. Default 'AND'.
-	 * @return Collection Collection of found values.
-	 */
-	function newCollection( $args = array(), $operator = 'AND' ) {
-
-		if(!empty($args)) {
-			$filtered = $this->filterRecords($args, $operator);
-		}else {
-			$filtered = $this->records;
-		}
 
 
-		return new $this($filtered, $this->model, $this->defaults);
-	}
-
+	/***** Checkings******/
 
 	/** Check if iterator is empty */
 	function __isset($index = 0) {
@@ -137,6 +166,8 @@ class Collection implements \Iterator, \Countable{
 	function isEmpty() {
 		return !$this->__isset();
 	}
+
+	/***** Positional extraction of records ******/
 
 	/* extract first record */
 	function shift() {

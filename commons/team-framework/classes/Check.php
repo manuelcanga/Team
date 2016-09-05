@@ -258,5 +258,21 @@ abstract class Check
        return  (false !== filter_var($ip, FILTER_VALIDATE_IP) )? $ip : false;
     }
 
+	/**
+	 * Determines if the variable is a numeric-indexed array.
+	 *
+	 *
+	 * @param mixed $array Variable to check.
+	 * @return bool Whether the variable is a list.
+	 */
+	function numericArray( $array, $default = null ) {
+		if ( ! is_array( $array ) ) {
+			return false;
+		}
+
+		$keys = array_keys( $array );
+		$string_keys = array_filter( $keys, 'is_string' );
+		( count( $string_keys ) === 0 )?: $default;
+	}
 
 }

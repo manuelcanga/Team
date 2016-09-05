@@ -93,6 +93,22 @@ class Sanitize {
       return preg_replace("/[^0-9\-\.\+]/", "", $float);
     }
 
+
+    /**
+       Sanitize a boolean variable
+    */
+	static public function choice( $var) {
+		if ( is_bool( $var ) ) {
+			return $var;
+		}
+
+		if ( is_string( $var ) && 'false' === strtolower( $var ) ) {
+			return false;
+		}
+	
+		return (bool) $var;
+	}
+
 	/** 
 		Se asegura de devolver un valor no numérico(textual)
 		@param String $str especifica la cadena a limpiar
