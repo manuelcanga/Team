@@ -90,7 +90,7 @@ class Cache {
 
         $human_time = '+'.ltrim($time, '+'); //2 hours, 1 week, ...
 
-        $time =  strtotime($human_time);
+        $time =  strtotime($human_time) - time();
 
         if(is_null($time)){
             return \team\Filter::apply('\team\cache\default_time', \team\Date::AN_HOUR, $cacheid);

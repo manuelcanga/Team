@@ -267,7 +267,7 @@ abstract class Check
 	 */
 	function numericArray( $array, $default = null ) {
 		if ( ! is_array( $array ) ) {
-			return false;
+			return $default;
 		}
 
 		$keys = array_keys( $array );
