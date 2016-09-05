@@ -47,13 +47,81 @@ class Collection implements \Iterator, \Countable{
 	/** 
 		Devolvemos sólo una columna de los records 
 	*/
-	public function getColumn($column, $id_column = null) {
-		if(isset($id_column) ) {
-			return array_column($this->records, $column, $id_column);
+	public function getColumn($column, $key_column = null) {
+		if(isset($key_column) ) {
+			return array_column($this->records, $column, $key_column);
 		}else {
 			return array_column($this->records, $column);
 		}
 	}
+
+	/**
+	 * Filters the list of records, based on a set of key => value arguments.
+	 *
+	 * @param array  $args     Optional. An array of key => value arguments to match
+	 *                         against each object. Default empty array.
+	 * @param string $operator Optional. The logical operation to perform. 'AND' means
+	 *                         all elements from the array must match. 'OR' means only
+	 *                         one element needs to match. 'NOT' means no elements may
+	 *                         match. Default 'AND'.
+	 * @return Array Array of found values.
+	 */
+	 function filter( $args = array(), $operator = 'AND', $field = null  ) {
+		$list = $this->records;
+
+		if ( empty( $args ) )
+			return $list;
+
+		$operator = strtoupper( $operator );
+		$count = count( $args );
+		$filtered = array();
+
+		foreach ( $list as $key => $obj ) {
+			$to_match = (array) $obj;
+
+			$matched = 0;
+			foreach ( $args as $m_key => $m_value ) {
+				if ( array_key_exists( $m_key, $to_match ) && $m_value == $to_match[ $m_key ] )
+					$matched++;
+			}
+
+			if ( ( 'AND' == $operator && $matched == $count )
+			  || ( 'OR' == $operator && $matched > 0 )
+			  || ( 'NOT' == $operator && 0 == $matched ) ) {
+				$filtered[$key] = $obj;
+			}
+		}
+		
+		if(isset($field)) {
+			$filtered = array_column($filtered, $field);
+		}
+
+		return $filtered;
+	}
+
+	/**
+	 * Filters the list of records, based on a set of key => value arguments.
+	 *
+	 * @param array  $args     Optional. An array of key => value arguments to match
+	 *                         against each object. Default empty array.
+	 * @param string $operator Optional. The logical operation to perform. 'AND' means
+	 *                         all elements from the array must match. 'OR' means only
+	 *                         one element needs to match. 'NOT' means no elements may
+	 *                         match. Default 'AND'.
+	 * @return Collection Collection of found values.
+	 */
+	function newCollection( $args = array(), $operator = 'AND' ) {
+
+		if(!empty($args)) {
+			$filtered = $this->filterRecords($args, $operator);
+		}else {
+			$filtered = $this->records;
+		}
+
+
+		return new $this($filtered, $this->model, $this->defaults);
+	}
+
 
 	/** Check if iterator is empty */
 	function __isset($index = 0) {
