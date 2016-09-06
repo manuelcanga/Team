@@ -43,6 +43,69 @@ del controlador( Gui, Actions, Commands ) asociado.
 class Component   implements \ArrayAccess{
     use \team\data\Box;
 
+    static function call($widget_name, $params, $cache = null) {
+
+        //A partir del nombre tenemos que obtener el paquete y el componente al que pertenece el widget
+        $namespace =  \team\NS::explode($widget_name);
+
+        if(array_key_exists('name',$namespace ) ) {
+            if(isset($namespace['name'])) {
+                $namespace['response'] = $namespace['name'];
+            }
+
+            unset($namespace['name']);
+        }
+
+        $params =  $namespace + $params;
+
+
+        //No se ha pasado un componente correcto
+        if(!\team\FileSystem::exists("/".$params['package'].'/'.$params['component']) ) {
+            \Team::warning('Change " to \' in your widget name, please');
+            return '';
+        }
+
+        $cache_id = null;
+        if(isset($cache) ) {
+            $cache_id =  \team\Cache::checkIds($cache, $widget_name);
+
+            $cache = \team\Cache::get($cache_id);
+
+            if(!empty($cache)) {
+                return $cache;
+            }
+
+        }
+
+
+        //No es una llamada main
+        $params['is_main'] = false;
+        $params['widget'] = true;
+
+        if(!isset($params['out'])) {
+            $params['out'] = 'html';
+        }
+
+        $class_name = '\\'.$params['package'].'\\'.$params['component'];
+
+        if(!class_exists($class_name) ) {
+            \Team::warning("widget class $class_name not found");
+
+            return '';
+        }
+
+
+        $controller = new $class_name($params);
+        $widget_content = trim($controller->retrieveResponse());
+
+        if(isset($cache_id) ) {
+            $cache_time = $params['cachetime']?? null;
+
+            \team\Cache::overwrite($cache_id, $widget_content, $cache_time );
+        }
+
+        return $widget_content;
+    }
 
 	/**
 		Desde el contructor nos toca averiguar si se ha instanciado directamente Component

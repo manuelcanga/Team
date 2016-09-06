@@ -64,6 +64,20 @@ final  class Filesystem
 		}
 	}
 
+    /*
+    Comprueba si existe un archivo dentro de la ruta del servior y si es así,
+    lo carga sólo una vez
+    @param String $file archivo del que se quiere comprobar su existencia y si existe, cargar )
+*/
+    public static function ping($file, $base = _SITE_) {
+        //\team\Debug::out("LOADING...".$file);
+        if(self::exists($file, $base) ) {
+             include_once($base.$file);
+            return true;
+        }
+        return false;
+    }
+
 	/*
 		Comprueba si existe un archivo script dentro de la ruta del servior y si es así,
 		lo incluye pasándole todos los argumentos

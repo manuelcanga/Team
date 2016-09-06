@@ -47,6 +47,7 @@ function smarty_function_place($params, &$engine)
     if(isset($params['name']) && is_string($params['name'])  && !empty($params['name'] )  ) {
 
         $pipeline = ('\\' == $params['name'][0])?	$params['name'] : '\team\places\\'.$params["name"];
+        unset($params['name']);
 
 		$cache_id = null; 
 		if(isset($params['cache']) ) {

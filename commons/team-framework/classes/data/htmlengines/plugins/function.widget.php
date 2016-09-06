@@ -47,77 +47,20 @@ function smarty_function_widget($params = [], &$smarty)
 		return '';
 	}
 
+    $params['embedded'] = true;
+    $params['engine'] = $smarty;
+    $params['cache'] = $params['cache']?? null;
 
-	$widget_name = $params['name'];
-    //A partir del nombre tenemos que obtener el paquete y el componente al que pertenece el widget
-	$namespace =  \team\NS::explode($params['name']);
-
-
-	if(isset($namespace['name']) ) {
-		$namespace['response'] = $namespace['name'];
-		unset($namespace['name']);
-	}
-	$params =  $namespace + $params;
-
-
-	//No se ha pasado un componente correcto
-	if(!\team\FileSystem::exists("/".$params['package'].'/'.$params['component']) ) { 
-		\team\Debug::me('Change " to \' in your widget name, please');
-		return ;
-	}
-
-
-	$cache_id = null; 
-	if(isset($params['cache']) ) {
-        $cache_id =  \team\Cache::checkIds($params['cache'], $widget_name);
-
-		$cache = \team\Cache::get($cache_id);
-
-		if(!empty($cache)) {
-			return $cache;
-		}
-
-	}
-
-
-	//Es una llamada incrustada en la vista
-	$params['embedded'] = true;
-	//Para más información le indicamos que lo hacemos desde la vista.
-	$params['widget'] = true;
-	//No es una llamada main
-	$params['is_main'] = false;
-	
-	if(!isset($params['out'])) {
-		$params['out'] = 'html';
-	}
-
-	$class_name = '\\'.$params['package'].'\\'.$params['component'];
-
-
-
-	if(!class_exists($class_name) ) {
-		return '';
-	}
-
-	$controller = new $class_name($params);
-	//team\Debug::out($params);
-
-	$result = trim($controller->retrieveResponse());
-
-	if(isset($cache_id) ) {
-        $cache_time = $params['cachetime']?? null;
-
-		\team\Cache::overwrite($cache_id, $result, $cache_time );
-	}
+    $widget_content =  \team\Component::call($params['name'], $params,  $params['cache']);
 
 
 	//Si se paso un parametro assign, se le asigna el resultado ahi
 	if(isset($params['assign']) && !empty($params['assign']) ) {
 		$var = $params['assign'];
-		$smarty->assign($var, $result);
+		$smarty->assign($var, $widget_content);
 		return '';
 	}else {
-		return $result;
+		return $widget_content;
 	}
 
 }

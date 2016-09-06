@@ -130,7 +130,7 @@ class Gui extends Controller {
 			if(isset($cache_id) ) {
 				$cache = \team\Cache::get($cache_id);
 				if(!empty($cache)) {
-					return $cache;
+					return $content.$cache;
 				}
 			}
 
@@ -139,13 +139,13 @@ class Gui extends Controller {
             if($isolate) { //aislado, sólo se quiere las variables que se le pasen		
                 $engine->assign($params);
                 $engine->assign($options);
-                $content .= $engine->fetch($view.'.tpl');
+                $view_content = $engine->fetch($view.'.tpl');
             }else {
                 $father = $engine;
                 $template = $engine->createTemplate($view.'.tpl', $idView, $idView, $father);
                 $template->assign($params);
                 $template->assign($options);
-                $content .= $template->fetch();
+                $view_content = $template->fetch();
             }
 
 			//Si se ha pedido sistema de caché, lo guardamos
@@ -153,12 +153,50 @@ class Gui extends Controller {
                 $cache_time = $options['cachetime']?? null;
 
 
-				\team\Cache::overwrite($cache_id, $content, $cache_time );
+				\team\Cache::overwrite($cache_id,  $view_content, $cache_time );
 			}
 
-            return $content;
+            return $content. $view_content;
         }, $order, $idView);
 
+    }
+
+    function addWidgetToPlace($widget_name, $place, $_options = [], $order = 65) {
+        $idwidget = \team\Sanitize::identifier($widget_name);
+
+        //Puede haber ocasiones que un widget requiera de colocar información en otras partes del html
+        //es por ello, que le damos la oportunidad de que carguen la información que necesiten ya
+        //para ello, cargaremos el script /events/placed.php
+        //y llamaremos al evento \team\widget\{id_widget}
+        $namespace =  \team\NS::explode($widget_name);
+
+        \team\FileSystem::ping("/{$namespace['package']}/{$namespace['component']}/events/placed.php");
+        \Team::event('\team\placed\\'.$idwidget, $place, $_options, $order, $this);
+
+
+        $pipeline = ('\\' == $place[0])? $place : '\team\places\\'.$place;
+
+
+        //Comprobamos si se quiere caché o no
+        $cache_id = null;
+        if(isset($_options['cache']) ) {
+            $cache_id =  \team\Cache::checkIds($_options['cache'], $idwidget);
+            unset($_options['cache']);
+        }
+
+        $options = $_options;
+        \team\Filter::add($pipeline,function($content, $params, $engine) use ($widget_name, $options,  $cache_id) {
+
+            $params = $params + $options;
+            $params['engine'] = $engine;
+            $params['placed'] = true;
+
+            $widget_content =  \team\Component::call($widget_name, $params,  $cache_id);
+
+            return $content.$widget_content;
+        }, $order, $idwidget);
+
+        return true;
     }
 
     function noLayout() {

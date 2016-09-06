@@ -263,7 +263,7 @@ class Sanitize {
 		@param string $identifier nombre a limpiar
 		@return la cadena identifier limpiada
 	*/
-	static function identifier($_identifier) { return self::key($_identifier, '_','_'); }
+	static function identifier($_identifier) { return trim(self::key($_identifier, '_','_'), '_'); }
 
 	
 	/**
