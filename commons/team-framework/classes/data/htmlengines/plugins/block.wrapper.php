@@ -41,11 +41,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 function smarty_block_wrapper($params, $content, Smarty_Internal_Template $template, &$repeat)
 {
 	$wrapper = 'wrapper';
-	if(isset($params['class']) ) {
-		$params['class'] = $wrapper.' '.$params['class'];
-	}else {
-		$params['class'] = $wrapper;
-	}
+	$params['class'] = $params['class']?? '';
+	$params['class'] = $wrapper.' '.$params['class'];
 
 	$out = '';
 
