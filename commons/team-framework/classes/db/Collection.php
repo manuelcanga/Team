@@ -57,7 +57,9 @@ class Collection implements \Iterator, \Countable{
 			return null;
 		}
 
-		$this->records = $sort_function($this->records);
+		$records = $this->records;
+		$_sorted_records = $sort_function($records);
+		$this->records  = is_array($_sorted_records)? $_sorted_records: $records;
 	}
 
 
@@ -94,7 +96,10 @@ class Collection implements \Iterator, \Countable{
 			return null;
 		}
 
-		$sorted_records = $sort_function($this->records);
+		$records = $this->records;
+		$_sorted_records = $sort_function($records);
+		$sorted_records = is_array($_sorted_records)? $_sorted_records: $records;
+
 		return new $this($sorted_records, $this->model, $this->defaults);
 	}
 
