@@ -48,6 +48,20 @@ class Collection implements \Iterator, \Countable{
 	}
 
 	/**
+	 * Sorting records according to a external sort function
+	 *
+	 * @param callable $sort_function function to use in order to sort records
+	 */
+	function sort($sort_function = null) {
+		if(!isset($sort_function) || !is_callable($sort_function) ) {
+			return null;
+		}
+
+		$this->records = $sort_function($this->records);
+	}
+
+
+	/**
 	 * Return a Collection with a filtereed list of records, based on a set of key => value arguments.
 	 *
 	 * @param array  $args     Optional. An array of key => value arguments to match
@@ -69,6 +83,23 @@ class Collection implements \Iterator, \Countable{
 
 		return new $this($filtered, $this->model, $this->defaults);
 	}
+
+	/**
+	 * Return a sorted Collection according to a external sort function
+	 * @param callable $sort_function function to use in order to sort records
+	 * @return new collection with sorted records according to $sort_function
+	 */
+	function sortedCollection($sort_function = null) {
+		if(!isset($sort_function) || !is_callable($sort_function) ) {
+			return null;
+		}
+
+		$sorted_records = $sort_function($this->records);
+		return new $this($sorted_records, $this->model, $this->defaults);
+	}
+
+
+
 
 	/***** Rerieve Model ******/
 
@@ -147,7 +178,6 @@ class Collection implements \Iterator, \Countable{
 
 		return $filtered;
 	}
-
 
 
 	/***** Checkings******/
