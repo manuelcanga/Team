@@ -60,6 +60,22 @@ class Date {
     /** Years in seconds  */
     public function years($years = 1) { return $years*self::A_YEAR; }
 
+	/** 
+		Changing time using human words(  e.g: 3 weeks, 1 month, and son on ) to seconds 
+		@param string|numeric $time_expression_human time in human language
+		@return int  seconds according to $time_expression_human
+	*/
+	static function strToTime($time_expresion_human) {
+        if(is_numeric($time_expresion_human)) {
+            return $time_expresion_human;
+        }
+
+		$time_expresion_human = '+'.ltrim($time_expresion_human, '+'); //2 hours, 1 week, ...
+        $time =  strtotime($time_expresion_human) - time();
+
+		return $time;
+	}
+
 
 	/**
 	* Retrieve the current time based on specified format.

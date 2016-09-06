@@ -84,13 +84,7 @@ class Cache {
      * @return array|int|string
      */
     static function checkTime($time, $cacheid) {
-        if(is_numeric($time)) {
-            return $time;
-        }
-
-        $human_time = '+'.ltrim($time, '+'); //2 hours, 1 week, ...
-
-        $time =  strtotime($human_time) - time();
+		$time = \team\Date::strToTime($time);
 
         if(is_null($time)){
             return \team\Filter::apply('\team\cache\default_time', \team\Date::AN_HOUR, $cacheid);
