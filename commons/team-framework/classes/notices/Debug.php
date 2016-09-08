@@ -167,12 +167,12 @@ final  class Debug
 	*/
 	private static function normalizeScalar($var, $out = 'html') {
 			 if(is_string($var) ){
-				if('html' == $out) 
+				if('html' == $out)
 					return htmlentities($var);
 				else
 					return $var;
 			}else {
-				return var_export((array)$var, true);
+				return var_export($var, true);
 			}
 
 	}
