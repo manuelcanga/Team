@@ -91,21 +91,22 @@ class Context implements \ArrayAccess  {
 		@return devolvemos el nuevo contexto.
 	*/
 	public static function open($namespace = "" ) {
-		self::$current['options'] = [];
+        //Subimos un nivel de la pila
+        self::$index++;
+
+        //Comenzamos un nuevo contexto tomando como base el contexto de root
+        self::$contexts[self::$index] = self::$contexts[0];
+
+        //Creamos un acceso rápido más manejable
+        self::$current  = & self::$contexts[self::$index];
+
+        self::$current['options'] = [];
 		self::$current['before'] = [];
 
-		if(self::$index>1) {
-			self::$current['before'] =& self::$contexts[self::$index];
-		}
 
-		//Subimos un nivel de la pila
-		self::$index++;
-
-		//Comenzamos un nuevo contexto tomando como base el contexto de root
-		self::$contexts[self::$index] = self::$contexts[0];
-
-		//Creamos un acceso rápido más manejable
-		self::$current  = & self::$contexts[self::$index];
+        if(self::$index>1) {
+            self::$current['before'] =& self::$contexts[self::$index - 1];
+        }
 
 		self::$current['last'] = [];
 
@@ -123,21 +124,22 @@ class Context implements \ArrayAccess  {
 	public static function close() {
 		//Obtenemos el namespace del contexto que se va a cerrar
 		$namespace = self::getNamespace();
-		//Eliminamos el last del contexto actual
+
+        \team\Debug::trace("Context[".self::$index."][{$namespace}]Ending context");
+
+        //Eliminamos el last del contexto actual
 		unset(self::$current['last']);
 
 		//Hacemos una copia del contexto actual
 		$last =   self::$current;
 
 		//Si aún tenemos niveles por debajo, asignamos a current el nivel nuevo ( e inferior )
-		if(self::$index > 1 ) {
+		if(self::$index >= 1 ) {
 			//Bajamos la pila
 			self::$index--;
-
 			self::$current = & self::$contexts[self::$index];
-		}
 
-
+        }
 
 		//Guardamos el contexto de la última acción anidada
 		self::$current['last'] = $last;
