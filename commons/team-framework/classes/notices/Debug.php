@@ -75,25 +75,25 @@ final  class Debug
 		Las trazas de depuración sirve para hacer un seguimiento del flujo del programa. 
 	*/
 	public static  function me($var = 'Hello, World', $label = false, $file = null, $line = null, $level=null) {
-		if(!isset($level) && is_numeric($label)) {
+
+        if(!isset($level) && is_numeric($label)) {
 			$level = (int) $label;
 			$label = null;
 		}
 
 		self::getFileLine($file, $line, $level);
-		
 
 
 		if(!\team\Context::get('SHOW_ERRORS') && \team\Context::exists('SHOW_ERRORS') ) return ;
 
-
 		if(\team\Context::get('CLI_MODE') ) {
 			self::output($var, $label, $file, $line);
-		}else if(!\team\Context::get('SHOW_IN_NAVIGATOR') || ( \team\Context::main("out") != 'html' && \team\Context::main("out") ) ) {
+		}else if(false === \team\Context::get('SHOW_IN_NAVIGATOR') || ( \team\Context::main("out") != 'html' && \team\Context::main("out") ) ) {
 			self::log($var, $label, $file, $line);
 		}else {
-			self::out($var, $label, $file, $line);
-		}
+            self::log($var, $label, $file, $line);
+            self::out($var, $label, $file, $line);
+        }
 	}
 
 
@@ -126,8 +126,9 @@ final  class Debug
 	/**
 		Helper
 		Transform objects from array in string
+        @param int recursive max depth to show in debugs( avoid circular references )
 	*/
-	private static function normalizeCompound($vars) {
+	private static function normalizeCompound($vars, $recursive = 4) {
 		$vars = (array)$vars;
 
 		$new_vars = [];
@@ -135,7 +136,7 @@ final  class Debug
 			$key = str_replace('*', '', $key);
 
 			if(is_object($value) )  {
-				if (!($value instanceof \team\Data ))
+				if (!($value instanceof \team\Data ) )
 					$value = "Object of ".get_class($value)." ";
 				else {
 					$key = "{$key} [ ".get_class($value)." ] ";
@@ -144,7 +145,11 @@ final  class Debug
 			}
 
 			if(is_array($value) ) {
-				$value = self::normalizeCompound($value);
+                if($recursive > 1)
+			    	$value = self::normalizeCompound($value, $recursive--);
+                else {
+                    $value = "Array";
+                }
 			}else {
 				$value = self::normalizeScalar($value);
 			}
@@ -167,7 +172,7 @@ final  class Debug
 				else
 					return $var;
 			}else {
-				return var_export($var, true); 
+				return var_export((array)$var, true);
 			}
 
 	}
@@ -178,7 +183,7 @@ final  class Debug
 	*/
 	private static function formatDisplay( $var, $label, $file, $line) {
 	
-        if(class_exists('\team\Classes', false) && 'data' == strtolower(\team\Context::get('SHOW_IN_NAVIGATOR') ) ) {
+        if(class_exists('\team\Classes', false) && 'data' == strtolower(\team\Context::get('SHOW_IN_NAVIGATOR') )  ) {
             return self::withData( $var, $label, $file, $line);
         }else { 
             return self::withString( $var, $label, $file, $line);
@@ -212,11 +217,11 @@ final  class Debug
 			}
 		
 			$data->vars = self::normalizeCompound($var);
-                }else {
-			$data->view = 'team:framework/debug/scalar';
-			$data->view = \team\Filter::apply('\team\debug\scalar_template', 'team:framework/debug/scalar');
+        }else {
+                $data->view = 'team:framework/debug/scalar';
+                $data->view = \team\Filter::apply('\team\debug\scalar_template', 'team:framework/debug/scalar');
 
-			$data->msg = self::normalizeScalar($var);
+                $data->msg = self::normalizeScalar($var);
 		}
 
 
@@ -356,6 +361,7 @@ de $jumps saltos hacia atrás  */
 			self::me($data, $label, $backtrace[1]["file"],   $backtrace[1]["line"]);
 		}
 	}
+
 
 
 	/**

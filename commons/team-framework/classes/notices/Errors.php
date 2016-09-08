@@ -86,7 +86,9 @@ class Errors {
 			return $this->showViewError($_errno, $_errstr, $_errfile, $_errline, $_context, $_errorcode);
 		//Comprobamos si es uno de los errores que bloquean la continuación de la ejecución
 		}else if(!$this->php_errors[$_errno]  ) {
-			$is_critical = true;
+
+
+            $is_critical = true;
 
 			//Nuestro último intento de salvar el sistema, probamos a visualizar un mensaje de error
 			if(empty($_context) && class_exists('\Context') && \team\Context::getIndex()  > 1) {
@@ -105,8 +107,8 @@ class Errors {
 			$is_critical = false;
 		}
 
-		
-		\team\Debug::me($_context, "[{$namespace}][".$_errorcode."]: {$_errstr} ", $_errfile, $_errline);
+
+        \team\Debug::me($_context, "[{$namespace}][".$_errorcode."]: {$_errstr} ", $_errfile, $_errline);
 		
 
 		if($is_critical)
@@ -131,11 +133,9 @@ class Errors {
 		$data->namespace = \team\Context::get('NAMESPACE');
 		$critical = true;
 
-
-		if(isset($error['type']) && $error['type'] >= 0) {	
-
+		if(isset($error['type']) && $error['type'] >= 0) {
 			$_errno = $error['type'];
-		
+
 			//Hemos podido llegar aquí por culpa de algun error en zona no-framework de algún usuario
 			//y este error podría no ser crítico
 			if(isset(self::$php_errors_code[$_errno]) ) {
@@ -145,19 +145,18 @@ class Errors {
 				$data->code =   $error['type'];
 			}
 
-			
-
-			$data->msg = $error['message'];
+            $data->msg = $error['message'];
 			$data->file = $error['file'];
 			$data->line = $error['line'];
-				
+
 		}else if(isset($e) && $e instanceof \Throwable) {
 			$data->msg = $e->getMessage();
 			$data->line = $e->getLine();
 			$data->file = $e->getFile();
 			$data->code =  $e->getCode();				
 		}else {
-			//framework's halting
+
+            //framework's halting
 			\team\Context::close();
 			return 	\Team::event('\team\halt', $data);;
 		}
@@ -171,7 +170,7 @@ class Errors {
 		}
 
 
-		\team\Debug::me("[{$data->namespace}][{$data->code}]: {$data->msg}",  '',  $data->file,  $data->line );
+    	\team\Debug::me("[{$data->namespace}][{$data->code}]: {$data->msg}",  '',  $data->file,  $data->line );
 
 		if(!$critical) {
 			return true;
@@ -193,7 +192,8 @@ class Errors {
 			}
 		}
 		//Mala suerte, hemos llegado hasta aquí sin que la acción main pudiera hacer nada. Toca buscar ayuda(¿algún awaiter disponible?)
-		echo \Team::event('\team\CRITICAL', $data, $type = "CRITICAL");
+        $type = 'CRITICAL';
+		echo \Team::event('\team\CRITICAL', $data,$type);
 
 		return true;
 
