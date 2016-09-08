@@ -40,7 +40,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 function smarty_block_aside($params, $content, Smarty_Internal_Template $template, &$repeat)
 {
-	$controller = \team\Context::get('CONTROLLER');
+    $controller = \team\Context::get('CONTROLLER');
 
 	// por defecto los aside no se muestran en móviles. Si se quiere visualizar usar:   {aside mobile=true}..{/aside}
 	$mobile = false;
@@ -49,15 +49,16 @@ function smarty_block_aside($params, $content, Smarty_Internal_Template $templat
 		unset($params['mobile']);
 	}
 
-	if(!$mobile) {
-		$browser = $controller::checkUserAgent();
-		if($browser['mobile']) {
+	if(!$mobile && $controller) {
+
+        $mobile = \team\Gui::checkUserAgent('mobile');
+
+        if($mobile) {
 			$repeat= false;
 			return '';
 		}
 	}
 
-	
 	if($repeat) { //open tag
 		$out = '<aside';
 
@@ -71,5 +72,6 @@ function smarty_block_aside($params, $content, Smarty_Internal_Template $templat
 		$out = trim($content).'</aside>';
 	}
 
-	return $out;
+
+    return $out;
 }
