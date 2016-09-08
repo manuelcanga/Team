@@ -311,20 +311,20 @@ abstract class Builder implements \ArrayAccess {
 
 			//Lanzamos la transformación ( Lo podriamos hacer desde Component, primero lanzamos la acción y luego lanzamos la vista )
 			\team\Context::set('TRANSFORMING_RESPONSE_DATA', true);
-			$result = $this->transform($data, $controller, $result);
 
-			//Se ha detectado un error de sistema. Don't worry. Be happy
-		}catch(\Throwable $SE) {	
-			if(!isset($controller) )
-				$controller = null;
-			if(!isset($result) ) 
-				$result = null;
+            $result = $this->transform($data, $controller, $result);
+
+
+            //Se ha detectado un error de sistema. Don't worry. Be happy
+		}catch(\Throwable $SE) {
+				$controller =  $controller?? null;
+				$result = $result?? null;
 
 				$result = $this->error($SE, $controller, $result);
-
-
 		}
-		
+
+
+
         \team\Context::set('TRANSFORMING_RESPONSE_DATA', false);
 
         if(($this->is_main || 1 ==  \team\Context::getIndex() ) ) {
@@ -387,8 +387,7 @@ abstract class Builder implements \ArrayAccess {
         //Si se ha especificado que no se muestren errores
         //Evitamos cualquier salida de error o de echos o de lo que sea
         //Tan solo dejamos mostrar la vista
-        //@TODO: Habria que probar muy bien que esto no afecte a GUI embeed
-        if(\team\Context::get("SHOW_EXTRA", 'SECURITY')) {
+        if(\team\Context::get("SHOW_EXTRA", true)) {
             echo $ob_out;
         }
     }
