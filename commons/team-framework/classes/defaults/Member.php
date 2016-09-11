@@ -71,12 +71,12 @@ class Member {
 
     function level() {
         if($this->isAdmin() ) {
-			return \trasweb\User::ADMIN;
+			return \team\User::ADMIN;
 		}else if($this->isLogged() ) {
-			return \trasweb\User::USER;
+			return \team\User::USER;
 		}
 
-		return \trasweb\User::GUEST;
+		return \team\User::GUEST;
     }
 
 	function isGuest() {
