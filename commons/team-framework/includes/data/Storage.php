@@ -18,15 +18,7 @@ trait Storage {
    		if(!isset($value) && is_array($name) ) {
 			 return $this->data = $name;
 		
-   		}else {
-		    //Puede que tenga un método put asociado
-            $method =  'put'.\team\Sanitize::identifier($name);
-            if(method_exists($this, $method)) {
-               return $this->$method($value);
-            
-            } 
-		}
-
+   		}
 		
 		//Ya lo que queda es asignar el valor a data.
 		return $this->data[$name] = $value;
