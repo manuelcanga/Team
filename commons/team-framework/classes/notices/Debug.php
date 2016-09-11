@@ -126,9 +126,8 @@ final  class Debug
 	/**
 		Helper
 		Transform objects from array in string
-        @param int recursive max depth to show in debugs( avoid circular references )
 	*/
-	private static function normalizeCompound($vars, $recursive = 4) {
+	private static function normalizeCompound($vars) {
 		$vars = (array)$vars;
 
 		$new_vars = [];
@@ -145,11 +144,7 @@ final  class Debug
 			}
 
 			if(is_array($value) ) {
-                if($recursive > 1)
-			    	$value = self::normalizeCompound($value, $recursive--);
-                else {
-                    $value = "Array";
-                }
+			    	$value = self::normalizeCompound($value);
 			}else {
 				$value = self::normalizeScalar($value);
 			}
