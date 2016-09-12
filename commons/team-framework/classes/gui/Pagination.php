@@ -525,7 +525,7 @@ class Pagination implements \ArrayAccess,  \Iterator{
 
 		
 		if($this->model) {
-			return $this->elements = $this->model->getAll($query, $this->data);
+			return $this->elements = $this->model->findAll($query, $this->data);
 		}else {
 			$database = $this->getDatabase();
 			return $this->elements = $database->get($query, $this->data);
