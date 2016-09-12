@@ -61,7 +61,7 @@ class Component   implements \ArrayAccess{
 
         //No se ha pasado un componente correcto
         if(!\team\FileSystem::exists("/".$params['package'].'/'.$params['component']) ) {
-            \Team::warning('Change " to \' in your widget name, please');
+            \Team::warning('Review widget name or change " to \' in your widget name param, please', 'WIDGET_NAME');
             return '';
         }
 
@@ -89,7 +89,7 @@ class Component   implements \ArrayAccess{
         $class_name = '\\'.$params['package'].'\\'.$params['component'];
 
         if(!class_exists($class_name) ) {
-            \Team::warning("widget class $class_name not found");
+            \Team::warning("widget class $class_name not found", 'NO_WIDGET');
 
             return '';
         }
