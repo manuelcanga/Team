@@ -87,8 +87,8 @@ class PageIterator implements \ArrayAccess,  \Iterator, \Countable{
 		Comprueba si es posible avanzar hacia la página siguiente
 		@return false si no es posible avanzar hacia la siguiente página(porque estamos en la última ). Si se puede, devuelve la url de la página siguiente.
 	*/
-	public function goNext() {	
-		if ( $this->end  === $this->pages ) return false;
+	public function goNext() {
+		if ( $this->currentPage  === $this->pages ) return false;
 				
 		return $this->getPagedUrl(['page' => $this->next]);
 	}
