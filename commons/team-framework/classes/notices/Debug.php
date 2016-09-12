@@ -453,7 +453,7 @@ de $jumps saltos hacia atrás  */
 	{
 	
 		$backtrace = debug_backtrace();
-		self::me(Team::get(), $label, $backtrace[0]["file"],   $backtrace[0]["line"]);
+		self::me(\Team::get(), $label, $backtrace[0]["file"],   $backtrace[0]["line"]);
 	}
 
 	/**
@@ -464,7 +464,7 @@ de $jumps saltos hacia atrás  */
 	public static  function allNotices($label = "All Notices" )
 	{
 		$backtrace = debug_backtrace();
-		self::me(Team::all(), $label, $backtrace[0]["file"],   $backtrace[0]["line"]);
+		self::me(\Team::all(), $label, $backtrace[0]["file"],   $backtrace[0]["line"]);
 	}
 
 	/**
