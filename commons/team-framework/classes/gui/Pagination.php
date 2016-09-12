@@ -134,7 +134,7 @@ class Pagination implements \ArrayAccess,  \Iterator{
 		$this->model = $model;
 
 		if(!empty($model->getListUrl() ) )
-			$this->setUrlBase($model->getListUrl());
+			$this->setBaseUrl($model->getListUrl());
 
 		$this->setFrom($model::TABLE)
 		     ->setOrderBy($model::ID);
@@ -146,7 +146,7 @@ class Pagination implements \ArrayAccess,  \Iterator{
 		$this->GUI = $GUI;
 	}
 
-	public function setUrlBase($_url) {
+	public function setBaseUrl($_url) {
 		$this->urlBase= $_url;
 		return $this;
 	}
