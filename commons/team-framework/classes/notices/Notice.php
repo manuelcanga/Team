@@ -58,9 +58,7 @@ class Notice {
 	 /**
 		Aviso informativo. Es una notificación de tipo intermedio de carácter postiivo
 	*/
-    public function info($msg)  {  
-		//@TODO: Llamar al método onInfo del controllador
-
+    public function info($msg)  {
 		$this->INFOS[] =  $msg;
 	 }
 
@@ -70,8 +68,7 @@ class Notice {
 		Aviso alerta. Es una notificación de tipo intermedio de carácter negativo
 	*/
     public function warning($msg, $code, $data = null) {
-		//@TODO: Llamar al método onWarning del controllador
-
+        \team\Debug::me($msg, $code, null, null, 2);
 		$this->WARNINGS[$code] =  $msg;
 	 }
 
@@ -80,7 +77,8 @@ class Notice {
 	/**
 		Se acabó el proceso con fallo
 	*/
-    public function error($msg, $code = null, $data = null)	{  
+    public function error($msg, $code = null, $data = null)	{
+        \team\Debug::me($msg, $code, null, null, 2);
 		return $this->addNotice(self::ERROR, 'ERROR', $data, $code, $msg,  $this->WARNINGS);
 	 }
 
