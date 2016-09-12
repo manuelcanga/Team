@@ -209,7 +209,7 @@ class Pagination implements \ArrayAccess,  \Iterator{
 		return $this->pagination = $this->onBuild($collection + $this->url->getData(), $collection, $custom);
 	}
 
-	public function get() {
+	public function getCollection() {
 		return $this->collection;
 	}
 
