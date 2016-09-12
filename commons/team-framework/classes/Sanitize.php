@@ -123,8 +123,14 @@ class Sanitize {
 		para url(&, ' ', ':')
 	*/
 	static function chars($str) {
-		//Convertimos la cadena pasada a ASCII;
-		$str =  self::encoding(strtolower($str),  'ASCII//TRANSLIT');
+
+        //Replacing of Very commons transforms( the reason is thats sometime encoding can be  a problem for some characters )
+        $before = ["á", "é", "í", "ó", "ú", "ä","ë", "ï", "ö", "ü", "ñ", "&", " "];
+        $after = ["a", "e", "i", "o", "u", "a","e", "i", "o", "u", "n", "y", "-"];
+        $str = str_replace($before, $after, strtolower($str));
+
+        //Convertimos la cadena pasada a ASCII;
+        $str =  self::encoding($str,  'ASCII//TRANSLIT');
 
 
         $before = [ "&", " ", "_",':'];
@@ -136,6 +142,7 @@ class Sanitize {
 
 		//Lo codeamos a la codificación de la web.
 		$str =  self::encoding($str);
+
 
 		return $str;
 	}
@@ -184,6 +191,7 @@ class Sanitize {
 
         //Convertimos semiválidos a carácteres válidos
 		$str  = self::chars($str);
+
 
         //Limpiamos todos los carácteres no válidos
         $str = self::key($str,$others_allowed .= '\-');
