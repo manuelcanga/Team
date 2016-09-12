@@ -61,7 +61,7 @@ class Notice {
     public function info($msg)  {  
 		//@TODO: Llamar al método onInfo del controllador
 
-		$this->INFOS[] = array("msg" => $msg);
+		$this->INFOS[] =  $msg;
 	 }
 
 
@@ -72,8 +72,8 @@ class Notice {
     public function warning($msg, $code, $data = null) {
 		//@TODO: Llamar al método onWarning del controllador
 
-		$this->WARNINGS[$code] = ["msg" => $msg];
-	 }	
+		$this->WARNINGS[$code] =  $msg;
+	 }
 
 
 
@@ -89,7 +89,7 @@ class Notice {
 		Hubo un error de sistema.
 	*/
 	public  function system($msg, $code = NULL, $data = null, $level = 2, $file = null, $line = null)  {
-		$canceled = $this->addNotice(self::SYSTEM,  'SYSTEM', $data, $code, $msg, [ ["code" => $code, "msg" => $msg]]);
+		$canceled = $this->addNotice(self::SYSTEM,  'SYSTEM', $data, $code, $msg, [ $code => $msg]);
 
 		if($canceled) return true;
 
