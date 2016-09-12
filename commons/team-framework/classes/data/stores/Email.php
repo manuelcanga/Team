@@ -74,9 +74,10 @@ class Email  implements \team\interfaces\data\Store  {
 			$username = $to['name'];
 			$useremail = $to['email'];
 	        //Tenemos que generar que tendrá el correo electrónico
-			$this->addCurrent($useremail, $username);			
+			$this->addCurrent($useremail, $username);
 
-			$email = new \team\Data($_data);
+
+            $email = new \team\Data($_data);
 			$email['allData'] = $email->getData();
 			$email['toemail'] = $useremail;
 			$email['toname'] = $username;
@@ -85,10 +86,10 @@ class Email  implements \team\interfaces\data\Store  {
 			$body =  wordwrap($body_html, 70);
 
 			 $status = mail($this->getTo(), $this->getSubject(), $body, $this->getHeaders() );
-			$this->status[] = ['name' => $username, 'email' =>  $useremail, 'status' => $status ];
+			  $this->status[] = ['name' => $username, 'email' =>  $useremail, 'status' => $status ];
 		}		
 
-		return $this->status;
+		return new \team\db\Collection($this->status);
     }
 
 	function getEmailHeader($target, $type) {
