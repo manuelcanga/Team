@@ -8,7 +8,7 @@
 	{/if}
 
 	<{$pagination_list|default:'ul'} class="{if (false !== $pagination.goFirst)}goFirst{/if} {if (false !== $pagination.goEnd)}goEnd{/if}">
-		{foreach $pagination $_page}
+		{foreach $pagination as $_page}
 		        <li class="{$_page.classes}"><a href="{$_page.url}">{$_page}</a></li>
 		{/foreach}
 	</{$pagination_list|default:'ul'}>
