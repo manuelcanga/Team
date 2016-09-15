@@ -118,6 +118,9 @@ abstract class ActiveRecord extends \team\db\Model{
 	}
 
 	public function UpdateIt($sentences = [], $secure = true) {
+
+        $this->data[static::ID] = $this->safeId;
+
         $this->custom('update');
 
         $query = $this->newQuery($this->data, $sentences );
@@ -134,12 +137,13 @@ abstract class ActiveRecord extends \team\db\Model{
 
 
 	public function insertIt($sentences = []) {
+
+        if(!isset($this[static::ID]) ) {
+            $this[static::ID] = null;
+        }
+
+
         $this->custom('insert');
-
-		if(!isset($this[static::ID]) ) {
-			$this[static::ID] = null;
-		}
-
 
         $query = $this->newQuery($this->data, $sentences );
 
@@ -157,6 +161,8 @@ abstract class ActiveRecord extends \team\db\Model{
 	*/
 	public function removeIt($sentences = [], $secure = true) {
 		if(!$this->safeId ) return false;
+
+        $this->data[static::ID] = $this->safeId;
 
         $this->custom('remove');
 
@@ -183,6 +189,7 @@ abstract class ActiveRecord extends \team\db\Model{
         if(! $this->safeId) return false;
 
         $query = $this->newQuery([static::ID => $this->safeId]);
+
         $query->$field  = "{$field} {$operation} {$amount}";
 
         $query->where = [ static::ID  =>  ':'.static::ID  ];
