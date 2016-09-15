@@ -118,7 +118,7 @@ abstract class ActiveRecord extends \team\db\Model{
 	}
 
 	public function UpdateIt($sentences = [], $secure = true) {
-        $this->custom();
+        $this->custom('update');
 
         $query = $this->newQuery($this->data, $sentences );
 		$query->where[] = [ static::ID  =>  ':'.static::ID  ];
@@ -134,7 +134,7 @@ abstract class ActiveRecord extends \team\db\Model{
 
 
 	public function insertIt($sentences = []) {
-        $this->custom();
+        $this->custom('insert');
 
 		if(!isset($this[static::ID]) ) {
 			$this[static::ID] = null;
@@ -158,7 +158,7 @@ abstract class ActiveRecord extends \team\db\Model{
 	public function removeIt($sentences = [], $secure = true) {
 		if(!$this->safeId ) return false;
 
-        $this->custom();
+        $this->custom('remove');
 
         $query = $this->newQuery($this->data, $sentences );
 
