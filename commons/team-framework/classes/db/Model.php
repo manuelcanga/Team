@@ -32,8 +32,11 @@ namespace team\db;
 
 
 /**
-		Simple Model skel
+    Simple Model skel
 
+    Models are useful in order to create queries for lists
+    ActiveRecords are useful in order to create/update/remove rows in a table
+    Traits are useful in order to manager fields or attributes
 */
 abstract class Model implements \ArrayAccess, \Iterator{
     use \team\data\Storage, \team\db\Database;
@@ -41,7 +44,6 @@ abstract class Model implements \ArrayAccess, \Iterator{
 
     const ID = '';
     const TABLE = '';
-	protected $initializer = 'onInitialize';
 	protected $listUrl = null;
 
 
@@ -49,22 +51,19 @@ abstract class Model implements \ArrayAccess, \Iterator{
 		Construct a Model
 		@param mixed $id :  primary key or key used in order to initialize
 		@param array $data : data for initializing
-		$param string|bool $initializer : method used in order to initialize data. Use false value to avoid initialization
 	*/
-    function __construct($id = 0,  $initializer = null) {
-		$initializer = $initializer?? $this->initializer;
+    function __construct($id = 0,  array $data = null) {
+        $this->onInitialize($id);
 
-		if($initializer && method_exists($this,  $initializer) ) {
-			$this->initializer = $initializer;
-	       $this->$initializer($id);
-		}
-		
+        if(isset($data)) {
+            $this->import($data);
+        }
     }
 
 
 
 	/* ----------------- Results----------------- */
-	public function pagination($_elements_for_page = 10, $data = [], $colecction='\team\gui\Pagination') {
+	public function pagination(int $_elements_for_page = 10, array $data = [], string $colecction='\team\gui\Pagination') {
 		$collection = $colecction($_elements_for_page, $data + $this->data); 
 
 		$collection->setModel($this);
@@ -76,17 +75,16 @@ abstract class Model implements \ArrayAccess, \Iterator{
 	/** 
 		Create a iterator for registers 
 	*/
-	public function newCollection($registers, $activerecord_class= null,  $defaults = []) {
-	        return new \team\db\Collection($registers ,$activerecord_class?? get_class($this), $defaults );
+	public function newCollection(array $registers,  array $defaults = []) {
+	        return new \team\db\Collection($registers , get_class($this), $defaults );
 	}
 
 
 	/* ------------------ getters and setters  ___________________ */
 
-	protected function load($id , $data = []) {
+	protected function loadData(array $data = []) {
 		if(!empty($data) ) {
 			$this->setData($data);
-			$this[static::ID] = $this->safeId;
 		}
 	}
 
@@ -101,7 +99,7 @@ abstract class Model implements \ArrayAccess, \Iterator{
 	/**
 		Count all rows in table 
 	*/
-	public function countAll($sentences = [], $data = []) {
+	public function countAll(array $sentences = [], array $data = []) {
         $query =  $this->newQuery($data, $sentences );
 		return $query->getVar('total', static::TABLE, 'count('.static::ID.') as total');
 	}
@@ -112,7 +110,7 @@ abstract class Model implements \ArrayAccess, \Iterator{
 		@param array $sentences list of params to query. Excepcionally, you can pass a 'order' params(ASC or DESC)
 		@param array $data   list of data to query
 	*/
-    public function findAll(  $sentences = [], $data = [],  $activerecord_class= null) {
+    public function findAll( array $sentences = [], array $data = [], $result_type = 'collection') {
 		$sentences = $sentences?? [];
 
 		$order = 'DESC';
@@ -121,13 +119,19 @@ abstract class Model implements \ArrayAccess, \Iterator{
 			unset($sentences['order']);
 		}
 
-		$default = ['limit' => -1, 'order_by' =>  [static::ID  =>  $order] ]; 
+		$default = ['select'=> '*', 'limit' => -1, 'order_by' =>  [static::ID  =>  $order] ];
 
 		$sentences = $sentences + $default;
 
         $query =  $this->newQuery($data + $this->data, $sentences );
 
-        return $this->newCollection($query->getAll(static::TABLE), $activerecord_class );
+        $records = $query->getAll(static::TABLE);
+
+        if('collection' == $result_type) {
+            return $this->newCollection($records);
+        }else {
+            return $records;
+        }
     }
 
 
@@ -140,8 +144,8 @@ abstract class Model implements \ArrayAccess, \Iterator{
 
 
 	//This function from Collection for everytime a newRecord is created
-	function onNewRecord($id, $data) {
-		$this->load($id, $data); 
+	function onNewRecord(array $data = []){
+		$this->loadData($data);
 	}
 
 }

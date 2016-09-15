@@ -37,8 +37,6 @@ abstract class ActiveRecord extends \team\db\Model{
 	const DETAILS_URL = '';
 
     protected $safeId = 0;
-	
-
 
 	/* ----------------- Checks----------------- */
 
@@ -79,6 +77,13 @@ abstract class ActiveRecord extends \team\db\Model{
 		return \team\Url::to(self::DETAILS_URL, $data, $matches);
 	}
 
+    protected function loadData(array $data = []) {
+        if(!empty($data) ) {
+            $this->setData($data);
+            $this->safeId = $this[static::ID];
+        }
+    }
+
 
 	/* ----------------- QUERIES ----------------- */
 
@@ -86,12 +91,11 @@ abstract class ActiveRecord extends \team\db\Model{
 	/**
 		Initialize by default
 	*/
-    protected function initializeIt($id, $sentences = [], $table = null, $data = []) {
-		$table = $table ??  static::TABLE;
+    protected function initializeIt($id, $sentences = [], $data = []) {
 
 	    $query = $this->newQuery([static::ID =>  $id] + $data,  $sentences);
 	    $query->where[] = [ static::ID  =>  ':'.static::ID  ];	
-		$record = $query->getRow($table);
+		$record = $query->getRow(static::TABLE);
 
 		if(!empty($record) ) {
 			 $this->setData($record);
@@ -113,17 +117,14 @@ abstract class ActiveRecord extends \team\db\Model{
 		}
 	}
 
-	public function UpdateIt($sentences = [], $secure = true, $table = null ) {
-		$table = $table ??  static::TABLE;
+	public function UpdateIt($sentences = [], $secure = true) {
 
         $query = $this->newQuery($this->data, $sentences );
-
 		$query->where[] = [ static::ID  =>  ':'.static::ID  ];
-		$result = $query->update($table, $secure);
+		$result = $query->update(static::TABLE, $secure);
 
 		if($result) {
-			$initializer = $this->initializer;
-			$this->$initializer($this[static::ID]);
+			$this->onInitialize($this[static::ID]);
 		}
 
 
@@ -131,8 +132,7 @@ abstract class ActiveRecord extends \team\db\Model{
 	}
 
 
-	public function insertIt($sentences = [], $table = null) {
-		$table = $table ??  static::TABLE;
+	public function insertIt($sentences = []) {
 
 		if(!isset($this[static::ID]) ) {
 			$this[static::ID] = null;
@@ -141,12 +141,11 @@ abstract class ActiveRecord extends \team\db\Model{
 
         $query = $this->newQuery($this->data, $sentences );
 
-		$id =  $query->add($table);
+		$id =  $query->add(static::TABLE);
 		if(!empty($id) ) {
-			$initializer = $this->initializer;
-			$this->$initializer( $id );
-
+            $this->onInitialize($id);
 		}
+
 		return $id;
 	}
 
@@ -154,16 +153,14 @@ abstract class ActiveRecord extends \team\db\Model{
 		Realiza el borrado en la base de datos.
 		Si $secure es true, no se podrá hacer un delete sin where y los delete con where estarán limitados a un elemento.
 	*/
-	public function removeIt($sentences = [], $secure = true, $table = null) {
-		$table = $table ??  static::TABLE;
-
+	public function removeIt($sentences = [], $secure = true) {
 		if(!$this->safeId ) return false;
 
         $query = $this->newQuery($this->data, $sentences );
 
 		$query->where[] = [ static::ID  =>  ':'.static::ID  ];
 
-		return $query->delete($table, $secure);
+		return $query->delete(static::TABLE, $secure);
 	}
 
 

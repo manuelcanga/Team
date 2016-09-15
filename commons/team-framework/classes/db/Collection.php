@@ -104,22 +104,6 @@ class Collection implements \Iterator, \Countable{
 	}
 
 
-
-
-	/***** Rerieve Model ******/
-
-	/** Create a new Record */
-	function newModel($safeId = 0, $data = []) {
-	 	 $class =  $this->model;
-		 $activeRecord =  new $class($safeId, false);
- 		 $activeRecord->onNewRecord($safeId, (array)$data + (array)$this->defaults);
-
-		 return $activeRecord;
-	}
-
-
-
-
 	/***** Filteres of records ******/
 
 
@@ -240,14 +224,10 @@ class Collection implements \Iterator, \Countable{
 	function toModel($data) {
 		$class = $this->model;
 
-		$fieldID = $class::ID;
-		$safeId = 0;
+        $model =  new $class();
+        $model->onNewRecord((array)$data + (array)$this->defaults);
 
-		if(isset($data[$fieldID]) ) {
-			$safeId = $data[$fieldID];
-		}
-
-		return $this->newModel($safeId, $data);
+        return $model;
 	}
 
 
