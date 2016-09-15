@@ -79,44 +79,39 @@ class Pagination implements \ArrayAccess,  \Iterator{
 	/** Url to check */
 	public $urlToCheck = null;
 
-	 function __construct( $_elements_for_page = 10, $data = [], $initializer = 'onInitialize' ) {
+	 function __construct( $_elements_for_page = 10,  $current_page = 1, $data = [] ) {
 
         if(\team\Gui::checkUserAgent('mobile')) {
             $this->range = 2;
         }
 
 		$this->setElementsForPage($_elements_for_page);
+        $this->setCurrentPage($current_page);
 		$this->data = [];
 		$this->url = new \team\Data($data);
 		$this->GUI = \team\Context::get('CONTROLLER');
-		$url = \team\Context::get('URL');
-		if(isset($url->base_url))  {
-			$this->urlToCheck = $url->base_url;
+
+		$base_url = \team\Context::get('_SELF_');
+		if(!empty($url))  {
+			$this->setBaseUrl($base_url.':page');
 		}
 
-		$this->commons($initializer, $data);
+         $current_url = \team\Context::get('URL');
+         if(!empty($current_url)){
+             $this->setUrlToCheck($current_url);
+         }
 
-		if($initializer && method_exists($this,  $initializer) ) {
-			$this->initializer = $initializer;
-	        $data = $this->$initializer($data);
-		}else {
-			$this->onLoad($data);
-		}
-
+		$this->commons($data);
 	}
 
 
 	/** Before initializers */
-	public function commons($initializer, $data) {}
-
-	/**  Initializer by default */
-	public function onInitialize($data) {}
-
-	/** When a initializer is not selected */
-	public function onLoad($data) {}
+	public function commons($data) {
+        $this->import($data);
+    }
 
 	/** After initializers but before build */
-	public function custom($type) { }
+	public function custom($customizer) { }
 
 	/** After build and when create pagination */
 	public function onBuild($data, $collection) { 
@@ -146,6 +141,10 @@ class Pagination implements \ArrayAccess,  \Iterator{
 		$this->GUI = $GUI;
 	}
 
+    public function setUrlToCheck($url) {
+        $this->urlToCheck = $url;
+    }
+
 	public function setBaseUrl($_url) {
 		$this->urlBase= $_url;
 		return $this;
@@ -163,14 +162,14 @@ class Pagination implements \ArrayAccess,  \Iterator{
 
 
 
-	protected function build($custom = null) {
+	protected function build($customizer = null) {
 		if(isset($this->pagination))  return $this->pagination;
 
-		if($custom && method_exists($this,  $custom) ) {
-	       $this->$custom($data);
+		if($customizer && method_exists($this,  $customizer) ) {
+	       $this->$customizer($data);
 		} 
 
-		$this->custom($custom);
+		$this->custom($customizer);
 
 		$this->buildElements();
 
@@ -206,7 +205,7 @@ class Pagination implements \ArrayAccess,  \Iterator{
 
 
 
-		return $this->pagination = $this->onBuild($collection + $this->url->getData(), $collection, $custom);
+		return $this->pagination = $this->onBuild($collection + $this->url->getData(), $collection, $customizer);
 	}
 
 	public function getCollection() {
@@ -401,8 +400,8 @@ class Pagination implements \ArrayAccess,  \Iterator{
 	public function buildGroupBy() {return $this->group_by;}
 	public function buildHaving() {return $this->having;}
 	public function buildFrom() {	return $this->from;	}
-	public function buildOrderBy() {return $this->order_by.' '.$this->buildOrder();}
-	public function buildOrder() {return $this->order;}
+    public function buildOrder() {return $this->order;}
+    public function buildOrderBy() {return $this->order_by.' '.$this->buildOrder();}
 
 
 
@@ -469,14 +468,14 @@ class Pagination implements \ArrayAccess,  \Iterator{
 
 
 		$database = $this->getDatabase();
-		
+
 		$query = [
 			'select' => 'count(*) as total',
 			'from' => $this->buildFrom(),
 			'where' => $this->buildWhere()
 		];
 
-		
+
 		//si hay group_by, no podemos contar los elementos con count tal y como está.
 		$group_by = $this->buildGroupBy();
 		if(!empty($group_by) ) {
@@ -487,7 +486,7 @@ class Pagination implements \ArrayAccess,  \Iterator{
 				if(empty($query['where'] )) {
 					$query['where'] = $having;
 				}else {
-					$query['where']  = "( {$query['where']} ) AND ( $having ) "; 
+					$query['where']  = "( {$query['where']} ) AND ( $having ) ";
 				}
 			}
 		}

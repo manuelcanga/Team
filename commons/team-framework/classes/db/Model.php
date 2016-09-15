@@ -63,10 +63,10 @@ abstract class Model implements \ArrayAccess, \Iterator{
 
 
 	/* ----------------- Results----------------- */
-	public function pagination(int $_elements_for_page = 10, array $data = [], string $colecction='\team\gui\Pagination') {
-		$collection = $colecction($_elements_for_page, $data + $this->data); 
+	public function pagination(int $_elements_for_page = 10, $current_page = 1 ,string $pagination='\team\gui\Pagination') {
+        $pagination = new $pagination($_elements_for_page, $current_page,  $this->data);
 
-		$collection->setModel($this);
+        $pagination->setModel($this);
 
 		return $collection;
 	}
