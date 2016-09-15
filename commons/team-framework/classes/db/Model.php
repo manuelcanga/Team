@@ -55,9 +55,13 @@ abstract class Model implements \ArrayAccess, \Iterator{
     function __construct($id = 0,  array $data = null) {
         $this->onInitialize($id);
 
+        $this->commons($data, $id);
+
         if(isset($data)) {
             $this->import($data);
         }
+
+        $this->custom($data, $id);
     }
 
 
@@ -137,7 +141,14 @@ abstract class Model implements \ArrayAccess, \Iterator{
 
 	/* ----------------- EVENTS ----------------- */
 
-	/**
+    //After initialize and before importing data
+    protected function commons(/* $data = [], $id = null */){}
+
+    //After of importing data
+    protected function custom(/* $data = [], $id = null */){}
+
+
+    /**
 		Initialize by default
 	*/
     protected function onInitialize($id){}
@@ -145,7 +156,11 @@ abstract class Model implements \ArrayAccess, \Iterator{
 
 	//This function from Collection for everytime a newRecord is created
 	function onNewRecord(array $data = []){
+        $this->commons($data);
+
 		$this->loadData($data);
+
+        $this->custom($data);
 	}
 
 }
