@@ -167,8 +167,42 @@ abstract class ActiveRecord extends \team\db\Model{
 		return $query->delete(static::TABLE, $secure);
 	}
 
+    /**
+     * This function changes a value of database field in current record.
+     * Be careful, this function does a eval with arguments
+     *
+     * @example  $this->changeIt('counter','+', 1)
+     * This example add + 1 in counter field for current record
+     *
+     * @param $field
+     * @param string $operation
+     * @param int $amount
+     * @return mixed
+     */
+    function changeIt($field, $operation = '+', $amount = 1) {
+        if(! $this->safeId) return false;
 
-	/* ----------------- EVENTS ----------------- */
+        $query = $this->newQuery([static::ID => $this->safeId]);
+        $query->$field  = "{$field} {$operation} {$amount}";
+
+        $query->where = [ static::ID  =>  ':'.static::ID  ];
+
+        $query_result =  $query->update(static::TABLE);
+
+        if($query_result){
+            $initial_amount = $this->$field;
+            $result = 0;
+            eval('$result  = '.$initial_amount.' '.$operation.' '.$amount.';');
+            $this->$field = $result;
+        }
+
+
+        return $query_result;
+    }
+
+
+
+    /* ----------------- EVENTS ----------------- */
 
 	protected function onInitialize($id) {
         $this->safeId = $this->checkId($id);
