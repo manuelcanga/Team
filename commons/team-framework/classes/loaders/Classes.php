@@ -80,7 +80,7 @@ class  Classes{
 	*/
 	public static function add($_class, $path, $base = _SITE_) {
 		$class = ltrim($_class, '\\');
-		if(!array_key_exists($class, self::$registers) ) {
+		if(!isset(self::$registers[$class]) ) {
 			self::$registers[$class] = ['path' => $path, 'base' => $base ];
 			if(\team\Context::get("TRACE_AUTOLOAD_CLASS") ) {
 				\team\Debug::me("Registrada clase '$_class' con path '$path' y base '$base'");
