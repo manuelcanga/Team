@@ -50,6 +50,7 @@ function parse_action($request) {
 
         //Parseamos la url en busca de los parámetros de la web, los argumentos base serán los de post
 		$args = new \team\Data('Url',$url, [], $_POST +((array)$this->area_params) + ['out' => $default_out]);
+        $url = $args->base_url;
 		
         //Asignamos los parámetros fijos no dependientes del exterior
         $args->package =   \team\Sanitize::identifier($package);
@@ -111,7 +112,7 @@ function parse_action($request) {
 
         //_SELF_  debe empezar y terminar  / y terminar con  /
         $_CONTEXT["_SELF_"] =  \team\Sanitize::trim(  $_CONTEXT["_AREA_"].ltrim( $args->_self_, '/'), '/');
-        $_CONTEXT["URL"] = $args->base_url;
+        $_CONTEXT["URL"] = $url;
 
         unset($args->_self_); //ya no lo necesitamos, está en context
 
