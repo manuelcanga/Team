@@ -114,6 +114,8 @@ function parse_action($request) {
         $_CONTEXT["_SELF_"] =  \team\Sanitize::trim(  $_CONTEXT["_AREA_"].ltrim( $args->_self_, '/'), '/');
         $_CONTEXT["URL"] = $url;
 
+        $_CONTEXT['ARGS'] = $args;
+
         unset($args->_self_); //ya no lo necesitamos, está en context
 
         \team\Debug::trace("Acabado el proceso de analisis de url", $args);
