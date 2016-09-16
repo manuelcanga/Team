@@ -108,31 +108,31 @@ class Gui extends Controller {
      * @param $place punto de anclaje en el que queremos incluir la vista. Si empieza por \, se tomará como pipeline el lugar completo.
      * Sino se añadirá a \team\place
      * @param bool $isolate determinada si la plantilla heredará el entorno de la plantilla padre( isolate = false ) o será independiente( isolate = true )
-     * @param bool $order  orden de colocación de la vista respecto a otra en el mismo lugar. 
+     * @param bool $order  orden de colocación de la vista respecto a otra en el mismo lugar.
      */
     function addViewToPlace($view, $place,  $_options = [], $isolate = false, $order = 65) {
 
-		$view =  \team\FileSystem::stripExtension($view);
-		$idView = \team\Sanitize::identifier($view);
+        $view =  \team\FileSystem::stripExtension($view);
+        $idView = \team\Sanitize::identifier($view).'_'.$order;
         $pipeline = ('\\' == $place[0])? $place : '\team\places\\'.$place;
-		$options =  $_options;
+        $options =  $_options;
 
-		//Comprobamos si se quiere caché o no
-		$cache_id = null;
-		if(isset($_options['cache']) ) {
+        //Comprobamos si se quiere caché o no
+        $cache_id = null;
+        if(isset($_options['cache']) ) {
             $cache_id =  \team\Cache::checkIds($_options['cache'], $idView);
-		}
+        }
 
 
         \team\Filter::add($pipeline,function($content, $params, $engine) use ($view, $options, $isolate, $idView, $cache_id) {
 
-			//Comprobamos si ya estaba la plantilla cacheada
-			if(isset($cache_id) ) {
-				$cache = \team\Cache::get($cache_id);
-				if(!empty($cache)) {
-					return $content.$cache;
-				}
-			}
+            //Comprobamos si ya estaba la plantilla cacheada
+            if(isset($cache_id) ) {
+                $cache = \team\Cache::get($cache_id);
+                if(!empty($cache)) {
+                    return $content.$cache;
+                }
+            }
 
             //    \Debug::out(get_class_methods($engine) );
             //Si se quiere con todas las variables del padre
@@ -148,13 +148,13 @@ class Gui extends Controller {
                 $view_content = $template->fetch();
             }
 
-			//Si se ha pedido sistema de caché, lo guardamos
-			if(isset($cache_id) ) {
+            //Si se ha pedido sistema de caché, lo guardamos
+            if(isset($cache_id) ) {
                 $cache_time = $options['cachetime']?? null;
 
 
-				\team\Cache::overwrite($cache_id,  $view_content, $cache_time );
-			}
+                \team\Cache::overwrite($cache_id,  $view_content, $cache_time );
+            }
 
             return $content. $view_content;
         }, $order, $idView);
@@ -162,7 +162,7 @@ class Gui extends Controller {
     }
 
     function addWidgetToPlace($widget_name, $place, $_options = [], $order = 65) {
-        $idwidget = \team\Sanitize::identifier($widget_name);
+        $idwidget = \team\Sanitize::identifier($widget_name).'_'.$order;
 
         //Puede haber ocasiones que un widget requiera de colocar información en otras partes del html
         //es por ello, que le damos la oportunidad de que carguen la información que necesiten ya
@@ -268,7 +268,7 @@ class Gui extends Controller {
             //¿is tablet?
             if ( stripos($http_user_agent, 'Tablet') !== false || ($is_android && !$is_mobile)
                 || strpos($http_user_agent, 'Kindle') !== false ) {
-               $tablet =  true;
+                $tablet =  true;
                 $device = $navigator = "tablet";
             }
 
@@ -339,7 +339,7 @@ class Gui extends Controller {
         if(!$domain) {
             $domain = \team\Context::get('DOMAIN');
         }
-        
+
 
         $domain = str_replace($protocol, '',$domain);
 
