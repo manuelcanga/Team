@@ -1,19 +1,19 @@
 <?php
 /**
 New Licence bsd:
-Copyright (c) <2012>, Manuel Jesus Canga Muñoz
+Copyright (c) <2016>, Manuel Jesus Canga Muñoz
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of the trasweb.net nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
+ * Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in the
+documentation and/or other materials provided with the distribution.
+ * Neither the name of the trasweb.net nor the
+names of its contributors may be used to endorse or promote products
+derived from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -26,115 +26,144 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-*/
+ */
 
 namespace team\data\stores;
-
-/** Seguridad antes que nada  */
 
 
 class Email  implements \team\interfaces\data\Store  {
 
-	private $to = [];
-	private $from = [];
-	private $reply = [];
-	private $subject = '';
-	private $current = [];
-	private $status = [];
+    private $to = [];
+    private $from = [];
+    private $reply = [];
+    private $subject = '';
+    private $current = [];
+    private $status = [];
 
     /**
      * Inicializamos el envío de correo
      *
      */
-	 function & import( $_origin, Array $_options = [], Array $_default = []) {
-		return $_default;
-     }
+    function & import( $_origin, Array $_options = [], Array $_default = []) {
+        return $_default;
+    }
 
-	function addTo($email, $name = '') { $this->to[] = ['email' => $email, 'name' => $name];}
-	function from($email, $name = '') { $this->from = ['email' => $email, 'name' => $name]; }
-	function replyTo($email, $name = '') { $this->reply = ['email' => $email, 'name' => $name]; }
-	function addCurrent($email, $name = '') { $this->current = ['email' => $email, 'name' => $name];}
+    function to($email, $name = '') { $this->addTo($email, $name); }
+    function setTo($email, $name = '') { $this->addTo($email, $name); }
+    function addTo($email, $name = '') { $this->to[] = ['email' => $email, 'name' => $name];}
+    function from($email, $name = '') { $this->from = ['email' => $email, 'name' => $name]; }
+    function setFrom($email, $name = '') { $this->from($email, $name); }
+    function replyTo($email, $name = '') { $this->reply = ['email' => $email, 'name' => $name]; }
+    function setReplyTo($email, $name = '') { $this->replyTo($email, $name); }
+    private function addCurrent($email, $name = '') { $this->current = ['email' => $email, 'name' => $name];}
 
 
-	function setSubject($subject) {
-		$this->subject = $subject;
-	}
+    function setSubject($subject) {
+        $this->subject = $subject;
+    }
 
     function export($_target, Array $_data = [], Array $_options = [] ) {
 
-		//Si no hay una plantilla de correo, cogemos una genérica
-		if(!isset($_data['view']) && !isset($_data['layout']) ) {
-			$_data['view'] = \team\Filter::apply('\team\email\template', 'team:framework/data/email.tpl');
-		}
+        //Si no hay una plantilla de correo, cogemos una genérica
+        if(!isset($_data['view']) && !isset($_data['layout']) ) {
+            $_data['view'] = \team\Filter::apply('\team\email\template', 'team:framework/data/email.tpl');
+        }
 
-		$emails = $this->to;
-		if(empty($emails) ) return false;
+        $emails = $this->to;
+        if(empty($emails) ) return false;
 
-		foreach($emails as $to) {
-			$username = $to['name'];
-			$useremail = $to['email'];
-	        //Tenemos que generar que tendrá el correo electrónico
-			$this->addCurrent($useremail, $username);
+        foreach((array) $emails as $to) {
+            $username = $to['name'];
+            $useremail = $to['email'];
+            //Tenemos que generar el correo electrónico que tendrá
+            $this->addCurrent($useremail, $username);
 
 
             $email = new \team\Data($_data);
-			$email['allData'] = $email->getData();
-			$email['toemail'] = $useremail;
-			$email['toname'] = $username;
-			$body_html = $email->out('html');
+            $email['allData'] = $email->getData();
+            $email['toname'] = $username;
+            $email['toemail'] = $useremail;
+            $email['fromname'] = $this->from['name'];
+            $email['fromemail'] = $this->from['email'];
+            $body_html = $email->out('html');
 
-			$body =  wordwrap($body_html, 70);
+            $body =  wordwrap($body_html, 70);
 
-			 $status = mail($this->getTo(), $this->getSubject(), $body, $this->getHeaders() );
-			  $this->status[] = ['name' => $username, 'email' =>  $useremail, 'status' => $status ];
-		}		
 
-		return new \team\db\Collection($this->status);
+
+            $status = mail($this->getTo(), $this->getSubject(), $body, $this->getHeaders() );
+            $this->status[] = ['name' => $username, 'email' =>  $useremail, 'status' => $status ];
+        }
+
+        return new \team\db\Collection($this->status);
     }
 
-	function getEmailHeader($target, $type) {
-		if(empty($target) ) return '';
+    private function getFormatted($target) {
+        if(empty($target) ) return '';
 
-		$name = mb_encode_mimeheader($target['name'], "UTF-8", "B");
-		return "{$type}:  \"$name\" <{$target['email']}>";
-	}
+        $name = mb_encode_mimeheader($target['name'], "UTF-8", "B");
 
-	function getTo() {
-		return $this->getEmailHeader($this->current, 'From');
-	}
+        return $formatted  = "\"$name\" <{$target['email']}>";
+    }
 
-	function getReplyTo() {
-		return $this->getEmailHeader($this->reply, 'Reply-To');
-	}
+    private function getEmailHeader($target, $type) {
+        $formatted_target = $this->getFormatted($target);
 
-	function getFrom() {
-		return $this->getEmailHeader($this->from, 'From');
-	}
-
-	function getSubject() {
-		$subject = $this->subject;
-		$subject = str_replace('{$toname}', $this->current['name'], $subject);
-		$subject = str_replace('{$toemail}', $this->current['email'], $subject);
-	
-		return '=?UTF-8?B?'.base64_encode($subject).'?=';
-	}
-
-	function getHeaders() {
-		$headers[]  = 'MIME-Version: 1.0' . "\r\n";
-		$headers[] = 'Content-type: text/html; charset=utf-8' . "\r\n";
-
-		$from = $this->getFrom();
-		if($from )
-			$headers[] = $from;
-
-		$replyTo = $this->getReplyTo();
-		if($replyTo)
-			$headers[] = $replyTo;
+        return $header = $header = "{$type}:  {$formatted_target}";
+    }
 
 
-		$headers = \team\Filter::apply('\team\email\headers',$headers);
+    public function getTo() {
+        return $this->getFormatted($this->current);
+    }
+
+    private function getToHeader() {
+        return $this->getEmailHeader($this->current, 'To');
+    }
+
+    public function getReplyTo() {
+        return $this->getFormatted($this->reply);
+    }
+
+    private function getReplyToHeader() {
+        return $this->getEmailHeader($this->reply, 'Reply-To');
+    }
+
+    public function getFrom() {
+        return $this->getFormatted($this->from);
+    }
+
+    private function getFromHeader() {
+        return $this->getEmailHeader($this->from, 'From');
+    }
+
+    function getSubject() {
+        $subject = $this->subject;
+        $subject = str_replace('{$fromname}', $this->from['name'], $subject);
+        $subject = str_replace('{$fromemail}', $this->from['email'], $subject);
+        $subject = str_replace('{$toname}', $this->current['name'], $subject);
+        $subject = str_replace('{$toemail}', $this->current['email'], $subject);
+
+        return '=?UTF-8?B?'.base64_encode($subject).'?=';
+    }
+
+    private function getHeaders() {
+        $headers[]  = 'MIME-Version: 1.0';
+        $headers[] = 'Content-type: text/html; charset=utf-8';
 
 
-		return implode('\r\n', $headers);
-	}
+        $from = $this->getFromHeader();
+        if($from )
+            $headers[] = $from;
+
+        $replyTo = $this->getReplyToHeader();
+        if($replyTo)
+            $headers[] = $replyTo;
+
+
+        $headers = \team\Filter::apply('\team\email\headers',$headers);
+
+
+        return implode("\r\n", $headers);
+    }
 }
