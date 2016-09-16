@@ -36,6 +36,8 @@ Representa los datos que llegaran a utilizarse en la vista para formar la web
 Es la base para las acciones tipo GUI
  */
 class Gui extends Controller {
+    use \team\gui\Seo;
+    use \team\gui\Assets;
 
     const DEPENDENCIES = '/guis/';
 

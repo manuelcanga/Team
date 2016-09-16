@@ -77,7 +77,7 @@ trait Seo {
      * @param ?bool $separator false(not separator), true(with separator), null(remove previous title )
      *
      */
-    protected function setTitle($title, $separator = true) {
+    function setTitle($title, $separator = true) {
         if(!$this->isMain()) return false;
 
         global $_CONTEXT;
