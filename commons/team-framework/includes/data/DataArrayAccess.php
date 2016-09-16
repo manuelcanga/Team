@@ -5,7 +5,7 @@ namespace team\data;
 
 /**
 Remember using: implements \ArrayAccess  in your class definition
-*/
+ */
 
 trait DataArrayAccess {
 
@@ -18,26 +18,21 @@ trait DataArrayAccess {
             unset($this->data[$offset]);
         }
     }
-    
+
     function offsetExists($offset) {
-    
         return  isset($this->data[$offset]);
     }
-    
+
 
     function &  offsetGet($offset) {
-		$result = null;
+        if(!isset( $this->data[$offset]) )
+            $this->data[$offset] = null;
 
-		if(!isset( $this->data[$offset]) ) 
-		   $this->data[$offset] = null;
-	
- 
-		$result =&  $this->data[$offset];
 
-		return $result;
+        return $this->data[$offset];
     }
-    
-    
+
+
 
     function & offsetSet($offset, $valor) {
 
@@ -46,8 +41,7 @@ trait DataArrayAccess {
         }else {
             $this->data[$offset] = $valor;
         }
-    
+
         return  $this->data[$offset];
     }
 }
-
