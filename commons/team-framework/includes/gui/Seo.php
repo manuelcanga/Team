@@ -61,6 +61,10 @@ trait Seo {
 
         global $_CONTEXT;
 
+        if(!isset($_CONTEXT['SEO_METAS'])) {
+            $_CONTEXT['SEO_METAS'] = [];
+        }
+
         if(isset($options) ) {
             $_CONTEXT['SEO_METAS'][$key] = ['value'=> $options, 'options' => $options];
         }else {
