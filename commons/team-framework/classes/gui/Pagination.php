@@ -58,10 +58,10 @@ class Pagination implements \ArrayAccess,  \Iterator{
 	protected $select = '*';
 	protected $from = NULL;
 	protected $where = null;
-	protected $group_by = null;
+	protected $groupBy = null;
 	protected $having = null;
 	protected $order = 'DESC';
-	protected $order_by = null;
+	protected $orderBy = null;
 
 
 	protected $elements = [];
@@ -70,8 +70,6 @@ class Pagination implements \ArrayAccess,  \Iterator{
 
 	protected $model= null;
 	protected $GUI = null;
-
-	protected $initializer = 'onInitialize';
 
 	
 	/** Params for url */
@@ -101,17 +99,21 @@ class Pagination implements \ArrayAccess,  \Iterator{
              $this->setUrlToCheck($current_url);
          }
 
-		$this->commons($data);
+		$this->onInitialize($data);
 	}
 
-
-	/** Before initializers */
-	public function commons($data) {
+	/** 					*/
+	public function onInitialize($data) {
         $this->import($data);
+	}
+
+	/** Before Customizer */
+	public function commons() {
+
     }
 
-	/** After initializers but before build */
-	public function custom($customizer) { }
+	/** After customizer but before build */
+	public function custom() { }
 
 	/** After build and when create pagination */
 	public function onBuild($data, $collection) { 
@@ -165,8 +167,10 @@ class Pagination implements \ArrayAccess,  \Iterator{
 	protected function build($customizer = null) {
 		if(isset($this->pagination))  return $this->pagination;
 
+		$this->commons();
+
 		if($customizer && method_exists($this,  $customizer) ) {
-	       $this->$customizer($data);
+	       $this->$customizer();
 		} 
 
 		$this->custom($customizer);
@@ -366,7 +370,7 @@ class Pagination implements \ArrayAccess,  \Iterator{
 	}
 
 	public function setOrderBy($_order_by, $_order = 'DESC'){
-		$this->order_by = \team\Check::key($_order_by, null);
+		$this->orderBy = \team\Check::key($_order_by, null);
 		$this->setOrder($_order);
 
 		return $this;
@@ -397,11 +401,11 @@ class Pagination implements \ArrayAccess,  \Iterator{
 	/** -------------------- BUILDING QUERIES ------------------ */
 	public function buildSelect() { return $this->select;	}
 	public function buildWhere() {return $this->where;}
-	public function buildGroupBy() {return $this->group_by;}
+	public function buildGroupBy() {return $this->groupBy;}
 	public function buildHaving() {return $this->having;}
 	public function buildFrom() {	return $this->from;	}
     public function buildOrder() {return $this->order;}
-    public function buildOrderBy() {return $this->order_by.' '.$this->buildOrder();}
+    public function buildOrderBy() {return $this->orderBy.' '.$this->buildOrder();}
 
 
 

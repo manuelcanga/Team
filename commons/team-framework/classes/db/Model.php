@@ -71,6 +71,12 @@ abstract class Model implements \ArrayAccess, \Iterator{
 
         $pagination->setModel($this);
 
+		if(isset($this->listUrl) )
+			$pagination->setBaseUrl($model->getListUrl());
+
+		$pagination->setFrom(static::TABLE)
+  		    	   ->setOrderBy(static::ID);
+
 		return $collection;
 	}
 
