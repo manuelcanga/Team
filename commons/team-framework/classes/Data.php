@@ -98,7 +98,7 @@ class Data implements \ArrayAccess
         if($this->store && method_exists($this->store, $method)) {
            $result =  call_user_func_array([$this->store, $method], $arguments );
         }else {
-			\team\Debug::me("Not found method  $method");
+			\team\Debug::me("Not found method  $method", $level = 2);
 		}
 
         return $result;

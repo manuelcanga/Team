@@ -50,7 +50,7 @@ trait Storage {
         if(method_exists($this,$method)) {
             return call_user_func_array([$this, $method], $arguments);
         }else {
-            \team\Debug::me("Not found method $method");
+            \team\Debug::me("Not found method $method", $level = 2);
         }
 
         return ;
