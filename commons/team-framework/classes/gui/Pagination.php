@@ -130,12 +130,6 @@ class Pagination implements \ArrayAccess,  \Iterator{
 	public function setModel(\team\db\Model $model = null) {
 		$this->model = $model;
 
-		if(!empty($model->getListUrl() ) )
-			$this->setBaseUrl($model->getListUrl());
-
-		$this->setFrom($model::TABLE)
-		     ->setOrderBy($model::ID);
-
 		return $this;
 	}
 
