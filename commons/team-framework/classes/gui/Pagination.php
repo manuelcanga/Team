@@ -32,13 +32,10 @@ namespace team\gui;
 require_once(__DIR__.'/PageIterator.php');
 
 
-class Pagination implements \ArrayAccess,  \Iterator{
-    use \team\data\Storage,  \team\db\Database;
+class Pagination extends \team\db\Find{
 
 
 	protected $range = 4;
-
-	protected $urlBase = '/';
 
 	protected $withPagination = true;
 	protected $elementsForPage = 10;
@@ -50,29 +47,15 @@ class Pagination implements \ArrayAccess,  \Iterator{
 	protected $end = 1;
 	protected $pages = 1;
 	protected $count = -1;
-	protected $limit;
-	protected $offset;
 
-
-	protected $queryLog = '';
-	protected $select = '*';
-	protected $from = NULL;
-	protected $where = null;
-	protected $groupBy = null;
-	protected $having = null;
-	protected $order = 'DESC';
-	protected $orderBy = null;
-
-
-	protected $elements = [];
 	protected $pagination = null;
 	protected $collection = [];
 
-	protected $model= null;
 	protected $GUI = null;
 
-	
-	/** Params for url */
+
+    protected $urlBase = '/';
+    /** Params for url */
 	public $url = null;
 	/** Url to check */
 	public $urlToCheck = null;
@@ -102,18 +85,7 @@ class Pagination implements \ArrayAccess,  \Iterator{
 		$this->onInitialize($data);
 	}
 
-	/** 					*/
-	public function onInitialize($data) {
-        $this->import($data);
-	}
 
-	/** Before Customizer */
-	public function commons() {
-
-    }
-
-	/** After customizer but before build */
-	public function custom() { }
 
 	/** After build and when create pagination */
 	public function onBuild($data, $collection) { 
@@ -121,17 +93,7 @@ class Pagination implements \ArrayAccess,  \Iterator{
 			return new \team\gui\PageIterator($data);
 	}
 
-	/**
-		Añade un Model que gestione el modelo de datos del paginador
-		@param team\db\Model $model objeto de active record
 
-		@TODO: Cambiar por Model. 
-	*/
-	public function setModel(\team\db\Model $model = null) {
-		$this->model = $model;
-
-		return $this;
-	}
 
 	public function setGUI(\team\Controller $GUI = null) {
 		$this->GUI = $GUI;
@@ -158,18 +120,9 @@ class Pagination implements \ArrayAccess,  \Iterator{
 
 
 
-	protected function build($customizer = null) {
+	protected function createPagination() {
 		if(isset($this->pagination))  return $this->pagination;
 
-		$this->commons();
-
-		if($customizer && method_exists($this,  $customizer) ) {
-	       $this->$customizer();
-		} 
-
-		$this->custom($customizer);
-
-		$this->buildElements();
 
 		if($this->pages>1 && $this->count >=1) {
 			$this->withPagination = true;
@@ -203,20 +156,21 @@ class Pagination implements \ArrayAccess,  \Iterator{
 
 
 
-		return $this->pagination = $this->onBuild($collection + $this->url->getData(), $collection, $customizer);
+		return $this->pagination = $this->onBuild($collection + $this->url->getData(), $collection);
 	}
 
 	public function getCollection() {
 		return $this->collection;
 	}
 
-	public function getPagination($custom =null) {
-		if(isset($this->pagination) ) 
-			return $this->pagination;
-		else
-			return $this->build($custom);
+	public function getPagination() {
+		if(!isset($this->pagination) ) {
+			$this->createPagination();
+        }
 
-	}
+        return $this->pagination;
+
+    }
 
 
 	public function debug($title='Collection') {
@@ -237,18 +191,28 @@ class Pagination implements \ArrayAccess,  \Iterator{
 		return $this;
 
 	}
-	public function getElements($custom = null) {
+	public function search($customizer = null,  ...$args)  {
 		if(!$this->pagination) {
-			$this->build($custom);
+            $this->commons($customizer, $args);
+
+            if($customizer && method_exists($this,  $customizer) ) {
+                $this->$customizer(...$args);
+            }
+
+            $this->custom($customizer, $args);
+
+            $this->elements = $this->buildElements();
+
+            $this->createPagination();
 		}
 
-		return $this->elements;
+        return $this->elements;
 	}
 
     /**
      *  Para casos que sólo se quiera un elemento por página o sólo se quiera devolver el primer elemento */
     public function getElement() {
-      $elements = $this->getElements();
+      $elements = $this->search();
 
       if(1 === $this->elementsForPage && !empty($elements) ) {
           return $elements->first();
@@ -257,8 +221,8 @@ class Pagination implements \ArrayAccess,  \Iterator{
       return $elements;
     }
 
-	public function getItems() {
-		return $this->getElements();
+	public function getElements() {
+		return $this->search();
 	}
 
 	/**
@@ -344,62 +308,6 @@ class Pagination implements \ArrayAccess,  \Iterator{
 
 
 
-	/** -------------------- SETTERS / GETTERS QUERY ------------------ */
-	public function setSelect($_select = null) {
-		if($_select != null) 
-			$this->select .= ", ".$_select;
-		else
-			$this->select = $_select;
-		return $this;
-	}
-
-	public function setOrder($_order) {
-		if(!isset($_order) ) {
-			$this->order = "";
-		}else if($_order == "ASC" || $_order == "DESC")
-			$this->order = $_order;
-		else
-			$this->order = "DESC";
-
-	}
-
-	public function setOrderBy($_order_by, $_order = 'DESC'){
-		$this->orderBy = \team\Check::key($_order_by, null);
-		$this->setOrder($_order);
-
-		return $this;
-	}
-
-	public function setFrom($_from = null) {
-		$this->from = $_from;
-
-		return $this;
-	}
-
-	public function setWhere($_where = null, $_full = 0) {
-
-		if($this->where != NULL && $_where != null && !$_full )
-			$this->where .= " AND ( $_where ) ";
-		else if($_where != NULL )
-			$this->where = "( $_where ) ";
-		else {
-			$this->where = '';
-		}
-
-		return $this;
-	}
-
-	public function getLimit() { return $this->limit; }
-	public function getOffset() { return $this->offset; }
-
-	/** -------------------- BUILDING QUERIES ------------------ */
-	public function buildSelect() { return $this->select;	}
-	public function buildWhere() {return $this->where;}
-	public function buildGroupBy() {return $this->groupBy;}
-	public function buildHaving() {return $this->having;}
-	public function buildFrom() {	return $this->from;	}
-    public function buildOrder() {return $this->order;}
-    public function buildOrderBy() {return $this->orderBy.' '.$this->buildOrder();}
 
 
 
@@ -451,11 +359,7 @@ class Pagination implements \ArrayAccess,  \Iterator{
 			}
 
 		}
-
-
-
-		return  $this->buildPagedElements();
-
+        return $this->elements = $this->findElements();
 
 	}
 
@@ -504,30 +408,9 @@ class Pagination implements \ArrayAccess,  \Iterator{
 	}
 
 
-	protected function buildPagedElements() {
-
-		$query = [
-			'select' => $this->buildSelect(),
-			'from' => $this->buildFrom(),
-			'where' => $this->buildWhere(),
-			'group_by' => $this->buildGroupBy(),
-			'having' => $this->buildHaving(),
-			'order_by' => $this->buildOrderBy(),
-			'limit' => $this->limit,
-			'offset' => $this->offset,
-		];
 
 
-		$this->queryLog = $query;
 
-		
-		if($this->model) {
-			return $this->elements = $this->model->findAll($query, $this->data);
-		}else {
-			$database = $this->getDatabase();
-			return $this->elements = $database->get($query, $this->data);
-		}
-	}
 
 	public function getPagedUrl($vars = []) {
 		return \team\Url::to($this->urlBase, $vars + $this->url->getData() );

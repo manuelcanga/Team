@@ -34,11 +34,11 @@ namespace team\db;
 /**
     Simple Model skel
 
-    Models are useful in order to create queries for lists
+    Models are useful in order to create queries for lists in only a table( for more table check Finds
     ActiveRecords are useful in order to create/update/remove rows in a table
     Traits are useful in order to manager fields or attributes
 */
-abstract class Model implements \ArrayAccess, \Iterator{
+abstract class Model implements \ArrayAccess{
     use \team\data\Storage, \team\db\Database;
 
 
@@ -81,8 +81,8 @@ abstract class Model implements \ArrayAccess, \Iterator{
 	}
 
 
-	/** 
-		Create a iterator for registers 
+	/**
+		Create a iterator for registers
 	*/
 	public function newCollection(array $registers,  array $defaults = []) {
 	        return new \team\db\Collection($registers , get_class($this), $defaults );
