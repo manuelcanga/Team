@@ -54,7 +54,7 @@ class Pagination extends \team\db\Find{
 	protected $GUI = null;
 
 
-    protected $urlBase = '/';
+    protected $baseUrl = '/';
     /** Params for url */
 	public $url = null;
 	/** Url to check */
@@ -104,7 +104,7 @@ class Pagination extends \team\db\Find{
     }
 
 	public function setBaseUrl($_url) {
-		$this->urlBase= $_url;
+		$this->baseUrl= $_url;
 		return $this;
 	}
 
@@ -149,7 +149,7 @@ class Pagination extends \team\db\Find{
 		  	'prev'		  		  => $this->prev,
 		  	'start'	  		  	  => $this->start,
 		  	'end'	 			  => $this->end,
-		  	'urlBase'	 		  => $this->urlBase,
+		  	'baseUrl'	 		  => $this->baseUrl,
 			'classes' 			  => [],
 			'url'				  => ''
 		];
@@ -413,7 +413,7 @@ class Pagination extends \team\db\Find{
 
 
 	public function getPagedUrl($vars = []) {
-		return \team\Url::to($this->urlBase, $vars + $this->url->getData() );
+		return \team\Url::to($this->baseUrl, $vars + $this->url->getData() );
 	}
 
 }

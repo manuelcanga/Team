@@ -77,7 +77,7 @@ abstract class Model implements \ArrayAccess{
 		$pagination->setFrom(static::TABLE)
   		    	   ->setOrderBy(static::ID);
 
-		return $collection;
+		return $pagination;
 	}
 
 
