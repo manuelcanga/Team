@@ -178,7 +178,7 @@ class Http
     function getStatusHeaderDesc( $code ) {
         static $code2header_desc;
 
-        $code = absint( $code );
+        $code = \team\Check::id( $code, 0);
 
         if ( !isset( $code2header_desc ) ) {
             $code2header_desc = array(
