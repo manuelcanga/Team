@@ -341,6 +341,25 @@ class Sanitize {
 			return "/";
 	}
 
+    /**
+     * Retrieve a canonical form of the provided charset appropriate for passing to PHP
+     * functions such as htmlspecialchars() and charset html attributes.
+     *
+     * @param string $charset A charset name.
+     * @return string The canonical form of the charset.
+     */
+	static function charset($charset) {
+        if ( 'UTF-8' === $charset || 'utf-8' === $charset || 'utf8' === $charset ||
+            'UTF8' === $charset )
+            return 'UTF-8';
+
+        if ( 'ISO-8859-1' === $charset || 'iso-8859-1' === $charset ||
+            'iso8859-1' === $charset || 'ISO8859-1' === $charset )
+            return 'ISO-8859-1';
+
+        return $charset;
+    }
+
 	/**
 		Nos aseguramos que un determinado string sólo tenga como máximo un caracter por delante y por detrás
 	*/
