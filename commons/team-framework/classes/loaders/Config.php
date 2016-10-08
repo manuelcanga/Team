@@ -75,8 +75,8 @@ class Config {
 
         \team\Context::add($init_vars);
 
-        $configs_dir = \team\CONFIG_PATH.'/commons/config';
-        $root_vars= $this->loadConfigFiles($configs_dir, '\config', $enviroment);
+        $root_configs_dir = \team\CONFIG_PATH.'/commons/config';
+        $root_vars= $this->loadConfigFiles($root_configs_dir, '\config', $enviroment);
 
         //Añadimos las variables encontradas al contexto actual ( root ):
         \team\Context::add($root_vars);
@@ -184,6 +184,10 @@ class Config {
         $vars = $this->loadConfigFiles($path, $namespace, $enviroment);
         \team\Context::add($vars);
 
+        $this->loadConfigAccordingToType($path, $namespace, $enviroment);
+    }
+
+    private function loadConfigAccordingToType($path, $namespace, $enviroment) {
         $type = \team\Context::get('CONTROLLER_TYPE', 'Gui');
 
         //Cogemos también los archivos de configuración acorde al tipo de acción que se va a lanzar( ojo, el namespace sigue fijado al componente )
