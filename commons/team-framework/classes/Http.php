@@ -21,7 +21,7 @@ class Http
      * @see http://blogs.msdn.com/ie/archive/2008/07/02/ie8-security-part-v-comprehensive-protection.aspx
      * @see http://src.chromium.org/viewvc/chrome?view=rev&revision=6985
      */
-    static function sendNosniffHeader() {
+    static function sendNoSniffHeader() {
         @header( 'X-Content-Type-Options: nosniff' );
     }
 
@@ -44,7 +44,7 @@ class Http
      *
      * @return array The associative array of header names and field values.
      */
-    static function getNocacheHeaders() {
+    static function getNoCacheHeaders() {
         $headers = array(
             'Expires' => 'Wed, 11 Jan 1984 05:00:00 GMT',
             'Cache-Control' => 'no-cache, must-revalidate, max-age=0',
@@ -153,13 +153,11 @@ class Http
     }
 
 
-    function redirect($redirect, $code = 301, $protocol = 'http://',  $domain = null) {
+    function redirect($redirect, $code = 301, $protocol = null) {
         $redirect = \team\Sanitize::internalUrl($redirect);
 
-        if(!$domain) {
-            $domain = \team\Context::get('DOMAIN');
-        }
-
+        $domain = \team\Context::get('DOMAIN');
+        $protocol = $protocol?? \team\Context::get('PROTOCOL');
 
         $domain = str_replace($protocol, '',$domain);
 

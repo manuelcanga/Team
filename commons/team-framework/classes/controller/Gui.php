@@ -242,9 +242,6 @@ class Gui extends Controller {
 
 
 
-
-
-
     /* ____________ UserAgent ___________ */
 
     function getNavigator() {return  \team\Http::checkUserAgent('navigator'); }
@@ -271,8 +268,6 @@ class Gui extends Controller {
 
         return \team\Filter::apply('\team\body_classes', trim($classes));
     }
-
-
 
 
     /* ____________ Helpers ___________ */
