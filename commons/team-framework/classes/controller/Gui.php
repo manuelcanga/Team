@@ -248,76 +248,20 @@ class Gui extends Controller {
     /* ____________ UserAgent ___________ */
 
 
-    static function checkUserAgent($key = null) {
-        static $user_agent;
-
-        if(isset($user_agent) )  {
-            return $key? $user_agent[$key] : $user_agent;
-        }
-
-        $http_user_agent = $_SERVER['HTTP_USER_AGENT'];
-
-        $mobile = false;
-        $computer = false;
-        $tablet = false;
-        $device = 'computer';
-        $navigator = 'explorer';
-
-        if(!empty($http_user_agent) ) {
-            $is_mobile = strpos($http_user_agent, 'Mobile') !== false;
-            $is_android = strpos($http_user_agent, 'Android') !== false;
-
-            //¿is tablet?
-            if ( stripos($http_user_agent, 'Tablet') !== false || ($is_android && !$is_mobile)
-                || strpos($http_user_agent, 'Kindle') !== false ) {
-                $tablet =  true;
-                $device = $navigator = "tablet";
-            }
-
-            //¿is mobile?
-            if(!$tablet && ($is_mobile || strpos($http_user_agent, 'Silk/') !== false
-                    || strpos($http_user_agent, 'BlackBerry') !== false
-                    || strpos($http_user_agent, 'Opera Mini') !== false
-                    || strpos($http_user_agent, 'Opera Mobi') !== false ) ) {
-                $mobile = true;
-                $device = $navigator = "mobile";
-            }
-
-            //¿is desktop?
-            if(!$mobile && !$tablet) {
-                $computer = true;
-                if (strpos($http_user_agent, 'Chrome') !== false) {
-                    $navigator = "chrome";
-                }else if (strpos($http_user_agent, 'Firefox') !== false) {
-                    $navigator = "firefox";
-                }else {
-                    $navigator = "explorer";
-                }
-            }
-
-        }
 
 
-        $user_agent = ['navigator' => $navigator, 'device' => $device, 'computer' => $computer, 'mobile' => $mobile,'tablet' => $tablet, 'desktop' => ($computer || $tablet) ];
 
-        $user_agent = \team\Filter::apply('\team\user_agent', $user_agent);
+    function getNavigator() {return  \team\Http::checkUserAgent('navigator'); }
 
+    function getDevice() {return  \team\Http::checkUserAgent('device'); }
 
-        return $key? $user_agent[$key] : $user_agent;
-    }
+    function isMobile() { return  \team\Http::checkUserAgent('mobile'); }
 
+    function isDesktop() { return  \team\Http::checkUserAgent('desktop'); }
 
-    function getNavigator() {return  self::checkUserAgent('navigator'); }
+    function isComputer() { return  \team\Http::checkUserAgent('computer'); }
 
-    function getDevice() {return  self::checkUserAgent('device'); }
-
-    function isMobile() { return  self::checkUserAgent('mobile'); }
-
-    function isDesktop() { return  self::checkUserAgent('desktop'); }
-
-    function isComputer() { return  self::checkUserAgent('computer'); }
-
-    function isTablet() { return  self::checkUserAgent('tablet'); }
+    function isTablet() { return  \team\Http::checkUserAgent('tablet'); }
 
     function getBodyClasses($classes = '') {
 

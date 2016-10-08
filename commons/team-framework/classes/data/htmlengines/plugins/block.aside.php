@@ -51,7 +51,7 @@ function smarty_block_aside($params, $content, Smarty_Internal_Template $templat
 
 	if(!$mobile && $controller) {
 
-        $mobile = \team\Gui::checkUserAgent('mobile');
+        $mobile = \team\Http::checkUserAgent('mobile');
 
         if($mobile) {
 			$repeat= false;

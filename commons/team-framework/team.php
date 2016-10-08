@@ -134,9 +134,12 @@ require(\_TEAM_.'/classes/builders/Component.php');
 require(\_TEAM_.'/classes/controller/Controller.php');
 //Clase que hace funciones de limpieza
 require(\_TEAM_.'/classes/Sanitize.php');
+//Clase que maneja cabeceras http
+require(\_TEAM_.'/classes/Http.php');
 //Añadimos la clase que gestiona los datos de session
 \team\Classes::add('\team\User', '/classes/User.php', _TEAM_);
- 
+\team\Classes::add('\team\User', '/classes/User.php', _TEAM_);
+
 try {
 
 	/** 
@@ -167,13 +170,11 @@ try {
 	$_CONTEXT->initialize();
 
      \team\Debug::trace("Se inicializo el contexto. Ya podemos empezar a inicializar todo el framwork");
-	
-	
-	
-	$args = \team\Task('\team\url', array() )->with($_SERVER["REQUEST_URI"]);
-	
 
-	//Es necesario que un worker se haga cargo de la creación del primer response( o main )
+    $args = \team\Task('\team\url', array() )->with($_SERVER["REQUEST_URI"]);
+
+
+    //Es necesario que un worker se haga cargo de la creación del primer response( o main )
 	echo \team\Task('\team\main', '')->with($args, $_CONTEXT );
 
 	

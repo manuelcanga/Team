@@ -62,7 +62,7 @@ class Pagination extends \team\db\Find{
 
 	 function __construct( $_elements_for_page = 10,  $current_page = 1, $data = [] ) {
 
-        if(\team\Gui::checkUserAgent('mobile')) {
+        if(\team\Http::checkUserAgent('mobile')) {
             $this->range = 2;
         }
 

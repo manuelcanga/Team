@@ -42,7 +42,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 function smarty_block_desktop($params, $content, Smarty_Internal_Template $template, &$repeat)
 {
 
-	if(!\team\Gui::checkUserAgent('computer')) {
+	if(!\team\Http::checkUserAgent('computer')) {
 		$repeat= false;
 		return '';
 	}

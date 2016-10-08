@@ -42,12 +42,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 function smarty_block_display($params, $content, Smarty_Internal_Template $template, &$repeat)
 {
-	$controller = \team\Context::get('CONTROLLER');
     $params += ['desktop' => false, 'mobile' => false, 'tablet' => false];
 
     extract($params, EXTR_SKIP);
 
-	extract($controller::checkUserAgent(), EXTR_PREFIX_ALL, 'is');
+	extract(\team\Http::checkUserAgent(), EXTR_PREFIX_ALL, 'is');
 
 	if( ($desktop && $is_desktop) || ($mobile && $is_mobile) || ($tablet && $is_tablet)  ) {
         return $content;
