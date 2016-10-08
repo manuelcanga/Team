@@ -69,14 +69,14 @@ class Config {
         //La tercera prioridad la tienen los contextos base de team framework
         $init_vars = $user_defined_constants + $contexts_from_team_initialization + $team_base_contexts;
 
-        $profile = $init_vars['PROFILE'];
+        $enviroment = $init_vars['ENVIROMENT'];
         //Namespace asociado al contexto
         $init_vars["NAMESPACE"] =  '\\';
 
         \team\Context::add($init_vars);
 
         $configs_dir = \team\CONFIG_PATH.'/commons/config';
-        $root_vars= $this->loadConfigFiles($configs_dir, '\config', $profile);
+        $root_vars= $this->loadConfigFiles($configs_dir, '\config', $enviroment);
 
         //Añadimos las variables encontradas al contexto actual ( root ):
         \team\Context::add($root_vars);
@@ -132,14 +132,14 @@ class Config {
     private function loadPackageConfig($package, $current_namespace_path, $cached) {
         $current_namespace = "\\{$package}";
         \team\Context::set('NAMESPACE', $current_namespace);
-        $profile = \team\Context::get('PROFILE');
+        $enviroment = \team\Context::get('ENVIROMENT');
 
         //Obtenemos las variables de configuración del paquete.
         //Si ya estaba cacheado significa que ya se inicializó anteriormente.
         if(!$cached) {
             $package_config_dir = \team\CONFIG_PATH.$current_namespace_path.'/commons/config';
             $package_config_namespace = '\config'.$current_namespace;
-            $this->loadConfig($package_config_dir, $package_config_namespace, $profile);
+            $this->loadConfig($package_config_dir, $package_config_namespace, $enviroment);
 
             \Team::event('\team\package',$package);
             \Team::event("\\team\\initialize".$current_namespace);
@@ -158,13 +158,13 @@ class Config {
         $current_namespace = "\\{$package}\\{$component}";
 
         \team\Context::set('NAMESPACE', $current_namespace);
-        $profile = \team\Context::get('PROFILE');
+        $enviroment = \team\Context::get('ENVIROMENT');
 
         if(!$cached) {
             $component_config_dir = \team\CONFIG_PATH.$current_namespace_path.'/config';
             $component_config_namespace = "\\config".$current_namespace;
             
-            $this->loadConfig($component_config_dir, $component_config_namespace, $profile);
+            $this->loadConfig($component_config_dir, $component_config_namespace, $enviroment);
 
             \Team::event("\\team\\component\\{$package}", $component, $package);
             \Team::event("\\team\\initialize".$current_namespace);
@@ -180,46 +180,46 @@ class Config {
     }
 
 
-    private function loadConfig($path, $namespace, $profile) {
-        $vars = $this->loadConfigFiles($path, $namespace, $profile);
+    private function loadConfig($path, $namespace, $enviroment) {
+        $vars = $this->loadConfigFiles($path, $namespace, $enviroment);
         \team\Context::add($vars);
 
         $type = \team\Context::get('CONTROLLER_TYPE', 'Gui');
 
         //Cogemos también los archivos de configuración acorde al tipo de acción que se va a lanzar( ojo, el namespace sigue fijado al componente )
-        $vars = $this->loadConfigFiles($path."/{$type}/", $namespace, $profile);
+        $vars = $this->loadConfigFiles($path."/{$type}/", $namespace, $enviroment);
         \team\Context::add($vars);
     }
 
-    private function getConfigPathAccordingToProfile($profile, $configs_path, $namespace) {
+    private function getConfigPathAccordingToEnviroment($enviroment, $configs_path, $namespace) {
         //Esto es muy útil para poder depurar ciertas partes de un proyecto sin que afecte a otras
-        $profile_file = $configs_path.'/Profile.conf.php';
-        $profile_exists = file_exists($profile_file);
-        if($profile_exists) {
-            $vars = (array) $this->loadConfigClassFile($profile_file, $namespace, 'Profile');
-            $profile = $vars['PROFILE']?? $profile;
+        $enviroment_file = $configs_path.'/Enviroment.conf.php';
+        $enviroment_exists = file_exists($enviroment_file);
+        if($enviroment_exists) {
+            $vars = (array) $this->loadConfigClassFile($enviroment_file, $namespace, 'Enviroment');
+            $enviroment = $vars['ENVIROMENT']?? $enviroment;
         }
 
-        \team\Context::set('PROFILE', $profile);
+        \team\Context::set('ENVIROMENT', $enviroment);
 
         //Cargamos todos los archivos de configuración
-        $profile_configs_path = $configs_path.'/'.$profile;
-        $config_per_profile_exists = $profile && file_exists($profile_configs_path);
-        if($config_per_profile_exists) {
-            return $profile_configs_path;
+        $enviroment_configs_path = $configs_path.'/'.$enviroment;
+        $config_per_enviroment_exists = $enviroment && file_exists($enviroment_configs_path);
+        if($config_per_enviroment_exists) {
+            return $enviroment_configs_path;
         }else {
             return $configs_path;
         }
     }
 
 
-    private  function loadConfigFiles($configs_path, $namespace, $profile = null) {
+    private  function loadConfigFiles($configs_path, $namespace, $enviroment = null) {
         $vars = array();
 
         $config_dir_exists =file_exists($configs_path);
         if(!$config_dir_exists) return $vars;
 
-        $configs_path = $this->getConfigPathAccordingToProfile($profile, $configs_path, $namespace);
+        $configs_path = $this->getConfigPathAccordingToEnviroment($enviroment, $configs_path, $namespace);
 
         //Class config files
         $config_files = glob($configs_path.'/*.conf.php');

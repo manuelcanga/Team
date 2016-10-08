@@ -131,4 +131,5 @@ class Debug extends \config\team\Debug {
     Decidimos el nivel de error a mostrar en las vistas
      */
     protected $VIEWS_ERROR_LEVEL = E_ALL ^ E_NOTICE;
+
 }

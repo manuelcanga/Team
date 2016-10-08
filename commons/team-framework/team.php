@@ -66,13 +66,13 @@ if(!defined('team\SITE_ID') ) {
 
 
 /**
-	tea\PROFILE is used in order to have different kind of enviroments
-	user must define this, otherwise, TEAM defines "local" as PROFILE
-	team\PROFILE must be [a-Z|_ ]
+	tea\ENVIROMENT is used in order to have different kind of enviroments
+	user must define this, otherwise, TEAM defines "local" as ENVIROMENT
+	team\ENVIROMENT must be [a-Z|_ ]
 	@since 0.1
 */
-if(!defined('team\\PROFILE') ) {
-	define('team\\PROFILE',  'local');
+if(!defined('team\\ENVIROMENT') ) {
+	define('team\\ENVIROMENT',  'local');
 }
 
 /**

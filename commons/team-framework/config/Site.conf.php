@@ -29,19 +29,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 namespace config\team; 
 
-if(!defined('\team\PROFILE') ) {
-	define('\team\PROFILE', 'local');
-}
+
 
 class Site  extends \team\Config {
 
 
 	/** 
-		Establece un perfil de ejecucion.
-		Los usados por el sistemas son Local y Remote. 
-		Sin embargo, puedes usar el perfil que mas se adapte a sus necesidades
+		Establece un entorno de ejecucion.
+		Los usados por el sistemas son Local y Production.
+		Sin embargo, puedes usar el entorno que mas se adapte a sus necesidades
 	*/
-	protected  $PROFILE =  \team\PROFILE;
+	protected  $ENVIROMENT =  \team\ENVIROMENT;
 
 	/* __________________________ GENERALES _____________________  */
 	protected  $LANG = 'es_ES';

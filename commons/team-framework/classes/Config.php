@@ -38,11 +38,11 @@ abstract class Config{
         @param String $_full_class Clase para que se correra el setup
      */
 	public function __construct() {
-        $profile = \team\Context::get("PROFILE");
+        $enviroment = \team\Context::get("ENVIROMENT");
 
         /* Si hemos llegado hasta aquí toca llamar al setup general si lo hubiera */
         if(method_exists($this, "onSetup") ) {
-            return $this->onSetup($profile);
+            return $this->onSetup($enviroment);
         }
 	}
 
