@@ -43,194 +43,207 @@ class Config {
 
     private $cache = array();
 
-    private $scripts_path = '/events';
+    private $eventsScriptsPath = '/events';
 
     public  function __construct()
     {
+
+        $this->createContextBase();
+        $this->notifyStartToAllPackages();
+        $this->initializeSite();
+        $this->cacheOfTheInitialization();
+    }
+
+    /**
+     * Create context will be used by any package
+     */
+    private function createContextBase() {
         global $_CONTEXT;
 
-        //Obtenemos los contextos guardados hasta ahora( provenientes de la inicialización del sistema )
-        $context= $_CONTEXT->getState();
+        $contexts_from_team_initialization = $_CONTEXT->getState();
+        $team_base_contexts = $this->loadConfigFiles(_TEAM_.'/config', '\config\team');
+        $user_defined_constants = get_defined_constants(true)['user'];
 
-        //Al ser el primer nivel, inicializamos con las constantes de usuario(si las hubiera )
-        $init_vars = $context + get_defined_constants(true)['user'];
+        //Puede ser que el usuario haya querido inicializar por constantes. así que le damos máxima prioridad
+        //La segunda prioridad la tienen los contextos ya creados durante el inicio del framework
+        //La tercera prioridad la tienen los contextos base de team framework
+        $init_vars = $user_defined_constants + $contexts_from_team_initialization + $team_base_contexts;
 
+        $profile = $init_vars['PROFILE'];
         //Namespace asociado al contexto
         $init_vars["NAMESPACE"] =  '\\';
 
         \team\Context::add($init_vars);
 
-        //Añadimos también las variables de configuración base
-        $team_vars = $this->loadFiles(_TEAM_.'/config', '\config\team');
-        $profile = $team_vars['PROFILE'];
-
-         \team\Context::add($team_vars);
-
-        //Ahora, hacemos lo mismo con root.
-        $root_vars= $this->loadFiles(\team\CONFIG_PATH.'/commons/config', '\config', $profile);
+        $configs_dir = \team\CONFIG_PATH.'/commons/config';
+        $root_vars= $this->loadConfigFiles($configs_dir, '\config', $profile);
 
         //Añadimos las variables encontradas al contexto actual ( root ):
         \team\Context::add($root_vars);
+    }
 
-        //Si no existe CONFIG_PATH./confg/.installed se debería de lanzar el evento de instalación y quizás llamar a los config con install
+    private function notifyStartToAllPackages() {
+        \team\FileSystem::notify('/', 'Start', '/commons'.$this->eventsScriptsPath.'/', '\team\packages');
 
+        //To Team too
+        \team\FileSystem::load($this->eventsScriptsPath.'/Start.php', _TEAM_);
 
-
-        //Avisamos a los Start de todos los paquetes de que se va a inicializar el raiz
-        \team\FileSystem::notify('/', 'Start', '/commons'.$this->scripts_path.'/', '\team\packages');
-
-        //Llamamos al evento Start de Team framework( ya que es como un componente "virtual" )
-        \team\FileSystem::load($this->scripts_path.'/Start.php', _TEAM_);
-
-        //Lanzamos el evento start del sistema
         \Team::event('\team\start');
+    }
 
-        //Llamamos al initialize del raiz.
-        \team\FileSystem::load('/commons'.$this->scripts_path.'/Initialize.php');
+    private function initializeSite() {
+        \team\FileSystem::load('/commons'.$this->eventsScriptsPath.'/Initialize.php');
+    }
 
-
-        //El resultado lo cacheamos para root
+    /**
+     *  So we don't neet do do the same initizalition for each widget call
+     */
+    private function cacheOfTheInitialization() {
         $this->cache['\\'] = \team\Context::getState();
     }
 
     public function load($namespace, $path) {
-        $cached = false;
-
         $info_namespace = \team\NS::explode($namespace);
-        $down_namespace = \team\NS::shift($namespace);
 
+        $cache_exists = $namespace && isset($this->cache[$namespace]);
         //Comprobamos si estaban cacheadas las variables de configuración del namespace actual
-        if(array_key_exists($namespace, $this->cache) ) {
+        if($cache_exists ) {
             \team\Context::add($this->cache[$namespace] );
-            //Aquí quizás deberiamos de cargar y lanzar el evento load
-            $cached = true;
         }else if('\\' != $namespace) {
             //El nivel inferior está cacheado seguro porque vamos cargando desde abajo hasta arriba
+            $down_namespace = \team\NS::shift($namespace);
             \team\Context::add($this->cache[$down_namespace]);
         }
 
+        $current_package = $info_namespace['package'];
+        $current_component = $info_namespace['component'];
 
-        //Buscamos las variables de configuración del namespace actual.
-        if($info_namespace['component']) { //Estamos en un componente
-            $this->loadComponent($info_namespace['component'], $info_namespace['package'], $path, $cached);
-        }else if($info_namespace['package']){	//Estamos en un paquete.
-            $this->loadPackage($info_namespace['package'], $path, $cached);
+        if($current_component) {
+            $this->loadComponentConfig($current_component, $current_package, $path, $cache_exists);
+        }else if($current_package){
+            $this->loadPackageConfig($current_package, $path, $cache_exists);
         }else {
-            $this->loadRoot();
+         //   $this->loadRootConfig(); we have already done
         }
 
     }
 
-    private function loadRoot() {
-        //Esto ya está hecho
-    }
 
-
-    private function loadPackage($package, $path, $cached) {
-        \team\Context::set('NAMESPACE', "\\{$package}");
+    private function loadPackageConfig($package, $current_namespace_path, $cached) {
+        $current_namespace = "\\{$package}";
+        \team\Context::set('NAMESPACE', $current_namespace);
         $profile = \team\Context::get('PROFILE');
 
         //Obtenemos las variables de configuración del paquete.
         //Si ya estaba cacheado significa que ya se inicializó anteriormente.
         if(!$cached) {
-            $vars = $this->loadFiles(\team\CONFIG_PATH.$path.'/commons/config', '\config\\'.$package, $profile);
-            \team\Context::add($vars);
-            //@TODO: Si no existe CONFIG_PATH.$path./.installed se debería de lanzar el evento de instalación y quizás llamar a los config con install
+            $package_config_dir = \team\CONFIG_PATH.$current_namespace_path.'/commons/config';
+            $package_config_namespace = '\config'.$current_namespace;
+            $this->loadConfig($package_config_dir, $package_config_namespace, $profile);
 
-            $type = \team\Context::get('CONTROLLER_TYPE', 'Gui');
-            //Cogemos también los archivos de configuración acorde al tipo de acción que se va a lanzar( ojo, el namespace sigue fijado al paquete )
-            $vars = $this->loadFiles(\team\CONFIG_PATH.$path."/commons/config/{$type}/", '\config\\'.$package, $profile);
-            \team\Context::add($vars);
-
-            //Lanzamos evento de inicialización paquetes
             \Team::event('\team\package',$package);
-            \Team::event("\\team\\initialize\\{$package}");
+            \Team::event("\\team\\initialize".$current_namespace);
 
             //Inicializamos el paquete en cuestión
-            \team\FileSystem::load('/'.$package.'/commons'.$this->scripts_path.'/Initialize.php');
+            \team\FileSystem::load('/'.$package.'/commons'.$this->eventsScriptsPath.'/Initialize.php');
 
             //El resultado lo cacheamos para futuras peticiones
-            $this->cache["\\{$package}"] = \team\Context::getState();
+            $this->cache[$current_namespace] = \team\Context::getState();
         }
 
-        \Team::event("\\team\\load\\{$package}}");
+        \Team::event("\\team\\load".$current_namespace);
     }
 
-    private function loadComponent($component, $package, $path, $cached) {
-        \team\Context::set('NAMESPACE', "\\{$package}\\{$component}");
+    private function loadComponentConfig($component, $package, $current_namespace_path, $cached) {
+        $current_namespace = "\\{$package}\\{$component}";
+
+        \team\Context::set('NAMESPACE', $current_namespace);
         $profile = \team\Context::get('PROFILE');
 
         if(!$cached) {
-            //Si no existe CONFIG_PATH.$path./confg/.installed se debería de lanzar el evento de instalación y quizás llamar a los config con install
-
-            //Obtenemos los archivos del componente actual
-            $vars= $this->loadFiles(\team\CONFIG_PATH.$path.'/config', "\\config\\{$package}\\{$component}", $profile);
-            \team\Context::add($vars);
-
-            $type = \team\Context::get('CONTROLLER_TYPE', 'Gui');
-            //Cogemos también los archivos de configuración acorde al tipo de acción que se va a lanzar( ojo, el namespace sigue fijado al componente )
-            $vars = $this->loadFiles(\team\CONFIG_PATH.$path."/config/{$type}/", '\config\\'.$package, $profile);
-            \team\Context::add($vars);
+            $component_config_dir = \team\CONFIG_PATH.$current_namespace_path.'/config';
+            $component_config_namespace = "\\config".$current_namespace;
+            
+            $this->loadConfig($component_config_dir, $component_config_namespace, $profile);
 
             \Team::event("\\team\\component\\{$package}", $component, $package);
-            \Team::event("\\team\\initialize\\{$package}\\{$component}");
+            \Team::event("\\team\\initialize".$current_namespace);
 
             //Initializamos el componente
-            \team\FileSystem::load($path.$this->scripts_path.'/Initialize.php');
+            \team\FileSystem::load($current_namespace_path.$this->eventsScriptsPath.'/Initialize.php');
 
             //El resultado lo cacheamos para futuras peticiones
-            $this->cache["\\{$package}\\{$component}"] = \team\Context::getState();
+            $this->cache[$current_namespace] = \team\Context::getState();
         }
 
-        \Team::event("\\team\\load\\{$package}\\{$component}");
+        \Team::event("\\team\\load".$current_namespace);
     }
 
 
+    private function loadConfig($path, $namespace, $profile) {
+        $vars = $this->loadConfigFiles($path, $namespace, $profile);
+        \team\Context::add($vars);
 
+        $type = \team\Context::get('CONTROLLER_TYPE', 'Gui');
 
-    public  function loadFiles($path, $namespace, $profile = null) {
-        $vars = array();
+        //Cogemos también los archivos de configuración acorde al tipo de acción que se va a lanzar( ojo, el namespace sigue fijado al componente )
+        $vars = $this->loadConfigFiles($path."/{$type}/", $namespace, $profile);
+        \team\Context::add($vars);
+    }
 
-        //Si existe al archivo profile, lo cargamos
-        if(!file_exists($path) ) return $vars;
-
-        //Cargamos un posible archivo de perfil que hubiera
+    private function getConfigPathAccordingToProfile($profile, $configs_path, $namespace) {
         //Esto es muy útil para poder depurar ciertas partes de un proyecto sin que afecte a otras
-        $profile_file = $path.'/Profile.conf.php';
-        if(file_exists($profile_file) ) {
-            $vars = (array) $this->loadclassFile($profile_file, $namespace);
-
-            if(isset($vars['PROFILE'])) {
-                $profile = $vars['PROFILE'];
-            }
+        $profile_file = $configs_path.'/Profile.conf.php';
+        $profile_exists = file_exists($profile_file);
+        if($profile_exists) {
+            $vars = (array) $this->loadConfigClassFile($profile_file, $namespace, 'Profile');
+            $profile = $vars['PROFILE']?? $profile;
         }
+
         \team\Context::set('PROFILE', $profile);
 
-
         //Cargamos todos los archivos de configuración
-        if($profile && file_exists($path.'/'.$profile)) {
-            $path = $path.'/'.$profile;
+        $profile_configs_path = $configs_path.'/'.$profile;
+        $config_per_profile_exists = $profile && file_exists($profile_configs_path);
+        if($config_per_profile_exists) {
+            return $profile_configs_path;
+        }else {
+            return $configs_path;
         }
+    }
+
+
+    private  function loadConfigFiles($configs_path, $namespace, $profile = null) {
+        $vars = array();
+
+        $config_dir_exists =file_exists($configs_path);
+        if(!$config_dir_exists) return $vars;
+
+        $configs_path = $this->getConfigPathAccordingToProfile($profile, $configs_path, $namespace);
 
         //Class config files
-        $configs = glob($path.'/*.conf.php');
+        $config_files = glob($configs_path.'/*.conf.php');
 
-        if(!empty($configs) ) {
-            foreach($configs as $file) {
+        if(!empty($config_files) ) {
+            foreach($config_files as $file) {
                 $basename = \team\FileSystem::basename($file);
-                if('_' != $basename[0])
-                    $vars = $this->loadclassFile($file, $namespace, $basename) + $vars;
+                $disabled_config = '_' == $basename[0];
+                if(!$disabled_config) {
+                    $vars = $this->loadConfigClassFile($file, $namespace, $basename) + $vars;
+                }
             }
         }
 
         //Ini config file
-        $configs = glob($path.'/*.conf');
-        if(empty($configs) ) return $vars;
+        $config_files = glob($configs_path.'/*.conf');
+        if(!empty($config_files) ) {
 
-        foreach($configs as $file) {
-            $basename = \team\FileSystem::basename($file);
-            if('_' != $basename[0]) {
-                $vars = (parse_ini_file($file, $process_sections = true, INI_SCANNER_TYPED) + $vars );
+            foreach($config_files as $file) {
+                $basename = \team\FileSystem::basename($file);
+                $disabled_config = '_' == $basename[0];
+                if(!$disabled_config) {
+                    $vars = (parse_ini_file($file, $process_sections = true, INI_SCANNER_TYPED) + $vars );
+                }
             }
         }
 
@@ -242,7 +255,7 @@ class Config {
     //Lanzando sus métodos setups
     //Guardando el resultado.
 
-    public  function loadclassFile($file, $namespace, $basename) {
+    public  function loadConfigClassFile($file, $namespace, $basename) {
         $vars =array();
 
         require_once($file);
@@ -255,8 +268,17 @@ class Config {
 
         $obj = new $class;
 
+        /**
+         * Sometimes we have double or more configuration of same type. For example, three databases
+         * In this cases, we can create Config files with '_'
+         * Db_main
+         * Db_extra
+         * Db_forum
+         * Then, main, extra and forum configuation is saved in contexts Db['main'], Db['extra'] and Db['forum']
+         *
+         */
         if(strpos($basename, '_')) {
-            list($basename, $index) = explode('_', $basename,2);
+            list($basename, $index) = explode('_', $basename, 2);
 
             $basename = strtoupper($basename);
 
