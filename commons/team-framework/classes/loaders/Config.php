@@ -238,19 +238,6 @@ class Config {
             }
         }
 
-        //Ini config file
-        $config_files = glob($configs_path.'/*.conf');
-        if(!empty($config_files) ) {
-
-            foreach($config_files as $file) {
-                $basename = \team\FileSystem::basename($file);
-                $disabled_config = '_' == $basename[0];
-                if(!$disabled_config) {
-                    $vars = (parse_ini_file($file, $process_sections = true, INI_SCANNER_TYPED) + $vars );
-                }
-            }
-        }
-
         return $vars;
     }
 
