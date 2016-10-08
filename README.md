@@ -13,6 +13,10 @@ No esperes que TEAM te proporcione nuevas herramientas o gran cantidad de mejora
 * PHP 7.x
 * Sistema operativo Linux
 
+# INSTALL
+
+* It works out of box. Maybe you'll need to give write permission to /commons/team-framework/data directory.
+
 # Enlaces de soporte
 
 * [Trasweb](http://trasweb.net)
