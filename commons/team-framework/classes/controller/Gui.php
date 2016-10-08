@@ -247,10 +247,6 @@ class Gui extends Controller {
 
     /* ____________ UserAgent ___________ */
 
-
-
-
-
     function getNavigator() {return  \team\Http::checkUserAgent('navigator'); }
 
     function getDevice() {return  \team\Http::checkUserAgent('device'); }
@@ -277,28 +273,9 @@ class Gui extends Controller {
     }
 
 
-    /* ____________ HTTP ___________ */
-
-    function redirect($redirect, $code = 301, $protocol = 'http://',  $domain = null) {
-        $redirect = \team\Sanitize::internalUrl($redirect);
-
-        if(!$domain) {
-            $domain = \team\Context::get('DOMAIN');
-        }
-
-
-        $domain = str_replace($protocol, '',$domain);
-
-        $domain = rtrim($domain, '/');
-
-        header("Location: {$protocol}{$domain}{$redirect}", true, $code);
-        exit();
-    }
 
 
     /* ____________ Helpers ___________ */
-
-
 
     /**
     El metodo tostring mostraria la web en html

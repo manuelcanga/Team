@@ -151,4 +151,22 @@ class Http
 
         return $key? $user_agent[$key] : $user_agent;
     }
+
+
+    function redirect($redirect, $code = 301, $protocol = 'http://',  $domain = null) {
+        $redirect = \team\Sanitize::internalUrl($redirect);
+
+        if(!$domain) {
+            $domain = \team\Context::get('DOMAIN');
+        }
+
+
+        $domain = str_replace($protocol, '',$domain);
+
+        $domain = rtrim($domain, '/');
+
+        header("Location: {$protocol}{$domain}{$redirect}", true, $code);
+        exit();
+    }
+
 }
