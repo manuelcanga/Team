@@ -41,6 +41,11 @@ if(!class_exists('\FileSystem', false) ) {
 *************************************************************************************** */
 final  class Filesystem
 {
+    const BYTE = 1;
+    const KB_IN_BYTES = 1024 * self::BYTE;
+    const MB_IN_BYTES = 1024 * self::KB_IN_BYTES;
+    const GB_IN_BYTES = 1024 * self::MB_IN_BYTES;
+    const TB_IN_BYTES = 1024 * self::GB_IN_BYTES;
 
 
 	/**
