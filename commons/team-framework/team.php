@@ -138,7 +138,6 @@ require(\_TEAM_.'/classes/Sanitize.php');
 require(\_TEAM_.'/classes/Http.php');
 //Añadimos la clase que gestiona los datos de session
 \team\Classes::add('\team\User', '/classes/User.php', _TEAM_);
-\team\Classes::add('\team\User', '/classes/User.php', _TEAM_);
 
 try {
 
