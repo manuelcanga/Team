@@ -174,14 +174,16 @@ try {
 
 
     //Es necesario que un worker se haga cargo de la creación del primer response( o main )
-	echo \team\Task('\team\main', '')->with($args, $_CONTEXT );
+	$result =  \team\Task('\team\main', '')->with($args, $_CONTEXT );
 
 	
 	\team\Debug::trace("Se acabó, ya hemos realizado todas las operaciones pedidas. Bye!");
 	//Bajamos el ultimo nivel que queda.
 	\team\Context::close();
 
-	\Team::event('\team\end');
+	\Team::event('\team\end', $result);
+
+	echo $result;
 
 //Evitamos a toda costa que se quede congelado el sistema
 }catch(\Throwable $e) { 
