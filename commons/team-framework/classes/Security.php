@@ -33,38 +33,99 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 namespace team;
 
-if(!class_exists('\Security', false) ) {
-	class_alias('\team\Security', 'Security', false);
-}
 
 
 class Security {
 
-
 	/**
-		Devuelve una sal generada aleatoriamente
+		Devuelve un token generado aleatoriamente
+	    incluye valores valores alfanuméricos( mayúsculas y minúsculas )
+
+	    @param int $length Longitud para la nueva sal
 	*/
-	public static function getSalt() {		
-		return uniqid(mt_rand().mt_rand(), true);
+	public static function getToken($length = 10) {
+		$salt_values = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTVWYXZ";
+		$salt_values = \team\Filter::apply('\team\security\salt_values', $salt_values);
+
+		$min_number = 0;
+		$max_number = strlen($salt_values) - 1;
+
+		$salt = '';
+		for($i = 0; $i< $length; $i++) {
+			$index = random_int( $min_number , $max_number );
+			$salt .= $salt_values[$index];
+		}
+		return $salt;
 	}
 
 	/**
-		Devuelve un password aleatorio de la longitud querida
-		@param int $length Longitud para el nuevo password
-		@example \team\Security::getPassword() => devuelve jbjltmnlp ( password al azar )
+		Devuelve una salt aleatoria de la longitud querida
+		incluye valores alfanuméricos( mayúsculas y minúsculas ) y carácteres especiales
+	 	Muy útil también para generar passwords
 
-		@return devuelve el password generado
+	    @param int $length Longitud para la nueva sal
+		@example \team\Security::getSalt() => devuelve jbjltmnlp ( salt al azar )
+
+		@return devuelve la salt generada del tamaño especificado
 	*/
-	public static function getPassword($length = 10) {
+	public static function getSalt($length = 32) {
+
+		$min_char = ord('!');
+		$max_char = ord('}');
+
 		$passwd = '';
 		for($i = 0; $i< $length; $i++) {
-			$index = mt_rand ( 33 , 126 );
+			$index = random_int( $min_char, $max_char);
 			$passwd .= chr($index);
 		}
 		return $passwd;
 	}
 
 
+	/**
+	 * Devuelve un password semántico
+	 *
+	 * @param int $length longitud de la parte variable( no perteneciente a palabras )
+	 * @return string
+	 */
+	public static function getPassword($length = 6) {
+		$words = [
+			'acro',
+			'anti',
+			'auto',
+			'cycle',
+			'kinesis',
+			'less',
+			'counter',
+			'cosmo',
+			'demo',
+			'dynam',
+			'extra',
+			'hyper',
+			'mega',
+			'mania',
+			'maxi',
+			'maxi',
+			'kilo',
+			'milli',
+			'multi',
+			'ultra',
+			'scope',
+			'phone',
+			'wise',
+			'onomy',
+			'ology',
+			'osis',
+			'zoo' ];
+
+		$words = \team\Filter::apply('\team\security\words', $words);
+
+		$prefix = array_rand($words);
+		$postfix = array_rand($words);
+
+		$password = $words[$prefix].self::getToken($length).$words[$postfix];
+
+		return $password;
+	}
 
 }
-?>
