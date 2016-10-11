@@ -30,9 +30,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace team;
 
-if(!class_exists('\Url', false) ) {
-	class_alias('\team\Url', 'Url', false);
-}
 
 
 class Url {

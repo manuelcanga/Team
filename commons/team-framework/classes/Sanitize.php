@@ -31,10 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace team;
 
-if(!class_exists('\Sanitize', false) ) {
-	class_alias('\team\Sanitize', 'Sanitize', false);
-}
-
 
 /** **********************************************************************************
     Esta clase sirve para asegurarse de que los datos que tenemos esten limpios y seguros

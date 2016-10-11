@@ -31,10 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace team;
 
 
-if(!class_exists('\FileSystem', false) ) {
-	class_alias('\team\FileSystem', 'FileSystem', false);
-}
-
 
 /** **************************************************************************************
 	Funciones útiles para el trabajo a bajo nivel con el sistema de archivo

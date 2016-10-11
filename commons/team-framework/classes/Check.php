@@ -30,10 +30,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace team;
 
-if(!class_exists('\Check', false) ) {
-	class_alias('\team\Check', 'Check', false);
-}
-
 
 /** **********************************************************************************
 	Esta clase sirve para la validación de tipos de datos de entrada en Team
