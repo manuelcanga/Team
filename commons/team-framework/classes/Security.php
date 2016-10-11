@@ -39,23 +39,23 @@ class Security {
 
 	/**
 		Devuelve un token generado aleatoriamente
-	    incluye valores valores alfanuméricos( mayúsculas y minúsculas )
+	    incluye valores  alfanuméricos( mayúsculas y minúsculas )
 
 	    @param int $length Longitud para la nueva sal
 	*/
-	public static function getToken($length = 10) {
-		$salt_values = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTVWYXZ";
-		$salt_values = \team\Filter::apply('\team\security\salt_values', $salt_values);
+	public static function getToken(int $length = 10) {
+		$token_values = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTVWYXZ";
+		$token_values = \team\Filter::apply('\team\security\token_values', $token_values);
 
 		$min_number = 0;
-		$max_number = strlen($salt_values) - 1;
+		$max_number = strlen($token_values) - 1;
 
-		$salt = '';
+		$token = '';
 		for($i = 0; $i< $length; $i++) {
 			$index = random_int( $min_number , $max_number );
-			$salt .= $salt_values[$index];
+			$token .= $token_values[$index];
 		}
-		return $salt;
+		return $token;
 	}
 
 	/**
@@ -68,17 +68,17 @@ class Security {
 
 		@return devuelve la salt generada del tamaño especificado
 	*/
-	public static function getSalt($length = 32) {
+	public static function getSalt(int $length = 32) {
 
 		$min_char = ord('!');
 		$max_char = ord('}');
 
-		$passwd = '';
+		$salt = '';
 		for($i = 0; $i< $length; $i++) {
 			$index = random_int( $min_char, $max_char);
-			$passwd .= chr($index);
+			$salt .= chr($index);
 		}
-		return $passwd;
+		return $salt;
 	}
 
 
