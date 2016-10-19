@@ -230,7 +230,7 @@ class Pagination extends \team\db\Find{
 	*/
 	public function getcount() { return $this->count;	}
 	public function setCount($_num = 0) {
-		$this->count = Check::id($_num,0);
+		$this->count = \team\Check::id($_num,0);
 		return $this;
 	}
 
@@ -333,7 +333,7 @@ class Pagination extends \team\db\Find{
 			if(!$this->elementsForPage) {
 				$this->pages = 1;
 			}else {
-				$this->pages = \Check::id(ceil($this->count/$this->elementsForPage), 1);
+				$this->pages = \team\Check::id(ceil($this->count/$this->elementsForPage), 1);
 			}
 
 			/** Validamos que la pagina actual sea mayor o igual que 1 y menor o igual que el número máximo de paginas */
