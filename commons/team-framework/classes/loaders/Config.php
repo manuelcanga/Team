@@ -137,8 +137,12 @@ class Config {
         //Si ya estaba cacheado significa que ya se inicializó anteriormente.
         if(!$cached) {
             $package_config_dir = \team\CONFIG_PATH.$current_namespace_path.'/commons/config';
-            $package_config_namespace = '\config'.$current_namespace;
-            $this->loadConfig($package_config_dir, $package_config_namespace, $enviroment);
+
+            if(file_exists($component_config_dir)) {
+                $package_config_namespace = '\config'.$current_namespace;
+                $this->loadConfig($package_config_dir, $package_config_namespace, $enviroment);
+            }
+
 
             \Team::event('\team\package',$package);
             \Team::event("\\team\\initialize".$current_namespace);
@@ -161,9 +165,11 @@ class Config {
 
         if(!$cached) {
             $component_config_dir = \team\CONFIG_PATH.$current_namespace_path.'/config';
-            $component_config_namespace = "\\config".$current_namespace;
-            
-            $this->loadConfig($component_config_dir, $component_config_namespace, $enviroment);
+
+            if(file_exists($component_config_dir)) {
+                $component_config_namespace = "\\config".$current_namespace;
+                $this->loadConfig($component_config_dir, $component_config_namespace, $enviroment);
+            }
 
             \Team::event("\\team\\component\\{$package}", $component, $package);
             \Team::event("\\team\\initialize".$current_namespace);
