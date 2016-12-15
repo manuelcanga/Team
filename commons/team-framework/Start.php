@@ -18,15 +18,15 @@
 	$_CONTEXT['CLI_MODE'] =  $cli_mode;
 
 	if($cli_mode) {
-	  return include(__DIR__.'/start/cli.php');
+	  return include(__DIR__ . '/start/cli.php');
 	}
     
  
 	//Si hemos llegado hasta aquí, queremos lanzar un MVC basados en la url
 	//Suele suer la opción principal. 
-    include(__DIR__.'/start/check_areas.php');
-    include(__DIR__.'/start/parse_url.php');
-    include(__DIR__.'/start/from_url.php');
+    include(__DIR__ . '/start/check_areas.php');
+    include(__DIR__ . '/start/parse_url.php');
+    include(__DIR__ . '/start/from_url.php');
 
 });
 

@@ -42,7 +42,6 @@ o inicialicen filtros, pipelines, etc.
 class Config {
 
     private $cache = array();
-    private $eventsScriptsPath = '/events';
 
     public  function __construct()
     {
@@ -83,16 +82,16 @@ class Config {
 
     private function notifyStartToAllPackages() {
         //root
-        \team\FileSystem::load('/commons'.$this->eventsScriptsPath.'/Start.php');
+        \team\FileSystem::load('/commons/Start.php');
 
         //To Team too
-        \team\FileSystem::load($this->eventsScriptsPath.'/Start.php', _TEAM_);
+        \team\FileSystem::load('/Start.php', _TEAM_);
 
         \Team::event('\team\start');
     }
 
     private function initializeSite() {
-        \team\FileSystem::load('/commons'.$this->eventsScriptsPath.'/Initialize.php');
+        \team\FileSystem::load('/commons/Initialize.php');
     }
 
     /**
@@ -145,7 +144,7 @@ class Config {
             \Team::event("\\team\\initialize".$current_namespace);
 
             //Inicializamos el paquete en cuestión
-            \team\FileSystem::load('/'.$package.'/commons'.$this->eventsScriptsPath.'/Initialize.php');
+            \team\FileSystem::load('/'.$package.'/commons/Initialize.php');
 
             //El resultado lo cacheamos para futuras peticiones
             $this->cache[$current_namespace] = \team\Context::getState();
@@ -170,7 +169,7 @@ class Config {
             \Team::event("\\team\\initialize".$current_namespace);
 
             //Initializamos el componente
-            \team\FileSystem::load($current_namespace_path.$this->eventsScriptsPath.'/Initialize.php');
+            \team\FileSystem::load($current_namespace_path.'/Initialize.php');
 
             //El resultado lo cacheamos para futuras peticiones
             $this->cache[$current_namespace] = \team\Context::getState();
