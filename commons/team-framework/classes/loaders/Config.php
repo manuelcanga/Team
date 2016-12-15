@@ -42,7 +42,6 @@ o inicialicen filtros, pipelines, etc.
 class Config {
 
     private $cache = array();
-
     private $eventsScriptsPath = '/events';
 
     public  function __construct()
@@ -83,7 +82,8 @@ class Config {
     }
 
     private function notifyStartToAllPackages() {
-        \team\FileSystem::notify('/', 'Start', '/commons'.$this->eventsScriptsPath.'/', '\team\packages');
+        //root
+        \team\FileSystem::load('/commons'.$this->eventsScriptsPath.'/Start.php');
 
         //To Team too
         \team\FileSystem::load($this->eventsScriptsPath.'/Start.php', _TEAM_);
