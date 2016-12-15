@@ -66,11 +66,12 @@ class Pagination extends \team\db\Find{
             $this->range = 2;
         }
 
-		$this->setElementsForPage($_elements_for_page);
-        $this->setCurrentPage($current_page);
-		$this->data = [];
-		$this->url = new \team\Data($data);
-		$this->GUI = \team\Context::get('CONTROLLER');
+		 $this->data = [];
+         $this->url = new \team\Data($data);
+		 $this->GUI = \team\Context::get('CONTROLLER');
+
+         $this->setElementsForPage($_elements_for_page);
+         $this->setCurrentPage($current_page);
 
 		$base_url = \team\Context::get('_SELF_');
 		if(!empty($url))  {
@@ -245,6 +246,8 @@ class Pagination extends \team\db\Find{
 
 	public function setCurrentPage($_currentPage) {
 		$this->currentPage =  \team\Check::id($_currentPage, 1);
+        $this->url["page"]  =  $this->currentPage;
+
 		return $this;
 	}
 
