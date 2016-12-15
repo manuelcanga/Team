@@ -161,7 +161,7 @@ class PageIterator implements \ArrayAccess,  \Iterator, \Countable{
 	}
 
 	public function getPagedUrl($vars = []) {
-		return \team\Url::to($this->urlBase, $vars + $this->data);
+		return \team\Url::to($this->baseUrl, $vars + $this->data);
 	}
 
 	public function getClasses($extra = '') {
@@ -184,6 +184,10 @@ class PageIterator implements \ArrayAccess,  \Iterator, \Countable{
 
 		return trim($classes);
 	}
+
+	public function getUrl() {
+	    return $this->getPagedUrl();
+    }
 
 	//Comprobamos si la página actual es la primera
 	public function isFirst()  {	return $this->first = ( $this->iteratorPage == $this->start );}
