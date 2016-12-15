@@ -166,6 +166,7 @@ class DB {
 	public  function change($conname = null,  $connection_data = [], $dbPrefix = null) {
 		$conname = $conname?: \team\Context::get("DB_CONNECTION");
 
+        $conname = \team\Filter::apply('\team\db\conname', $conname, $connection_data  );
 
         if(self::connectionExists($conname)) {
             $this->server = self::$connections[$conname]['link'];
