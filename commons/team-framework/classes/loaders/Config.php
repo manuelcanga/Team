@@ -138,7 +138,7 @@ class Config {
         if(!$cached) {
             $package_config_dir = \team\CONFIG_PATH.$current_namespace_path.'/commons/config';
 
-            if(file_exists($component_config_dir)) {
+            if(file_exists($package_config_dir)) {
                 $package_config_namespace = '\config'.$current_namespace;
                 $this->loadConfig($package_config_dir, $package_config_namespace, $enviroment);
             }
