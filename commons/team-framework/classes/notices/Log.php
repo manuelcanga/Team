@@ -30,6 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace team;
 
+
 /**
 
 Herramienta de escritura de logs con soporte a formato.
@@ -70,7 +71,9 @@ class Log {
 	  "bwhite"		=> "\x1b[47m"
       );
 
-    /** ETIQUETAS de LOGS:  <{string}> -> _option_{string>_() */
+    /**
+     * ETIQUETAS de LOGS:  <{string}> -> _option_{string>_()
+     */
     static function _option_vars() { $_vars = get_defined_vars(); return $_vars["user"]; }
     static function _option_functions() { $_funcs = get_defined_functions(); return $_funcs["user"]; }
     static function _option_constants() { $_const = get_defined_constants(true); return $_const["user"]; }

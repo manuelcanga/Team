@@ -126,7 +126,8 @@ require(\_TEAM_.'/classes/NS.php');
 require(\_TEAM_.'/classes/hooks/Filter.php');
 //Task permite la delegación de tareas
 require(\_TEAM_.'/classes/hooks/Task.php');
-//Cargamos la clase Debug para todo ayudar al programador/maquetador en su tarea.
+//Cargamos la clase Debug y Log para todo ayudar al programador/maquetador en su tarea.
+require(\_TEAM_.'/classes/notices/Log.php');
 require(\_TEAM_.'/classes/notices/Debug.php');
 //Añadimos la clase para gestionar componentes virtualmente
 require(\_TEAM_.'/classes/builders/Component.php');
