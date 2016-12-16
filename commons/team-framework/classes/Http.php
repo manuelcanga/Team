@@ -92,12 +92,13 @@ class Http
      * Get information about user agent.
      *
      * @params string $key only retrieve $key field of user agent information
+     * @params boolean $mustRecheck forcing a check of user agent again
      *
      */
-    static function checkUserAgent($key = null) {
+    static function checkUserAgent($key = null, $mustRecheck = false) {
         static $user_agent;
 
-        if(isset($user_agent) )  {
+        if(!$mustRecheck && isset($user_agent) )  {
             return $key? $user_agent[$key] : $user_agent;
         }
 
