@@ -131,6 +131,7 @@ class  Classes{
 			}
 		}
 
+
 		$namespace = explode('\\', $class_name_full);
 		$name = array_pop($namespace);
 
@@ -234,12 +235,11 @@ class  Classes{
 	*/
 	public static function classExists($file, $path = _SITE_, $className = null) {
 
-		if(!empty($file) && file_exists($path.$file) ) {
-			//echo "<br>Loading.....".$path.$file;
+	    $class_exists = false;
 
-			if(\team\Context::get('TRACE_AUTOLOAD_CLASS') ) {
-					\team\Debug::me($path.$file, "Loading file...." );
-			}
+		if(!empty($file) && file_exists($path.$file) ) {
+            $class_exists = true;
+
 			 include_once($path.$file);
 
 			/** hay muchos tipos de elemtos que se carga con el autoload: clases, excepciones, trait, ...
@@ -248,16 +248,18 @@ class  Classes{
 			*/
             if(isset($className)) {
                 $class_exists = class_exists($className, false);
-				if(! $class_exists ) {
-					\team\Debug::me("Not class {$className} found in  {$path}{$file}");
-				}
-				return  $class_exists;
+
+                if(!$class_exists) {
+                    \team\Debug::me("Not class found in {$path}{$file}", $className);
+                }
 			}
-				
-			return true;
-		}else {
-			return false;
 		}
+
+        if(\team\Context::get('TRACE_AUTOLOAD_CLASS') ) {
+                \team\Debug::me($path.$file, "Loading file....".($class_exists? "FOUND" : "Not FOUND") );
+        }
+
+        return $class_exists;
 	}
 
 

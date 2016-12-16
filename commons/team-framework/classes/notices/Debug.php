@@ -178,7 +178,7 @@ final  class Debug
 	*/
 	private static function formatDisplay( $var, $label, $file, $line) {
 	
-        if(class_exists('\team\Classes', false) && 'data' == strtolower(\team\Context::get('SHOW_IN_NAVIGATOR') )  ) {
+        if(class_exists('\team\data\formats\Html', false) && 'data' == strtolower(\team\Context::get('SHOW_IN_NAVIGATOR') )  ) {
             return self::withData( $var, $label, $file, $line);
         }else { 
             return self::withString( $var, $label, $file, $line);

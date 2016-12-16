@@ -115,7 +115,7 @@ class Debug extends \team\Config {
 	/**
 		Especifica si visualizamos la traza de cargado de clases
 	*/
-	protected $TRACE_AUTOLOAD_CLASS = true;
+	protected $TRACE_AUTOLOAD_CLASS = false;
 	
 	/**
 		Mostramos informacion de todas las consultas que se realizan

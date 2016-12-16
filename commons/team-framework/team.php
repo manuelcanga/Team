@@ -139,6 +139,9 @@ require(\_TEAM_.'/classes/Sanitize.php');
 require(\_TEAM_.'/classes/Http.php');
 //Añadimos la clase que gestiona los datos de session
 \team\Classes::add('\team\User', '/classes/User.php', _TEAM_);
+//Cargamos la clase Log para todo ayudar al programador/maquetador en su tarea.
+\team\Classes::add('\team\Log', '/classes/notices/Log.php', _TEAM_);
+
 
 try {
 
@@ -148,7 +151,7 @@ try {
 	*/
 	spl_autoload_register(['\team\Classes', 'factory']);
 
-	/** 
+	/**
 	  Se inicia el proceso de gestión de errores
 	*/
     \Team::__initialize();

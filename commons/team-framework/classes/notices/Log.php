@@ -183,9 +183,9 @@ class Log {
 				if(isset(\team\Log::$_colors[$tag[2]]) ) {
 					return \team\Log::$_colors[$tag[2]];
 				
-				}elseif( method_exists("\Log",$func) && null != $attr )
+				}elseif( method_exists("\team\Log",$func) && null != $attr )
 					return call_user_func("\team\Log::".$func, $attr );
-				else if ( method_exists("\Log",$func)  )
+				else if ( method_exists("\team\Log",$func)  )
 					return call_user_func("\team\Log::".$func );
 				else
 					return "";
