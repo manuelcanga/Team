@@ -154,6 +154,7 @@ class Http
     }
 
 
+
     function redirect($redirect, $code = 301, $protocol = null) {
         $redirect = \team\Sanitize::internalUrl($redirect);
 

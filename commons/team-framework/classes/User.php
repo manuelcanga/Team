@@ -139,6 +139,27 @@ class User {
 			}
 		}
 	}
-	
+
+
+    /**
+     * Test if the current user( or device )  has the capability to upload files.
+     *
+     * @return bool Whether the device is able to upload files.
+     */
+    function canUpload() {
+        if ( \team\Http::checkUserAgent('desktop') )
+            return true;
+
+        $ua = $_SERVER['HTTP_USER_AGENT'];
+
+        if ( strpos($ua, 'iPhone') !== false
+            || strpos($ua, 'iPad') !== false
+            || strpos($ua, 'iPod') !== false ) {
+            return preg_match( '#OS ([\d_]+) like Mac OS X#', $ua, $version ) && version_compare( $version[1], '6', '>=' );
+        }
+
+        return true;
+    }
+
 }
 
