@@ -47,7 +47,7 @@ class Config {
     {
 
         $this->createContextBase();
-        $this->notifyStartToAllPackages();
+        $this->notifyStart();
         $this->initializeSite();
         $this->cacheOfTheInitialization();
     }
@@ -73,14 +73,15 @@ class Config {
 
         \team\Context::add($init_vars);
 
+        //Parseamos los archivos de configuración de root
         $root_configs_dir = \team\CONFIG_PATH.'/commons/config';
-        $root_vars= $this->loadConfigFiles($root_configs_dir, '\config', $enviroment);
+        $root_vars= $this->loadConfigFiles($root_configs_dir, '\config', $enviroment, $init_vars);
 
         //Añadimos las variables encontradas al contexto actual ( root ):
         \team\Context::add($root_vars);
     }
 
-    private function notifyStartToAllPackages() {
+    private function notifyStart() {
         //root
         \team\FileSystem::load('/commons/Start.php');
 
@@ -118,9 +119,9 @@ class Config {
         $current_component = $info_namespace['component'];
 
         if($current_component) {
-            $this->loadComponentConfig($current_component, $current_package, $path, $cache_exists);
+            $this->loadComponentConfig($current_component, $current_package);
         }else if($current_package){
-            $this->loadPackageConfig($current_package, $path, $cache_exists);
+            $this->loadPackageConfig($current_package);
         }else {
          //   $this->loadRootConfig(); we have already done
         }
@@ -128,76 +129,43 @@ class Config {
     }
 
 
-    private function loadPackageConfig($package, $current_namespace_path, $cached) {
+    private function loadPackageConfig($package) {
         $current_namespace = "\\{$package}";
         \team\Context::set('NAMESPACE', $current_namespace);
-        $enviroment = \team\Context::get('ENVIROMENT');
-
-        //Obtenemos las variables de configuración del paquete.
-        //Si ya estaba cacheado significa que ya se inicializó anteriormente.
-        if(!$cached) {
-            $package_config_dir = \team\CONFIG_PATH.$current_namespace_path.'/commons/config';
-
-            if(file_exists($package_config_dir)) {
-                $package_config_namespace = '\config'.$current_namespace;
-                $this->loadConfig($package_config_dir, $package_config_namespace, $enviroment);
-            }
-
-
-            \Team::event('\team\package',$package);
-            \Team::event("\\team\\initialize".$current_namespace);
-
-            //Inicializamos el paquete en cuestión
-            \team\FileSystem::load('/'.$package.'/commons/Initialize.php');
-
-            //El resultado lo cacheamos para futuras peticiones
-            $this->cache[$current_namespace] = \team\Context::getState();
-        }
 
         \Team::event("\\team\\load".$current_namespace);
     }
 
-    private function loadComponentConfig($component, $package, $current_namespace_path, $cached) {
+    private function loadComponentConfig($component, $package) {
         $current_namespace = "\\{$package}\\{$component}";
 
         \team\Context::set('NAMESPACE', $current_namespace);
-        $enviroment = \team\Context::get('ENVIROMENT');
-
-        if(!$cached) {
-            $component_config_dir = \team\CONFIG_PATH.$current_namespace_path.'/config';
-
-            if(file_exists($component_config_dir)) {
-                $component_config_namespace = "\\config".$current_namespace;
-                $this->loadConfig($component_config_dir, $component_config_namespace, $enviroment);
-            }
-
-            \Team::event("\\team\\component\\{$package}", $component, $package);
-            \Team::event("\\team\\initialize".$current_namespace);
-
-            //Initializamos el componente
-            \team\FileSystem::load($current_namespace_path.'/Initialize.php');
-
-            //El resultado lo cacheamos para futuras peticiones
-            $this->cache[$current_namespace] = \team\Context::getState();
-        }
 
         \Team::event("\\team\\load".$current_namespace);
     }
 
 
-    private function loadConfig($path, $namespace, $enviroment) {
-        $vars = $this->loadConfigFiles($path, $namespace, $enviroment);
-        \team\Context::add($vars);
+    private  function loadConfigFiles($configs_path, $namespace, $enviroment = null, $vars = []) {
 
-        $this->loadConfigAccordingToType($path, $namespace, $enviroment);
-    }
+        $config_dir_exists =file_exists($configs_path);
+        if(!$config_dir_exists) return $vars;
 
-    private function loadConfigAccordingToType($path, $namespace, $enviroment) {
-        $type = \team\Context::get('CONTROLLER_TYPE', 'Gui');
+        $configs_path = $this->getConfigPathAccordingToEnviroment($enviroment, $configs_path, $namespace);
 
-        //Cogemos también los archivos de configuración acorde al tipo de acción que se va a lanzar( ojo, el namespace sigue fijado al componente )
-        $vars = $this->loadConfigFiles($path."/{$type}/", $namespace, $enviroment);
-        \team\Context::add($vars);
+        //Class config files
+        $config_files = glob($configs_path.'/*.conf.php');
+
+        if(!empty($config_files) ) {
+            foreach($config_files as $file) {
+                $basename = \team\FileSystem::basename($file);
+                $disabled_config = '_' == $basename[0];
+                if(!$disabled_config) {
+                    $vars = $this->loadConfigClassFile($file, $namespace, $basename, $vars);
+                }
+            }
+        }
+
+        return $vars;
     }
 
     private function getConfigPathAccordingToEnviroment($enviroment, $configs_path, $namespace) {
@@ -222,44 +190,19 @@ class Config {
     }
 
 
-    private  function loadConfigFiles($configs_path, $namespace, $enviroment = null) {
-        $vars = array();
-
-        $config_dir_exists =file_exists($configs_path);
-        if(!$config_dir_exists) return $vars;
-
-        $configs_path = $this->getConfigPathAccordingToEnviroment($enviroment, $configs_path, $namespace);
-
-        //Class config files
-        $config_files = glob($configs_path.'/*.conf.php');
-
-        if(!empty($config_files) ) {
-            foreach($config_files as $file) {
-                $basename = \team\FileSystem::basename($file);
-                $disabled_config = '_' == $basename[0];
-                if(!$disabled_config) {
-                    $vars = $this->loadConfigClassFile($file, $namespace, $basename) + $vars;
-                }
-            }
-        }
-
-        return $vars;
-    }
 
     //Vamos recorriendo todos los archivos de configuración.
     //Instanciando sus clases
     //Lanzando sus métodos setups
     //Guardando el resultado.
-
-    public  function loadConfigClassFile($file, $namespace, $basename) {
-        $vars =array();
+    public  function loadConfigClassFile($file, $namespace, $basename, $last_vars = []) {
 
         require_once($file);
 
         $class = $namespace.'\\'.$basename;
         if( !class_exists($class) )  {
             \team\Debug::me("Not class $class found in $file");
-            return $vars;
+            return $last_vars;
         }
 
         $obj = new $class;
@@ -278,12 +221,12 @@ class Config {
 
             $basename = strtoupper($basename);
 
-            $vars[$basename][$index] =   $obj->getVars();
+            $last_vars[$basename][$index] =   $obj->getVars();
 
             return   $vars;
         }
 
-        return $obj->getVars();
+        return $obj->getVars() + $last_vars;
     }
 
 }
