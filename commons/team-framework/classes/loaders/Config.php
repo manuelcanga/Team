@@ -41,11 +41,10 @@ o inicialicen filtros, pipelines, etc.
  */
 class Config {
 
-    private $cache = array();
+    private $cache = [];
 
     public  function __construct()
     {
-
         $this->createContextBase();
         $this->notifyStart();
         $this->initializeSite();
@@ -78,7 +77,8 @@ class Config {
         $root_vars= $this->loadConfigFiles($root_configs_dir, '\config', $enviroment, $init_vars);
 
         //Añadimos las variables encontradas al contexto actual ( root ):
-        \team\Context::add($root_vars);
+        \team\Context::setContexts( $root_vars );
+        $this->cache = $root_vars;
     }
 
     private function notifyStart() {
@@ -99,31 +99,25 @@ class Config {
      *  So we don't neet do do the same initizalition for each widget call
      */
     private function cacheOfTheInitialization() {
-        $this->cache['\\'] = \team\Context::getState();
+        $this->cache = \team\Context::getState();
     }
 
-    public function load($namespace, $path) {
+    public function load($namespace) {
         $info_namespace = \team\NS::explode($namespace);
-
-        $cache_exists = $namespace && isset($this->cache[$namespace]);
-        //Comprobamos si estaban cacheadas las variables de configuración del namespace actual
-        if($cache_exists ) {
-            \team\Context::add($this->cache[$namespace] );
-        }else if('\\' != $namespace) {
-            //El nivel inferior está cacheado seguro porque vamos cargando desde abajo hasta arriba
-            $down_namespace = \team\NS::shift($namespace);
-            \team\Context::add($this->cache[$down_namespace]);
-        }
 
         $current_package = $info_namespace['package'];
         $current_component = $info_namespace['component'];
 
+        if(!$current_component && !$current_package) {
+            return ;//   $this->loadRootConfig(); we have already done
+        }
+
+        \team\Context::setContexts( $this->cache );
+
         if($current_component) {
             $this->loadComponentConfig($current_component, $current_package);
-        }else if($current_package){
-            $this->loadPackageConfig($current_package);
         }else {
-         //   $this->loadRootConfig(); we have already done
+            $this->loadPackageConfig($current_package);
         }
 
     }
@@ -134,6 +128,7 @@ class Config {
         \team\Context::set('NAMESPACE', $current_namespace);
 
         \Team::event("\\team\\load".$current_namespace);
+        \Team::event("\\team\\load\\{$package}".$current_namespace);
     }
 
     private function loadComponentConfig($component, $package) {
@@ -142,6 +137,7 @@ class Config {
         \team\Context::set('NAMESPACE', $current_namespace);
 
         \Team::event("\\team\\load".$current_namespace);
+        \Team::event("\\team\\load\\{$package}\\{$component}".$current_namespace);
     }
 
 

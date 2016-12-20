@@ -265,19 +265,26 @@ class Context implements \ArrayAccess  {
 		self::$current = $vars + $last_vars;
 	}
 
+    /**
+        Añade nuevas variables de configuración al nivel actual
+        Se diferencia del método add en que este es un método más rápido y optimo en últimas versiones de PHP
+        @param array $vars variables nuevas a añadir.
+     */
+    public static function setContexts(array $vars) {
+        self::$current = $vars;
+    }
 
-	/**
+
+    /**
 		Asignamos un nuevo namespace al contexto actual.
 		Esto también hace que el contexto se actualize según el namespace que vaya tomando
 		@param $namespace Namespace nuevo para el contexto
 		@nota: He quitado caché, así siempre se dispararán los setups de los configs
 	*/
-	public static function setNamespace($namespace){ 
+	public static function setNamespace($namespace){
 
-		self::$current['NAMESPACE'] = $namespace; 
-		self::$current['SUBPATH'] =   str_replace('\\', '/', $namespace);
-
-		self::$context->configloader->load($namespace, self::$current['SUBPATH']);
+		self::$context->configloader->load($namespace);
+        self::$current['SUBPATH'] =   str_replace('\\', '/', $namespace);
 
 		//Notificamos del nuevo evento. @AMEDIDA
 		//\Team::event('\team\context\Set_Namespace', $namespace);
