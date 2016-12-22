@@ -53,13 +53,17 @@ function smarty_block_head($params, $content, Smarty_Internal_Template $template
         }
 
 
-        //html tag
+        /* ******************** HTML TAG *************** */
         $out = '<!DOCTYPE html>';
         $out .= '<html';
         foreach($params as $attr => $value) {
             $out .= " {$attr}='{$value}'";
         }
         $out .= '><head>'.$responsive;
+
+
+        /* ******************** METAS *************** */
+
 
         //head tag
         $metas =  (array) \team\Context::get('SEO_METAS');
@@ -88,6 +92,27 @@ function smarty_block_head($params, $content, Smarty_Internal_Template $template
         }
 
         $out =  trim(\team\Filter::apply('\team\tag\head', $out));
+
+        /* ******************** TOP CSS Y JS FILES *************** */
+        //TOP CSS
+        $css_files =  \team\Filter::apply('\team\css\top', []);
+
+        if(!empty($css_files) ) {
+            foreach($css_files as $id => $file) {
+                $out .="<link href='{$file}' rel='stylesheet'/>";
+            }
+        }
+
+        //TOP JS
+        $js_files =  \team\Filter::apply('\team\js\top', []);
+
+        if(!empty($js_files) ) {
+            foreach($js_files as $id => $file) {
+                $out .=	"<script src='{$file}'></script>";
+            }
+        }
+
+        /* ******************** /TOP CSS Y JS FILES *************** */
 
 
         //start fluching

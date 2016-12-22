@@ -49,27 +49,6 @@ function smarty_block_body($params, $content, Smarty_Internal_Template $template
 		return $out;
 	}else {//close tag
 
-		/* ******************** TOP CSS Y JS FILES *************** */
-		//TOP CSS
-		$css_files =  \team\Filter::apply('\team\css\top', []);
-
-		if(!empty($css_files) ) {
-			foreach($css_files as $id => $file) {
-				$out .="<link href='{$file}' rel='stylesheet'/>";
-			}
-		}
-		
-		//TOP JS
-		$js_files =  \team\Filter::apply('\team\js\top', []);
-
-		if(!empty($js_files) ) {
-			foreach($js_files as $id => $file) {
-				$out .=	"<script src='{$file}'></script>";
-			}
-		}
-
-		/* ******************** /TOP CSS Y JS FILES *************** */
-
 
 		//Atributos del body
 		$package = \team\Context::get('PACKAGE');
@@ -92,7 +71,7 @@ function smarty_block_body($params, $content, Smarty_Internal_Template $template
 		}
 
 
-		$out .= '</head><body';
+		$out .= '<body';
 		$params =  \team\Filter::apply('\team\tag\body\params', $params + $default);
 		foreach($params as $attr => $value) {
 				$out .= " {$attr}='{$value}'";
