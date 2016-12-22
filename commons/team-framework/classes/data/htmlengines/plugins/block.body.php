@@ -126,7 +126,7 @@ function smarty_block_body($params, $content, Smarty_Internal_Template $template
 		/* ******************** /BOTTOM CSS Y JS FILES *************** */
 		$out =  trim(\team\Filter::apply('\team\tag\endbody', $out, $params, $template));
 
-		$out .= '</body>';
+		$out .= '</body></html>';
 
 
 

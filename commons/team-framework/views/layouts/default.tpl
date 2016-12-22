@@ -1,11 +1,11 @@
-{html lang="es"}
+{head lang="es"}
     {place name='metas'}
-
-    {head}
 
     {title}{$SEO_TITLE}{/title}
 
     {place name='header'}
+
+{/head}
 {body}
     {place name='template_body_top'}
 
@@ -58,5 +58,3 @@
 
     {place name='template_body_bottom'}
 {/body}
-{/html}
-
