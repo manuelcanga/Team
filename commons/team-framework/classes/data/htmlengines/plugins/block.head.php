@@ -40,6 +40,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 function smarty_block_head($params, $content, Smarty_Internal_Template $template, &$repeat)
 {
+    //flucheamos
+    ob_start();
 
 	if($repeat) { //open tag
         //html tag
@@ -91,8 +93,12 @@ function smarty_block_head($params, $content, Smarty_Internal_Template $template
             }
         }
 
+        echo $out;
 
-		return $out;
+        ob_flush();
+        flush();
+
+        return '';
 	}
 
 
