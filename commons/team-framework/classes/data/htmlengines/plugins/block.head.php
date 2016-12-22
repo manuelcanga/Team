@@ -46,6 +46,13 @@ function smarty_block_head($params, $content, Smarty_Internal_Template $template
 
 	}else {//close tag
 
+        $flushing = true;
+        if(isset($params['flushing']) ) {
+            $flushing = (bool) $params['flushing'];
+            unset($params['flushing']);
+        }
+
+
         $responsive = '';
         if(isset($params['responsive']) ) {
             $responsive = "<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0' />";
@@ -114,19 +121,23 @@ function smarty_block_head($params, $content, Smarty_Internal_Template $template
 
         /* ******************** /TOP CSS Y JS FILES *************** */
 
-        // Flush any currently open buffers.
-        while (ob_get_level() > 0) {
-            ob_end_flush();
+        if($flushing) {
+            // Flush any currently open buffers.
+            while (ob_get_level() > 0) {
+                ob_end_flush();
+            }
+            //start fluching
+            ob_start();
+
+            echo $out;
+
+            ob_flush();
+            flush();
+
+            return '';
+        }else {
+            return $out;
         }
-        //start fluching
-        ob_start();
-
-        echo $out;
-
-        ob_flush();
-        flush();
-
-        return '';
 	}
 
 
