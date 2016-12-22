@@ -59,7 +59,7 @@ function smarty_block_head($params, $content, Smarty_Internal_Template $template
         foreach($params as $attr => $value) {
             $out .= " {$attr}='{$value}'";
         }
-        $out .= '><head>'.$responsive;
+        $out .= '><head>'.$responsive.trim($content);
 
 
         /* ******************** METAS *************** */
@@ -114,7 +114,10 @@ function smarty_block_head($params, $content, Smarty_Internal_Template $template
 
         /* ******************** /TOP CSS Y JS FILES *************** */
 
-
+        // Flush any currently open buffers.
+        while (ob_get_level() > 0) {
+            ob_end_flush();
+        }
         //start fluching
         ob_start();
 
