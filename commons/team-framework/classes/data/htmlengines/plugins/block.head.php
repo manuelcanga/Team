@@ -40,39 +40,33 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 function smarty_block_head($params, $content, Smarty_Internal_Template $template, &$repeat)
 {
-    //flucheamos
-    ob_start();
 
 	if($repeat) { //open tag
+        return '';
+
+	}else {//close tag
+
+        $responsive = '';
+        if(isset($params['responsive']) ) {
+            $responsive = "<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0' />";
+            unset($params['responsive']);
+        }
+
+
         //html tag
         $out = '<!DOCTYPE html>';
         $out .= '<html';
         foreach($params as $attr => $value) {
             $out .= " {$attr}='{$value}'";
         }
-        $out .= '><head>';
-        return $out;
-
-	}else {//close tag
-
-
+        $out .= '><head>'.$responsive;
 
         //head tag
-        $metas = \team\Context::get('SEO_METAS');
-
-        $metas = (array)$params + (array)$metas;
-
-        $out =  trim(\team\Filter::apply('\team\tag\head', ''));
-
+        $metas =  (array) \team\Context::get('SEO_METAS');
         $metas =  \team\Filter::apply('\team\tag\metas', $metas);
 
         $charset = \team\Context::get('CHARSET');
         $out .= "<meta charset='{$charset}'>";
-
-        if(isset($metas['responsive']) ) {
-            $out .= "<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0' />";
-            unset($metas['responsive']);
-        }
 
 
         foreach($metas as $name => $content) {
@@ -92,6 +86,12 @@ function smarty_block_head($params, $content, Smarty_Internal_Template $template
                 $out .= "content='{$content}'>";
             }
         }
+
+        $out =  trim(\team\Filter::apply('\team\tag\head', $out));
+
+
+        //start fluching
+        ob_start();
 
         echo $out;
 
