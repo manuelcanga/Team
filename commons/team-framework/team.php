@@ -137,19 +137,26 @@ require(\_TEAM_.'/classes/controller/Controller.php');
 require(\_TEAM_.'/classes/Sanitize.php');
 //Clase que maneja cabeceras http
 require(\_TEAM_.'/classes/Http.php');
-//Añadimos la clase que gestiona los datos de session
-\team\Classes::add('\team\User', '/classes/User.php', _TEAM_);
-//Cargamos la clase Log para todo ayudar al programador/maquetador en su tarea.
-\team\Classes::add('\team\Log', '/classes/notices/Log.php', _TEAM_);
 
 
 try {
+
+    \team\FileSystem::load('/commons/Start.php');
+    \team\FileSystem::load('/commons/'. \team\ENVIROMENT.'/Start.php');
+
+
+    //Añadimos la clase que gestiona los datos de session
+    \team\Classes::add('\team\User', '/classes/User.php', _TEAM_);
+    //Cargamos la clase Log para todo ayudar al programador/maquetador en su tarea.
+    \team\Classes::add('\team\Log', '/classes/notices/Log.php', _TEAM_);
+
+
 
 	/** 
 		Por cada clase desconocida que se instancie o se utilice sin haberse procesado, php llamara a Classes. 
 		Este método define un autoloader por defecto llamado Casses y avisa a php para que lo utilice
 	*/
-	spl_autoload_register(['\team\Classes', 'factory']);
+	spl_autoload_register(\team\Filter::apply('\team\autoload', ['\team\Classes', 'factory'] ));
 
 	/**
 	  Se inicia el proceso de gestión de errores

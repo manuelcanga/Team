@@ -82,10 +82,6 @@ class Config {
     }
 
     private function notifyStart() {
-        //root
-        \team\FileSystem::load('/commons/Start.php');
-
-        //To Team too
         \team\FileSystem::load('/Start.php', _TEAM_);
 
         \Team::event('\team\start');
