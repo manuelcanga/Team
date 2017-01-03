@@ -31,34 +31,34 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace team\defaults;
 
 
-class Apc {
+class Apcu {
 
 	//Borramos un elemento de la caché
 	function delete($key) {
-		return apc_delete($key);
+		return apcu_delete($key);
 	}
 
 	function clear() {
-		return apc_clear_cache('user');
+		return apcu_clear_cache('user');
 	}
 
 	function overwrite($key, $value, $time = 0) {
-		return apc_store($key, $value, $time);
+		return apcu_store($key, $value, $time);
 	}
 
 	function save($key, $value, $time = 0) {
-		return apc_add($key, $value, $time);
+		return apcu_add($key, $value, $time);
 	}
 
 	function exists($key) {
-		return apc_exists($key);
+		return apcu_exists($key);
 	}
 
 	function get($key) {	
-		return  apc_fetch($key);
+		return  apcu_fetch($key);
 	}
 
 	function debug($msg = null) {	
-		  \Debug::me(apc_cache_info('user'), $msg);
+		  \Debug::me(apcu_cache_info('user'), $msg);
 	}
 }
