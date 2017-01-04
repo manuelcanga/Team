@@ -77,8 +77,10 @@ abstract class Config{
         return \team\Filter::apply('\team\configs\\'.$var, self::$vars[$var]?? $default );
     }
 
-    public static function getDatabase($databaseid = 'main') {
-        return self::$databases[$databaseid]?? [];
+    public static function database($conname = 'main') {
+        $connection_data = self::$databases[$conname]?? [];
+
+        return \team\Filter::apply('\team\db\\'.$conname, $connection_data, $conname );
     }
 
 

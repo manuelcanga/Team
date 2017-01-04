@@ -158,7 +158,7 @@ class Http
     function redirect($redirect, $code = 301, $protocol = null) {
         $redirect = \team\Sanitize::internalUrl($redirect);
 
-        $domain = \team\Context::get('DOMAIN');
+        $domain = \team\Config::get('DOMAIN');
         $protocol = $protocol?? \team\Config::get('PROTOCOL');
 
         $domain = str_replace($protocol, '',$domain);

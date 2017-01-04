@@ -65,29 +65,18 @@ class DB {
 
 
 	/** Abre una conexion a la base de datos */
-	public  function __construct($conname = null, $connection_data = [], $dbPrefix = null  ) {
-        $this->change($conname, $connection_data, $dbPrefix);
+	public  function __construct($conname = null ) {
+        $this->change($conname);
 	}
 
-	public static function createConnection($conname, $connection_data = [], $dbPrefix = null ) {
-		return new DB($conname, $connection_data, $dbPrefix);
+	public static function createConnection($conname ) {
+		return new DB($conname);
 	}
 
-    public function connect($conname = 'main', $connection_data = [], $_dbPrefix = null) {
+    public function connect($conname = null) {
 
-
-        //Quizás los datos nos lo mandaron en formato querystring
-        if(is_string($connection_data) ) {
-            $params = $connection_data;
-            parse_str($params, $connection_data);
-        }
-
-        $connection_base = \team\Config::getDatabase($conname);
-
-        $connection_data = (array)$connection_data +  $connection_base;
-        $connection_data = \team\Filter::apply('\team\db\\'.$conname, $connection_data, $conname );
-        extract( $connection_data, EXTR_SKIP);
-
+        $connection= \team\Config::database($conname?: 'main');
+        extract( $connection, EXTR_SKIP);
 
         //Conectamos a la base de datos segun la configuracion
         //	$dsn = strtolower($dbtype).":dbname={$name};host={$host};port={$port};charset={$charset}";
@@ -99,7 +88,7 @@ class DB {
 
 
         try {
-            self::$connections[$conname]['prefix'] = $prefix?? $_dbPrefix?: '';
+            self::$connections[$conname]['prefix'] = $prefix?? '';
             self::$connections[$conname]['link'] = new \PDO($dsn, $user, $password, $options);
             self::$connections[$conname]['database'] = $name;
             self::$connections[$conname]['charset'] = $charset; //No se añaden otros datos por seguridad
@@ -124,17 +113,18 @@ class DB {
 	/**
 		Seleccionamos entre una de las bases de datos en las que hayamos abierto una conexion
 	*/
-	public  function change($conname = null,  $connection_data = [], $dbPrefix = null) {
+	public  function change($conname = null) {
 	    $conname = $conname?: 'main';
 
-        $conname = \team\Filter::apply('\team\db\conname', $conname, $connection_data  );
+        $conname = \team\Filter::apply('\team\db\conname', $conname);
 
         if(self::connectionExists($conname)) {
             $this->server = self::$connections[$conname]['link'];
 	        $this->dbPrefix = self::$connections[$conname]['prefix'];
         }else {
-            $this->server = $this->connect($conname, $connection_data, $dbPrefix);
+            $this->server = $this->connect($conname);
         }
+
         if($this->server )
             $this->conname =  $conname;
             
