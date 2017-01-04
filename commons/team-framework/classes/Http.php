@@ -159,7 +159,7 @@ class Http
         $redirect = \team\Sanitize::internalUrl($redirect);
 
         $domain = \team\Context::get('DOMAIN');
-        $protocol = $protocol?? \team\Context::get('PROTOCOL');
+        $protocol = $protocol?? \team\Config::get('PROTOCOL');
 
         $domain = str_replace($protocol, '',$domain);
 
@@ -266,7 +266,7 @@ class Http
             return ;
         }
 
-        $protocol = \team\Context::get('PROTOCOL');
+        $protocol = \team\Config::get('PROTOCOL');
         $status_header = "$protocol $code $description";
 
         $status_header = \team\Filter::apply('\team\http\status_header', $status_header, $code, $description, $protocol);

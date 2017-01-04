@@ -44,7 +44,7 @@ namespace team\data\formats;
 
 final class Html implements \team\interfaces\data\Format  {
 	public function renderer(Array $_data) {
-		$type_engine = $_data["HTML_ENGINE"]?? \team\Context::get("HTML_ENGINE");
+		$type_engine = $_data["HTML_ENGINE"]?? \team\Config::get("HTML_ENGINE");
 
         $engine = $this->get($type_engine);
 
