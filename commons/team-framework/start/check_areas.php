@@ -1,19 +1,9 @@
 <?php 
 
-namespace team\config\scripts\start\areas;
+namespace team\start\areas;
 
 if(!defined("_SITE_") ) die("Hello,  World");
 
-
-/** 
-  Devuelve las areas disponibles 
-*/  
-function get_areas() {
-	global $_CONTEXT;
-
-	return \team\Filter::apply('\team\areas', $_CONTEXT['AREAS'], $_CONTEXT['DOMAIN'],  $_CONTEXT['REQUEST_METHOD'], $_CONTEXT['PROTOCOL']);
-
-}
 
 /**
    Comprobamos si la url actual concuerda con algún área
@@ -28,10 +18,8 @@ function get_areas() {
 	global $_CONTEXT;
 
    $main = $_CONTEXT['MAIN'];
- 
-	$area_params = [];
 
-	$areas = get_areas();
+	$areas = \team\Config::get('AREAS');
 	$_area_ = '/';
 	$area_params = [];
 	if(!empty($areas) && !isset($main) ) {

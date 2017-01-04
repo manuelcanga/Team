@@ -1,6 +1,6 @@
 <?php 
 
-namespace team\config\scripts\start\cli;
+namespace team\start\cli;
 
 if(!defined("_SITE_") ) die("Hello,  World");
 

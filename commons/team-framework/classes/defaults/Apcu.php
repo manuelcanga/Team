@@ -54,8 +54,8 @@ class Apcu {
 		return apcu_exists($key);
 	}
 
-	function get($key) {	
-		return  apcu_fetch($key);
+	function get($key, $default = null) {
+		return  apcu_fetch($key)?? $default;
 	}
 
 	function debug($msg = null) {	

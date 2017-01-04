@@ -38,11 +38,10 @@ class Cache {
     /**
      * Preparamos el sistema de caché
      */
-    static function __initialize() {
+    public  static function __initialize() {
 		if(isset(self::$current) ) return  ;
 
 		  $cache_class = \team\Filter::apply('\team\Cache', '\team\defaults\Apcu');
-
 
 
 		  if(isset($cache_class) && class_exists($cache_class )  ) {
@@ -58,7 +57,7 @@ class Cache {
      * @return mixed|null|string
      *
      */
-    static function checkIds(...$ids) {
+    public  static function checkIds(...$ids) {
       if(empty($ids)) return null;
 
       foreach($ids as $cacheid) {
@@ -83,7 +82,7 @@ class Cache {
      * @param $cacheid: Es el identificador de caché sobre el que se aplicará la duración de tiempo( $time )
      * @return array|int|string
      */
-    static function checkTime($time, $cacheid) {
+    public  static function checkTime($time, $cacheid) {
 		$time = \team\Date::strToTime($time);
 
         if(is_null($time)){
@@ -95,32 +94,32 @@ class Cache {
 
 
 	//Borramos un elemento de la caché
-	static function delete($cacheid) {
+	public static function delete($cacheid) {
 		return self::$current->delete($cacheid);
 	}
 
-	static function clear() {
+    public  static function clear() {
 		return self::$current->clear();
 	}
 
-	static  function save($cacheid, $value, $time = 0) {
+    public  static  function save($cacheid, $value, $time = 0) {
 		return self::$current->save($cacheid, $value, self::checkTime($time, $cacheid));
 	}
 
-	static  function overwrite($cacheid, $value, $time = 0) {
+    public  static  function overwrite($cacheid, $value, $time = 0) {
 		return self::$current->overwrite($cacheid, $value, self::checkTime($time, $cacheid));
 	}
 
 
-	static function exists($cacheid) {
+    public  static function exists($cacheid) {
 		return self::$current->exists($cacheid);
 	}
 
-	static  function get($cacheid) {
-		return self::$current->get($cacheid);
-	}
+    public  static  function get($cacheid, $default = null) {
+        return \team\Filter::apply('\team\cache\\'.$cacheid, self::$current->get($cacheid, $default) );
+    }
 
-	static function debug($msg = null) {
+    public  static function debug($msg = null) {
 		self::$current->debug($msg);
 	}
 
@@ -130,7 +129,7 @@ class Cache {
     }
 
 
-    static function  __callStatic($func, $args) {
+    public  static function  __callStatic($func, $args) {
 		return call_user_func_array([self::$current, $func],$args);
     }
 

@@ -72,7 +72,7 @@ class Commands extends Builder
 		Se devuelve un valor por defecto. 
 	*/
 	public function getCriticalError($SE = null) {
-		$msg = \team\Context::get('CRITICAL_MESSAGE', 'DEBUG');
+		$msg = \team\Config::get('CRITICAL_MESSAGE', 'We are in maintenance, sorry');
 
 		return $msg;
 	}

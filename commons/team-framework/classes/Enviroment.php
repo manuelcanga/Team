@@ -5,6 +5,10 @@ namespace team;
 
 class Enviroment
 {
+
+
+
+
     static function checkServer($key = null) {
         static $server = null;
 

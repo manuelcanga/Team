@@ -57,7 +57,7 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
        // class_alias('Smarty_Internal_Resource_File', 'Smarty_Resource_Insert', true);
 
 		if(!defined('SMARTY_RESOURCE_CHAR_SET') ) {
-			define('SMARTY_RESOURCE_CHAR_SET', \team\Context::get('CHARSET') );
+			define('SMARTY_RESOURCE_CHAR_SET', \team\Config::get('CHARSET') );
 		}
 
 
@@ -70,7 +70,18 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
         class_alias('Smarty_Internal_Resource_File', 'Smarty_Resource_Root', true);
         class_alias('Smarty_Internal_Resource_File', 'Smarty_Resource_Team', true);
 
-	}
+
+        //Creamos un directorio temporal que evite las posibles colisiones de temporales smarty entre sitios
+        if(!file_exists(_TEMPORARY_DIRECTORY_."/smarty/compile") ) {
+            mkdir(_TEMPORARY_DIRECTORY_."/smarty/compile", 0777, true);
+        }
+
+        //Si no existe, habra que crearlo
+        if(!file_exists(_TEMPORARY_DIRECTORY_."/smarty/cache") ) {
+            mkdir(_TEMPORARY_DIRECTORY_."/smarty/cache", 0777, true);
+        }
+
+    }
 
     function __construct() {
 		//Le añadimos una referencia a la GUI Actual.
@@ -111,7 +122,7 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 
 
 			$result =  $engine->fetch($template, $engine_data);
-   		    if(!$this->gui || $_CONTEXT["SHOW_VIEWS"]) {
+   		    if(!$this->gui || \team\Config::get("SHOW_VIEWS", true) ) {
 				return $result;
 			}else {
 				return "";
@@ -197,7 +208,7 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
         }
 
 	if($found_type && !file_exists($template) ) {
-		if(\team\Context::get('SHOW_RESOURCES_WARNINGS') ) {
+		if(\team\Config::get('SHOW_RESOURCES_WARNINGS', false) ) {
 			\Debug::me("Not found view {$template} of type {$type} and name {$name}");
 		}
 
@@ -237,7 +248,7 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 		$functions = get_defined_functions();
 		 self::$functions_user_cache = $functions["user"];
 			 	
-		 $view_cache = (bool)$_CONTEXT['VIEW_CACHE'];
+		 $view_cache =  \team\Config::get('VIEW_CACHE', true);
 
 		 $_engine->compile_check = !$view_cache;
 		 $_engine->caching = $view_cache;
@@ -246,26 +257,11 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 		
 		//Un componente sólo vería sus cosas, aún así puede usar root: package: etc
 		$_engine->template_dir = _SITE_.'/';
-
-		//Creamos un directorio temporal que evite las posibles colisiones de temporales smarty entre sitios
-		if(!file_exists(_TEMPORARY_DIRECTORY_."/smarty/compile") ) {
-			mkdir(_TEMPORARY_DIRECTORY_."/smarty/compile", 0777, true);
-		}	
-		
 		$_engine->setCompileDir(_TEMPORARY_DIRECTORY_."/smarty/compile");
-
-		//Si no existe, habra que crearlo
-		if(!file_exists(_TEMPORARY_DIRECTORY_."/smarty/cache") ) {
-			mkdir(_TEMPORARY_DIRECTORY_."/smarty/cache", 0777, true);
-		}
-		
-
 		$_engine->setCacheDir(_TEMPORARY_DIRECTORY_."/smarty/cache");
-//		$smarty->compile_check  = false;
 
 			/** Usamos un filtro para que no haya espacio en blanco  */
-        if((bool)\team\Context::get('MINIMIZE_VIEW')) {
-
+        if((bool)\team\Config::get('MINIMIZE_VIEW', true)) {
  		  $_engine->loadFilter('output', 'trimwhitespace');
 		}
 
@@ -339,7 +335,7 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 		$data = new \Smarty_Data();
 		//Añadimos a la plantilla todas las constantes de configuracion
 		$data->config_vars = $_CONTEXT;
-		if(\team\Context::get("TRACE_CONFIG") ) {
+		if(\team\Config::get("TRACE_CONFIG") ) {
 			\team\Debug::me($data->config_vars, "Variables de configuracion smarty");
 		}
 

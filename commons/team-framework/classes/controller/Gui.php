@@ -90,7 +90,7 @@ class Gui extends Controller {
 
         if(\team\FileSystem::filename('/'.$file)) {
             return $file;
-        }else if(\team\Context::get('SHOW_RESOURCES_WARNINGS') ) {
+        }else if(\team\Config::get('SHOW_RESOURCES_WARNINGS', false) ) {
             \team\Debug::me("View {$file}[{$_file}] not found in {$package}/{$component}", 3);
             return null;
         }

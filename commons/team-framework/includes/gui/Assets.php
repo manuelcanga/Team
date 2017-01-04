@@ -63,7 +63,7 @@ trait Assets {
         if( "internet" == $component || \team\Filesystem::exists($file) ) {
             \team\Filter::addValue("\\team\css\\{$position}", $file,$idfile);
 
-        }else if(\team\Context::get('SHOW_RESOURCES_WARNINGS') ) {
+        }else if(\team\Config::get('SHOW_RESOURCES_WARNINGS', false) ) {
             \team\Debug::me("Css file[$position] $file not found in {$package}/{$component}", 3);
         }
     }
@@ -99,7 +99,7 @@ trait Assets {
 
         if('internet' == $component || \team\Filesystem::exists($file) ) {
             \team\Filter::addValue("\\team\js\\{$position}", $file, $idfile);
-        }else if(\team\Context::get('SHOW_RESOURCES_WARNINGS') ) {
+        }else if(\team\Config::get('SHOW_RESOURCES_WARNINGS', false) ) {
             \team\Debug::me("Javascript file[$position] $file not found in {$package}/$component", 3);
         }
 

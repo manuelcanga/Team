@@ -73,77 +73,41 @@ class DB {
 		return new DB($conname, $connection_data, $dbPrefix);
 	}
 
-    public function connect($conname, $connection_data = [], $_dbPrefix = null) {
+    public function connect($conname = 'main', $connection_data = [], $_dbPrefix = null) {
 
 
-        //Se pudo especificar los datos por un config especifico
-        $db = \team\Context::get('DB');
-        $database_connection = [];
-        if(isset($db[$conname])) {
-            $database_connection = $db[$conname];
-        }
-
-        //Datos de conexióon generales por config
-        $connection_base = [
-            'DB_NAME'   => \team\Context::get("DB_NAME"),
-            'DB_HOST'   => \team\Context::get("DB_HOST"),
-            'DB_PORT'   => \team\Context::get("DB_PORT"),
-            'DB_USER' 	  => \team\Context::get("DB_USER"),
-            'DB_PASSWORD' => \team\Context::get("DB_PASSWORD"),
-            'DB_CHARSET'  =>  \team\Context::get("DB_CHARSET"),
-            'DB_TYPE'	  =>  \team\Context::get("DB_TYPE"),
-            'DB_OPTIONS'	  =>  \team\Context::get("DB_OPTIONS", []),
-            'DB_PREFIX'	 =>  ($_dbPrefix)?? \team\Context::get('DB_PREFIX', ''),
-        ];
-
-        $database_connection += $connection_base;
-
-        //Etablecemos los datos por defecto para una nueva conexion
-        $connection_base = [
-            'dbname'   => $database_connection["DB_NAME"],
-            'dbhost'   => $database_connection["DB_HOST"],
-            'dbport'   =>  $database_connection["DB_PORT"],
-            'user' 	  =>   $database_connection["DB_USER"],
-            'password' =>  $database_connection["DB_PASSWORD"],
-            'charset'  =>   $database_connection["DB_CHARSET"],
-            'dbtype'	  =>  $database_connection["DB_TYPE"],
-            'options'	  =>  $database_connection["DB_OPTIONS"],
-			'dbPrefix'	 =>  $database_connection["DB_PREFIX"],
-        ];
-
-        
         //Quizás los datos nos lo mandaron en formato querystring
         if(is_string($connection_data) ) {
             $params = $connection_data;
             parse_str($params, $connection_data);
         }
 
+        $connection_base = \team\Config::getDatabase($conname);
 
         $connection_data = (array)$connection_data +  $connection_base;
-
         $connection_data = \team\Filter::apply('\team\db\\'.$conname, $connection_data, $conname );
-
         extract( $connection_data, EXTR_SKIP);
 
 
         //Conectamos a la base de datos segun la configuracion
-        //	$dsn = strtolower($dbtype).":dbname={$dbname};host={$dbhost};port={$dbport};charset={$charset}";
-        $dsn = strtolower($dbtype).":dbname={$dbname};host={$dbhost};port={$dbport};charset={$charset}";
+        //	$dsn = strtolower($dbtype).":dbname={$name};host={$host};port={$port};charset={$charset}";
+        $dsn = strtolower($type).":dbname={$name};host={$host};port={$port};charset={$charset}";
 
-        if('mysql' == $dbtype) {
+        if('mysql' == $type) {
              $options = $options + [ \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES '.$charset, ];
         }
 
 
         try {
-            self::$connections[$conname]['prefix'] = $dbPrefix;
+            self::$connections[$conname]['prefix'] = $prefix?? $_dbPrefix?: '';
             self::$connections[$conname]['link'] = new \PDO($dsn, $user, $password, $options);
-            self::$connections[$conname]['database'] = $dbname; 
+            self::$connections[$conname]['database'] = $name;
             self::$connections[$conname]['charset'] = $charset; //No se añaden otros datos por seguridad
 						
 			$this->dbPrefix = self::$connections[$conname]['prefix'];
          //   self::$connections[$conname]['link']->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 
+            $this->conname = $conname;
 
             return $this->server = self::$connections[$conname]['link'];
 
@@ -153,18 +117,15 @@ class DB {
         return null;
     }
 
-	public static function connectionExists($conname = null) {
-		$conname = $conname?: \team\Context::get("DB_CONNECTION");
-
-
-		return isset($conname) &&  isset(self::$connections[$conname]);
+	public static function connectionExists($conname = 'main') {
+		return isset(self::$connections[$conname]);
 	}
 
 	/**
 		Seleccionamos entre una de las bases de datos en las que hayamos abierto una conexion
 	*/
 	public  function change($conname = null,  $connection_data = [], $dbPrefix = null) {
-		$conname = $conname?: \team\Context::get("DB_CONNECTION");
+	    $conname = $conname?: 'main';
 
         $conname = \team\Filter::apply('\team\db\conname', $conname, $connection_data  );
 
@@ -182,7 +143,7 @@ class DB {
 	}
 
     public function close($conname = null) {
-        if(!isset($conname)) $conname = $this->conname;
+        $conname =  $conname?: $this->conname;
 
         if(isset($conname) && isset(self::$connections[$conname])) {
            self::$connections[$conname]['link']->close();
@@ -280,7 +241,7 @@ class DB {
 
 
 
-		if(\team\Context::get("TRACE_SQL") || $with_error  ) {
+		if(\team\Config::get("TRACE_SQL") || $with_error  ) {
 			\Debug::sql();
 		}
 

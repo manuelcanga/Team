@@ -255,7 +255,7 @@ abstract class Builder implements \ArrayAccess {
 
         $class->___load($response);
 
-        if(\team\Context::get('TRACE_ACTIONS') ) {
+        if(\team\Config::get('TRACE_REQUESTS') ) {
             \team\Debug::me("{$class}->{$method}()", "Cargando response.");
             $this->getData()->debug("Params");
         }
@@ -390,7 +390,7 @@ abstract class Builder implements \ArrayAccess {
         //Si se ha especificado que no se muestren errores
         //Evitamos cualquier salida de error o de echos o de lo que sea
         //Tan solo dejamos mostrar la vista
-        if(\team\Context::get("SHOW_EXTRA", true)) {
+        if(\team\Config::get("SHOW_EXTRA", true)) {
             echo $ob_out;
         }
     }
@@ -400,7 +400,7 @@ abstract class Builder implements \ArrayAccess {
         //Fix bug in firefox
         if(!headers_sent() ) {
 
-            $header = "Content-Type: $type; charset=".\team\Context::get("CHARSET");
+            $header = "Content-Type: $type; charset=".\team\Config::get("CHARSET");
 
             $header = \team\Filter::apply('\team\header', $header);
 

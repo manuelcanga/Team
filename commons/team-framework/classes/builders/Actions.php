@@ -100,7 +100,7 @@ class Actions extends Builder {
 	*/
 	public function getCriticalError($SE = null) {
 
-		$msg = \team\Context::get('CRITICAL_MESSAGE');
+		$msg = \team\Config::get('CRITICAL_MESSAGE', 'We are in maintenance, sorry');
 
 		$_data = new \team\Data();
 

@@ -33,7 +33,6 @@ namespace team;
 
 
 
-require(_TEAM_ . '/classes/Config.php');
 require(_TEAM_.'/classes/loaders/Config.php');
 
 
@@ -76,7 +75,10 @@ class Context implements \ArrayAccess  {
 
 		//Ahora añadimos el root( con root nos referimos a los archivos de /common del raiz del framework )
 		self::setNamespace("\\");
-	}
+
+        \Team::event('\team\start');
+
+    }
 
 	/**
 		Baja hasta el primer contexto
@@ -316,19 +318,17 @@ class Context implements \ArrayAccess  {
 
 	/* ------------------- ArrayAccess  ---------------------- */
 
-    function offsetUnset($offset){
+    public function offsetUnset($offset){
         if(array_key_exists($offset, self::$current)  ) {
             unset(self::$current[$offset]);
         }
     }
-    
-    function offsetExists($offset) {
+
+    public function offsetExists($offset) {
         return  isset(self::$current[$offset]);
     }
-    
 
-
-    function &  offsetGet($offset) {
+    public function &  offsetGet($offset) {
 		$result = null;
 
 		if(is_numeric($offset) &&  isset(self::$contexts[self::$index]) ) {
@@ -341,10 +341,10 @@ class Context implements \ArrayAccess  {
 
 		return $result;
     }
-    
-    
 
-    function & offsetSet($offset, $valor) {
+
+
+    public function & offsetSet($offset, $valor) {
 		if(is_numeric($offset) && isset(self::$contexts[self::$index]) ) {
  			self::$contexts[self::$index] = $valor;
 		}else {

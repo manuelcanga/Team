@@ -105,8 +105,8 @@ class Log {
 		@param String $_line linea donde ocurrio el incidente
 	*/
 	public static function insertLog($_file_log, $_var,  $_label, $_file, $_line) {
-		if(!\team\Context::get("LOGS_WRITE") ) return ;
-		
+		if(!\team\Config::get("LOGS_WRITE", true) ) return ;
+
 		self::$_backtrace = debug_backtrace();
 		$label = "";
 		if(!empty($_label) ) {
@@ -115,7 +115,7 @@ class Log {
 
 		$var = self::valuate($_var);
 		$msg = "";
-		if(!\team\Context::get("ERROR_LOG") ) {
+		if(!\team\Config::get("SYSTEM_LOG", true) ) {
 			$msg = "<reset>[<date>|<time>]: <green> {$label} <reset>";
 			$msg .= " {$var} <reset>on <{$_file}>:<{$_line}> <break>";
 		

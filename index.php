@@ -34,11 +34,6 @@ define('_SITE_', 			__DIR__);
 
 
 //Ubicacón recomendada:
-//include('../Site.conf.php');
-//Ubicación actual:
-include(_SITE_.'/commons/Site.conf.php');
-
-//Ubicacón recomendada:
 //include('../team-framework/team.php');
 
 //Ubicación actual:

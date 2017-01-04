@@ -29,30 +29,70 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 namespace team;
-;
 
 abstract class Config{
 
-    /**
-        Corre o llama al metodo setup generico y al del profile actual
-        @param String $_full_class Clase para que se correra el setup
-     */
-	public function __construct() {
-        $enviroment = \team\Context::get("ENVIROMENT");
+    private static $vars = [];
+    private static $databases = [];
 
-        /* Si hemos llegado hasta aquí toca llamar al setup general si lo hubiera */
-        if(method_exists($this, "onSetup") ) {
-            return $this->onSetup($enviroment);
+
+    public static function set($var, $value = null) {
+        if(is_array($var)) {
+            self::$vars =  $var + self::$vars;
+        }else if(is_string($var)){
+            self::$vars[$var] = $value;
         }
-	}
+    }
+
+    public static function setDatabase(array $options, $databaseid = 'main') {
+        $defaults = [
+            'user'      => 'my_user',
+            'password'  => 'my_password',
+            'name'      => 'my_db',
+            'host'      => 'localhost',
+            'port'      => '5432',
+            'prefix'    => '',
+            'charset'   => 'UTF8',
+            'type'      => 'mysql',
+            'options'   =>  [],
+        ];
 
 
-	public function getVars() {
-		return get_object_vars($this);
-	}
+        self::$databases[$databaseid] = $options + $defaults;
+    }
+
+    public static function push($var, $value = null) {
+        if(isset(self::$vars[$var]) && is_array(self::$vars[$var])) {
+            self::$vars[$var][] = $value;
+        }
+    }
+
+    public static function add($var, $key, $value = null) {
+        if(isset(self::$vars[$var]) && is_array(self::$vars[$var])) {
+            self::$vars[$var][$key] = $value;
+        }
+    }
+
+    public static function get($var, $default = null) {
+        return \team\Filter::apply('\team\configs\\'.$var, self::$vars[$var]?? $default );
+    }
+
+    public static function getDatabase($databaseid = 'main') {
+        return self::$databases[$databaseid]?? [];
+    }
 
 
+    public static function defaults($vars) {
+        self::$vars =  self::$vars + $vars;
+    }
+
+
+    public static function setUp() {
+        \Team::event('\team\setup', self::$vars);
+    }
+
+
+    public static function debug() {
+        \team\Debug::me(self::$vars);
+    }
 }
-
-
-

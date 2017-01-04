@@ -1,5 +1,11 @@
 <?php if(!defined("_SITE_") ) die("Hello,  World");
 
+include(__DIR__ . '/start/configure.php');
+
+
+\Team::addListener('\team\setup', function(& $vars) {
+    include(__DIR__ . '/start/setup.php');
+});
 
 /*
   En el event start, añadimos los hooks necesarios para parsear los datos de entrada y devolverlos para poder ser usado para lanzar la acción main( ver abajo )
@@ -63,3 +69,4 @@ if(function_exists('__main') ) {
     
     return $component->retrieveResponse();
 });
+

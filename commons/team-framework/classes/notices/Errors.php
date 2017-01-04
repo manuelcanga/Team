@@ -59,7 +59,7 @@ class Errors {
 	  Mostramos un error producido por las vistas
 	*/
 	private function showViewError($_errno, $_errstr, $_errfile, $_errline, $_context, $_errorcode ) {
-		  $error_reporting_template = \team\Context::get('VIEWS_ERROR_LEVEL','DEBUG', E_ALL & ~E_NOTICE );
+		  $error_reporting_template = \team\Config::get('VIEWS_ERROR_LEVEL', E_ALL & ~E_NOTICE );
 
 		/** 
 		  Si se escogio desde las opciones de configuración mostrar el error de las vistas, lo hacemos. Sino, lo dejamos pasar 

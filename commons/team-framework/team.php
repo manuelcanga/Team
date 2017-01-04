@@ -65,15 +65,6 @@ if(!defined('team\SITE_ID') ) {
 
 
 
-/**
-	tea\ENVIROMENT is used in order to have different kind of enviroments
-	user must define this, otherwise, TEAM defines "local" as ENVIROMENT
-	team\ENVIROMENT must be [a-Z|_ ]
-	@since 0.1
-*/
-if(!defined('team\\ENVIROMENT') ) {
-	define('team\\ENVIROMENT',  'local');
-}
 
 /**
   TEAM looking for config from CONFIG_PATH 
@@ -104,26 +95,31 @@ if(!defined('_TEMPORARY_DIRECTORY_') ) {
 */
 ini_set('display_errors', 0);
 
+
 //Utilidades sobre el sistema de archivos
 require(\_TEAM_.'/classes/FileSystem.php');
 //Cargamos la clase Filter que se encarga de las validaciones
 require(\_TEAM_.'/classes/Check.php');
+//Filter, permite el filtrado de datos de modo desacoplado.
+require(\_TEAM_.'/classes/hooks/Filter.php');
+//La clase que gestiona opciones de configuración
+require(\_TEAM_.'/classes/Config.php');
+//Classes se encarga de la autocarga y manejo de clases
+require(\_TEAM_.'/classes/loaders/Classes.php');
 //Plantilla para la gestión fáci de datos de una clase
 require(\_TEAM_.'/includes/data/Storage.php');
+//La clase que gestiona caché
+require(\_TEAM_.'/classes/Cache.php');
 //La clase Context nos sirve para tener un control de variables de configuracion en funcion del contento
 require(\_TEAM_.'/classes/Context.php'); 
 //La clase Team, Notice y Erros llevan un control de las notificaciones de  avisos y errores del sistema
 require(\_TEAM_.'/classes/notices/Errors.php');
 require(\_TEAM_.'/classes/notices/Notice.php');
 require(\_TEAM_.'/classes/notices/Team.php');
-//Classes se encarga de la autocarga y manejo de clases
-require(\_TEAM_.'/classes/loaders/Classes.php');
 //La gran clase Data es un gestor de datos y su representación en distintos formatos
 require(\_TEAM_.'/classes/Data.php');
 //Para el manejo fácil de namespaces
 require(\_TEAM_.'/classes/NS.php');
-//Filter, permite el filtrado de datos de modo desacoplado.
-require(\_TEAM_.'/classes/hooks/Filter.php');
 //Task permite la delegación de tareas
 require(\_TEAM_.'/classes/hooks/Task.php');
 //Cargamos la clase Debug y Log para todo ayudar al programador/maquetador en su tarea.
@@ -139,41 +135,58 @@ require(\_TEAM_.'/classes/Sanitize.php');
 require(\_TEAM_.'/classes/Http.php');
 
 
+//Añadimos la clase que gestiona los datos de session
+\team\Classes::add('\team\User', '/classes/User.php', _TEAM_);
+//Cargamos la clase Log para todo ayudar al programador/maquetador en su tarea.
+\team\Classes::add('\team\Log', '/classes/notices/Log.php', _TEAM_);
+
 try {
 
-    \team\FileSystem::load('/commons/Start.php');
-    \team\FileSystem::load('/commons/'. \team\ENVIROMENT.'/Start.php');
+    /**
+     * 1. Llamamos a los scripts de comienzos. Estos scripts deberían de asignar filtros, eventos y tareas deseados
+     */
 
+    \team\FileSystem::load('/Start.php', _TEAM_);
+    \team\FileSystem::load('/commons/config/Start.php');
+    \team\FileSystem::load('/commons/config/'. \team\Config::get('ENVIROMENT').'/Initialize.php');
 
-    //Añadimos la clase que gestiona los datos de session
-    \team\Classes::add('\team\User', '/classes/User.php', _TEAM_);
-    //Cargamos la clase Log para todo ayudar al programador/maquetador en su tarea.
-    \team\Classes::add('\team\Log', '/classes/notices/Log.php', _TEAM_);
-
-
-
-	/** 
-		Por cada clase desconocida que se instancie o se utilice sin haberse procesado, php llamara a Classes. 
-		Este método define un autoloader por defecto llamado Casses y avisa a php para que lo utilice
-	*/
-	spl_autoload_register(\team\Filter::apply('\team\autoload', ['\team\Classes', 'factory'] ));
-
-	/**
-	  Se inicia el proceso de gestión de errores
-	*/
-    \Team::__initialize();
 
     /**
-	  Se cargan las varibles de configuración y se lanzan los eventos de comienzo del framework
-      Los $_CONTEXT van cambiando en un mismo request según el componente/response que estemos
-      Los $_STORE sería un almacen de datos que permanece inmutable aunque cambiemos de compoent/response pero sólo dura
-            hasta que se acaba el request.
-      @TODO: $_CACHE sería como los stores pero se mantienen inmutables entre distintos request. Normalmente se
-                guardarán en memoria
-      @TODO: $_OPTIONS sería como los $_CACHE pero sus datos pueden ser modificados por el administrador de la página
-                 normalmente bajo un panel de control o CMS. También para aquellos datos que guardarlos en $_CACHE sería
-     *          demasiado costoso.
-    */
+     * 2. Definimos un autoload de clases
+     *
+     *  Por cada clase desconocida que se instancie o se utilice sin haberse procesado, php llamara a Classes.
+     *  Este método define un autoloader por defecto llamado Casses y avisa a php para que lo utilice
+     */
+
+    spl_autoload_register(\team\Filter::apply('\team\autoload', ['\team\Classes', 'factory'] ));
+
+
+    /**
+     * 3. Inicializamos el sistema de caché
+     */
+    \team\Cache::__initialize();
+
+    /**
+     * 4. Inicializamos el sistema de configuración
+     */
+    \team\Config::setUp();
+
+
+    /**
+    Se inicia el proceso de gestión de errores
+     */
+    \Team::__initialize();
+
+
+    /**
+     *  Se cargan las clases de opciones
+     *  Los Context van cambiando en un mismo request según el componente/response que estemos
+     *  Los STORE sería un almacen de datos que permanece inmutable aunque cambiemos de component/response pero sólo dura
+     * hasta que se acaba el request.
+     *   Los CACHE serían como STORE pero mantienen inmutables entre distintos request. Normalmente se guardan en memoria
+     *   Los Config mantiene las opciones de configuracion del sitio web(tanto a bajo nivel: key con uppercase ) como a
+     *   alto nivel ( keys con lowercase ).
+     */
 	$_CONTEXT = new \team\Context();
     $_STORE = new \team\Data();
 	global $_CONTEXT, $_STORE;

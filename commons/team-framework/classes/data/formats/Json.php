@@ -50,7 +50,7 @@ class Json implements \team\interfaces\data\Format  {
 
 
 		$data = \team\Sanitize::toJs((string)$_data);
-		if('UTF-8' != \team\Context::get('CHARSET') ) {
+		if('UTF-8' != \team\Config::get('CHARSET') ) {
 			return utf8_encode($data);
 		}else {
 			return $data;

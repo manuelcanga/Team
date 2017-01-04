@@ -64,18 +64,20 @@ class Team
 	   ini_set('display_errors', 0);
 	   
 		// Report all PHP errors
-		error_reporting(\team\Context::get('GENERAL_ERROR_LEVEL', E_ALL ) );
+		error_reporting(\team\Config::get('GENERAL_ERROR_LEVEL', E_ALL ) );
 
 		$errors = new \team\notices\Errors();
-		
-		set_error_handler( array($errors , 'PHPError' ), \team\Context::get('GENERAL_ERROR_LEVEL', E_ALL) );
-		
+
+		set_error_handler( array($errors , 'PHPError' ), \team\Config::get('GENERAL_ERROR_LEVEL', E_ALL) );
+
 		register_shutdown_function(array( $errors , 'critical' ));
-	
+
 		self::$errors = $errors;
-	
+
 		self::up();
 	}
+
+
 
 	public static function last() {
 		return self::$last;	
@@ -131,11 +133,15 @@ class Team
 
 
 	public static function critical($e = null) {
+	    if(!isset(self::$errors)) {
+            error_log(print_r($e, true));
+        }
+
 		self::$errors->critical($e);
 	}
 
 
-	
+
 
 	/**
 		Añadimos un listener a la espera de un evento 

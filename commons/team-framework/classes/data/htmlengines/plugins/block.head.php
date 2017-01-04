@@ -68,7 +68,7 @@ function smarty_block_head($params, $content, Smarty_Internal_Template $template
         $metas =  (array) \team\Context::get('SEO_METAS');
         $metas =  \team\Filter::apply('\team\tag\metas', $metas);
 
-        $charset = \team\Context::get('CHARSET');
+        $charset = \team\Config::get('CHARSET');
         $out .= "<meta charset='{$charset}'>";
 
 

@@ -40,7 +40,7 @@ class Sanitize {
 
 
     static function encoding($string, $charset = null, $fromcharset = null) {
-        $charset = ($charset)?: \team\Context::get('CHARSET');
+        $charset = ($charset)?: \team\Config::get('CHARSET');
 
 		if(!isset($fromcharset) ) {
 			$fromcharset = mb_detect_encoding($string, ['ISO-8859-15', 'UTF-8', 'Windows-1251']);
@@ -204,7 +204,7 @@ class Sanitize {
     
     static function count($string) {
 		if (function_exists('mb_strlen') ) {
-            return mb_strlen($string,  \team\Context::get('CHARSET') );
+            return mb_strlen($string,  \team\Config::get('CHARSET') );
 		}
 		
 		return strlen($string);
@@ -230,7 +230,7 @@ class Sanitize {
             return '';
         }
 
-        $charset = \team\Context::get('CHARSET');
+        $charset = \team\Config::get('CHARSET');
         
         if (function_exists('mb_strlen') ) {
             if (mb_strlen($string, $charset) > $length) {
@@ -313,7 +313,7 @@ class Sanitize {
 		@param $str cadena inicial que queremos convertir sus carácteres a htmlentities
 	*/
 	static function toHtml($str) { 
-        $charset =  \team\Context::get('CHARSET');
+        $charset =  \team\Config::get('CHARSET');
 		return htmlentities($str, ENT_QUOTES, $charset); 
 	}
 

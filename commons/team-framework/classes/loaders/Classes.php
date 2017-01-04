@@ -82,7 +82,7 @@ class  Classes{
 		$class = ltrim($_class, '\\');
 		if(!isset(self::$registers[$class]) ) {
 			self::$registers[$class] = ['path' => $path, 'base' => $base ];
-			if(\team\Context::get("TRACE_AUTOLOAD_CLASS") ) {
+			if(\team\Config::get("TRACE_AUTOLOAD_CLASS", false) ) {
 				\team\Debug::me("Registrada clase '$_class' con path '$path' y base '$base'");
 			}
 			return true;
@@ -222,7 +222,7 @@ class  Classes{
 
         //Mostramos una traza si asi lo quiere el programador
 		//De que hubo algún error porque no hemos encontrado la clase
-		if(\team\Context::get("TRACE_AUTOLOAD_CLASS") ) {
+		if(\team\Config::get("TRACE_AUTOLOAD_CLASS", false) ) {
 			\team\Debug::me("Loading class....false", $class_name_full);
 		}
 	}
@@ -255,7 +255,7 @@ class  Classes{
 			}
 		}
 
-        if(\team\Context::get('TRACE_AUTOLOAD_CLASS') ) {
+        if(\team\Config::get('TRACE_AUTOLOAD_CLASS', false) ) {
                 \team\Debug::me($path.$file, "Loading file....".($class_exists? "FOUND" : "Not FOUND") );
         }
 
@@ -286,7 +286,7 @@ class  Classes{
 			}
 
 			//Mostramos una traza si asi lo quiere el programador
-			if(\team\Context::get("TRACE_AUTOLOAD_CLASS") ) {
+			if(\team\Config::get("TRACE_AUTOLOAD_CLASS", false) ) {
 				\team\Debug::me($class_name, "Loading class....true" );
 			}
 
@@ -366,4 +366,4 @@ class  Classes{
 		
 	}
 
-} 
+}

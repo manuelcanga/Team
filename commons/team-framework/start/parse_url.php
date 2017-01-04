@@ -1,6 +1,6 @@
 <?php 
 
-namespace team\config\scripts\start\url;
+namespace team\start\url;
 
 if(!defined("_SITE_") ) die("Hello,  World");
 

@@ -83,12 +83,11 @@ final  class Debug
 
 		self::getFileLine($file, $line, $level);
 
-
-		if(!\team\Context::get('SHOW_ERRORS') && \team\Context::exists('SHOW_ERRORS') ) return ;
+		if(!\team\Config::get('SHOW_ERRORS', false)  ) return ;
 
 		if(\team\Context::get('CLI_MODE') ) {
 			self::output($var, $label, $file, $line);
-		}else if(false === \team\Context::get('SHOW_IN_NAVIGATOR') || ( \team\Context::main("out") != 'html' && \team\Context::main("out") ) ) {
+		}else if(false === \team\Config::get('SHOW_IN_NAVIGATOR', false)  || ( \team\Context::main("out") != 'html' && \team\Context::main("out") ) ) {
 			self::log($var, $label, $file, $line);
 		}else {
             self::log($var, $label, $file, $line);
@@ -178,7 +177,7 @@ final  class Debug
 	*/
 	private static function formatDisplay( $var, $label, $file, $line) {
 	
-        if(class_exists('\team\data\formats\Html', false) && 'data' == strtolower(\team\Context::get('SHOW_IN_NAVIGATOR') )  ) {
+        if(class_exists('\team\data\formats\Html', false) ) {
             return self::withData( $var, $label, $file, $line);
         }else { 
             return self::withString( $var, $label, $file, $line);
@@ -350,7 +349,7 @@ de $jumps saltos hacia atrás  */
 	public static  function trace($label = "Trace", $data = null)
 	{
 
-		if(\team\Context::get("SHOW_TRACE") ) {
+		if(\team\Config::get("SHOW_TRACE", false) ) {
 			$backtrace = debug_backtrace();
 
 			self::me($data, $label, $backtrace[1]["file"],   $backtrace[1]["line"]);
@@ -395,7 +394,7 @@ de $jumps saltos hacia atrás  */
 
 			//Toca ver el tiempo, o devolverlo. (pasándolo antes a una numeración más clara )
 			if($_display)
-				team\Debug::out($time*10000, $_op, $label, $backtrace[0]["file"],   $backtrace[0]["line"]);
+                \team\Debug::out($time*10000, $_op, $label, $backtrace[0]["file"],   $backtrace[0]["line"]);
 			else
 				return $time*10000;
 	}
