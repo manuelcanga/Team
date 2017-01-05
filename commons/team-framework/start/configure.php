@@ -4,8 +4,8 @@ namespace team\start\setup;
 
 if(!defined("_SITE_") ) die("Hello,  World");
 
-
 \team\Config::set('ENVIROMENT', 'local');
+
 
 /** ___________________ URL _____________________  */
 
@@ -48,3 +48,9 @@ $method  = $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']?? $_POST['_method']?? $_SERVE
 /*  _________________________  TRANSFORM ________________________ */
 //Motor que se usara para procesar las vistas
 \team\Config::set('HTML_ENGINE',"TemplateEngine");
+
+
+/*  _________________________  CONSTANTS ________________________ */
+
+//Añadimos las constantes que hubiera como variables de configuración
+\team\Config::set(get_defined_constants(true)['user']);

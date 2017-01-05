@@ -4,9 +4,6 @@ namespace team\start\url;
 
 if(!defined("_SITE_") ) die("Hello,  World");
 
-
-
-
 /**
  Un framework debería de proporcionar un sistema de parseo de url propio y dando la opción de reemplazarlo.
  Aquí se encuentra el código de parseo de url de TEAM. 
@@ -14,6 +11,7 @@ if(!defined("_SITE_") ) die("Hello,  World");
 */
 \team\Task::join('\team\parse_url', function($args, $url, $package) {
     $args->response = \team\Check::key($args->response, null);
+
 
 	$new_url_path_list = $args->url_path_list;
     //Si no hay url que proccesar, obvio que nos saltamos el proceso de parseo,

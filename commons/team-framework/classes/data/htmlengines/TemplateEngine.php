@@ -32,6 +32,7 @@ namespace team\data\htmlengines;
 
 
 require_once(__DIR__."/helpers/Mirror.php");
+require_once(__DIR__."/helpers/Config.php");
 
 /** TODO: Optimized */
 //ini_set('zlib.output_compression', '1');
@@ -90,11 +91,9 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
     }
 
 	public function transform(Array $_data) {	
-			global $_CONTEXT;
 
 			$_data['_']["USER"] = \team\User::getCurrent();
 			$_data['_']['notices'] = \Team::getCurrent();
-			$_data['_CONTEXT'] = $_CONTEXT;
             $_data['USER_AGENT'] =  \team\Http::checkUserAgent();
 
 
@@ -122,6 +121,8 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 
 
 			$result =  $engine->fetch($template, $engine_data);
+
+
    		    if(!$this->gui || \team\Config::get("SHOW_VIEWS", true) ) {
 				return $result;
 			}else {
@@ -175,12 +176,8 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
     public function default_template_handler_func($type, $name, &$content, &$modified, \Smarty $smarty) {
         $name = str_replace('.tpl', '', $name).'.tpl';
 
-		if(isset($this->gui) )
-	        $component = $this->gui->getComponent();
-		else
-			$component = \team\Context::get('COMPONENT');
-
-       $package = '/'.\team\Context::getPackage();
+  	   $component = \team\Context::get('COMPONENT');
+       $package = '/'.\team\Context::get('PACKAGE');
 
 
 
@@ -224,11 +221,10 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 		@param Smarty $_engine: objeto de smarty que inicializaremos.
 	*/
 	function initializeEngine(\Smarty  $_engine, $_data, $_template) {
-		global $_CONTEXT;
 
-		$package = $_CONTEXT['PACKAGE'];
-		$component = $_CONTEXT['COMPONENT'];
-		$response = $_CONTEXT['RESPONSE'];
+		$package = \team\Context::get('PACKAGE');
+		$component =  \team\Context::get('COMPONENT');
+		$response = \team\Context::get('RESPONSE');
 
 		$_engine->addPluginsDir(_SITE_.'/'.$package.'/'.$component.'/views/plugins');
 		$_engine->addPluginsDir(_SITE_.'/'.$package.'/commons/views/plugins');
@@ -247,12 +243,13 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
         //Para poder encontrar  shortcode, necesitamos buscar entre las funciones del usuario. Cacheamos estas
 		$functions = get_defined_functions();
 		 self::$functions_user_cache = $functions["user"];
-			 	
-		 $view_cache =  \team\Config::get('VIEW_CACHE', true);
+
+		 $view_cache =  \team\Config::get('VIEW_CACHE', false);
 
 		 $_engine->compile_check = !$view_cache;
 		 $_engine->caching = $view_cache;
-		 $_engine->compile_id =  $package.$component.$response.$_template;
+		 $compile_id = $package.$component.$response.$_template.\team\Config::get('URL').\team\Context::get('COMPILE_ID');
+		 $_engine->compile_id =  \team\Filter::apply('\team\smarty\compile_id',$compile_id );
 
 		
 		//Un componente sólo vería sus cosas, aún así puede usar root: package: etc
@@ -329,12 +326,11 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 		@return \Smarty_Data : retornamos un objeto de datos smarty
 	*/
 	function transformToEngineData(Array $_data) {
-		global $_CONTEXT;
-		
+
 		//Definimos las que seran las constantes de configuracion de smarty
 		$data = new \Smarty_Data();
 		//Añadimos a la plantilla todas las constantes de configuracion
-		$data->config_vars = $_CONTEXT;
+		$data->config_vars = new Config();
 		if(\team\Config::get("TRACE_CONFIG") ) {
 			\team\Debug::me($data->config_vars, "Variables de configuracion smarty");
 		}

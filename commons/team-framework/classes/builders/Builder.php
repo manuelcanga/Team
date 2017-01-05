@@ -49,7 +49,7 @@ abstract class Builder implements \ArrayAccess {
     abstract protected function checkParent($class);
     abstract protected function sendHeader();
 
-    function __construct($params = []) {
+    public function __construct($params = []) {
         $this->data = $params;
 
         \team\Context::set('CONTROLLER_BUILDER', $this);
@@ -292,7 +292,7 @@ abstract class Builder implements \ArrayAccess {
 
             //Todas las constantes públicas que tenbga la clase las usamos como variables de contexto
             $reflection_class = new \ReflectionClass($class);
-            \team\Context::add($reflection_class->getConstants() );
+            \team\Context::defaults($reflection_class->getConstants() );
 
             $method = $this->getMethod($class, $this->response, $reflection_class);
 
@@ -327,7 +327,7 @@ abstract class Builder implements \ArrayAccess {
 
         \team\Context::set('TRANSFORMING_RESPONSE_DATA', false);
 
-        if(($this->is_main || 1 ==  \team\Context::getIndex() ) ) {
+        if(($this->is_main || 1 ==  \team\Context::getLevel() ) ) {
             $this->header();
         }
 

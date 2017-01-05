@@ -177,12 +177,11 @@ class Errors {
 		}
 
 		//Asignamos un contextlevel para que quien lo recoja sepa si es o no main dónde se produjo el error
-		$data->context  = \team\Context::getCurrent();
+		$data->context  = new \team\Data( \team\Context::getContext() );
 		$data->level = \team\Context::getIndex();
 		if( \team\Context::get('out') != 'html' ) {
 		
-			$low_level = \team\Context::getIndex() - 1;
-			$context_main = \team\Context::getState($low_level );
+			$context_main = \team\Context::before();
 			//Si el método main no es el que ha cascado, llamamos a su método critical para que lo arregle todo.
 			$builder = \team\Context::get('CONTROLLER_BUILDER');
 

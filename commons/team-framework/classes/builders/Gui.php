@@ -72,7 +72,6 @@ class Gui extends Builder {
 	}
 
 	public function transform(\team\Data &$_data, $_controller, $_result = null ) {
-		global $_CONTEXT;
 
 		$hubo_resultado_devuelto_por_response = isset($_result)  && is_string($_result);
 
@@ -106,7 +105,7 @@ class Gui extends Builder {
 		if( !$SE instanceof \System_error ) {	
 			$SE = new \System_Error($SE->getMessage(), '\team\views\errors',$SE->getCode(), $SE->getFile(), $SE->getLine() /*, $SE->getFunction()*/ );
 			//Guardamos el namespace actual
-			$SE->setNamespace(\team\Context::getNamespace());
+			$SE->setNamespace(\team\Context::get('NAMESPACE'));
 		}
 		\Team::systemException($SE );
 

@@ -31,11 +31,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace team;
 
 
-
-
-require(_TEAM_.'/classes/loaders/Config.php');
-
-
 /** 	
  	 Gestión de contextos de Team Framework
 	 Un contexto es una colección de variables de configuración para un namespace especifico.
@@ -47,126 +42,75 @@ require(_TEAM_.'/classes/loaders/Config.php');
 	en cuanto a anidamiento )
 	Los contextos sirve de substituto a las constantes y a las variables globales. 
 */
-class Context implements \ArrayAccess  {
-	/** Lleva el conteo de niveles. Cuanto más alto es el valor de index, más alto es el nivel */
-	private static $index = 0;
-	/** Pila de acciones. Elemento 0, es Team/Root */
-	private static $contexts = [];
-	/** Contexto actual */
-	private  static $current = [];
-	/** Referencia al objeto $_CONTEXT */
-	private static $context = null;
-	/** Cargador de archivos de configuración */
-	private $configloader = null;
+class Context  {
+	private static $context = ['LEVEL'  => 0, 'NAMESPACE' => '\\'];
 
-	public function __construct() {
-		self::$context = $this;
 
-		//Comenzamos un nuevo contexto( por root )
-		self::$contexts[self::$index] = [];
+	/**
+     * Abrimos un contexto( es decir, se lanza un nuevo response )
+     * @return array contexto nuevo
+     */
+	public static function open( ) {
 
-		//Creamos un acceso rápido más manejable
-		self::$current  = & self::$contexts[self::$index];
+        $context = [];
+        $context['BEFORE'] = self::$context; //Guardamos el contexto anterior( es decir, el que lanzó el response )
+        $context['LEVEL'] = $context['BEFORE']['LEVEL'] + 1;
+        $context['LAST'] = []; //Aún no se ha lanzado un response desde el contexto actual
+        $context['OPTIONS'] = []; //Esto en el futuro pasará a Config
+        self::$context = $context;
+
+
+		return  self::$context;
 	}
-	
-	public function initialize() {
-		//Creamos la instancia del loader de config(Este en su constructor inicializará team y comenzará el namespace )
-		$this->configloader = new \team\loaders\Config();
 
-		//Ahora añadimos el root( con root nos referimos a los archivos de /common del raiz del framework )
-		self::setNamespace("\\");
+	/**
+     * Se cierra el contexto actual y se vuelve al que lo llamó
+     * @return array se devuelve los datos del contexto que se cierra
+     */
+	public static function close() {
 
-        \Team::event('\team\start');
+         $namespace = self::$context['NAMESPACE'];
 
+        //Obtenemos el namespace del contexto que se va a cerrar
+        \team\Debug::trace("Context[{$namespace}]: Ending");
+
+        if(self::getLevel()> 0) {
+            $context = self::$context['BEFORE']; //El contexto que llamó al contexto actual pasa a ser el nuevo activo
+
+
+            //Asignamos el contexto actual como el last del nuevo activo
+            unset(self::$context['BEFORE']);
+            $context['LAST'] = self::$context;
+            self::$context = $context;
+
+
+            //Devolvemos el contexto que se ha cerrado
+            return self::$context['LAST'];
+        }
+
+        return self::$context;
+	}
+
+	public static function isMain() {
+        return 1 === self::getLevel();
     }
 
-	/**
-		Baja hasta el primer contexto
-	*/
-	public static function restart() {
-		self::$index = 0;
-	}
-
-	/**
-		Abrimos un nuevo nivel de contexto bien para el namespace seleccionado
-		@param String $namespace: Cadena de texto con el namespace al que se asociará el contexto
-		@return devolvemos el nuevo contexto.
-	*/
-	public static function open($namespace = "" ) {
-        //Subimos un nivel de la pila
-        self::$index++;
-
-        //Comenzamos un nuevo contexto tomando como base el contexto de root
-        self::$contexts[self::$index] = self::$contexts[0];
-
-        //Creamos un acceso rápido más manejable
-        self::$current  = & self::$contexts[self::$index];
-
-        self::$current['options'] = [];
-		self::$current['before'] = [];
-
-
-        if(self::$index>1) {
-            self::$current['before'] =& self::$contexts[self::$index - 1];
-        }
-
-		self::$current['last'] = [];
-
-		//Inicializamos el contexto
-		self::$current['NAMESPACE'] = $namespace;
-
-		return  self::$current;
-	}
-
-
-	/** 
-		Cerramos el contexto actual y ,por lo tanto, bajamos un nivel en la pila
-		@return devolvemos el contexto que se cierra.
-	*/
-	public static function close() {
-		//Obtenemos el namespace del contexto que se va a cerrar
-		$namespace = self::getNamespace();
-
-        \team\Debug::trace("Context[".self::$index."][{$namespace}]Ending context");
-
-        //Eliminamos el last del contexto actual
-		unset(self::$current['last']);
-
-		//Hacemos una copia del contexto actual
-		$last =   self::$current;
-
-		//Si aún tenemos niveles por debajo, asignamos a current el nivel nuevo ( e inferior )
-		if(self::$index >= 1 ) {
-			//Bajamos la pila
-			self::$index--;
-			self::$current = & self::$contexts[self::$index];
-
-        }
-
-		//Guardamos el contexto de la última acción anidada
-		self::$current['last'] = $last;
-
-		return self::$current['last'];
-	}
-
 	/* ------------------- GETTERS  ---------------------- */
-	public static function getNamespace() { return self::get('NAMESPACE'); }
-	public static function getPackage(){	return self::get('PACKAGE'); }
-	public static function getComponent(){	return self::get('COMPONENT'); }
-	public static function getResponse(){ return self::get('RESPONSE'); }
+    public static function getLevel() { return self::$context['LEVEL']; }
+    public static function getIndex() { return self::getLevel(); }
 
 	/* 
 		Devolvemos el valor de una variable de configuración existente. 
 		@param String $name nombre de la variable de configuración de la que queremos devolver el valor.
 		@param mixed $default valor a devolver en caso de no existir la variable de $name 
 	*/
-	public static function get($name, $default = null){
-		$result = $default;
+	public static function get($var, $default = null){
+        //Primero comprobamos si existe la variable a nivel de contexto
+        if(isset(self::$context[$var])) {
+            return self::$context[$var];
+        }
 
-		if(!empty(self::$current) && array_key_exists($name, self::$current) ) {
-			$result = self::$current[$name];
-		}
-		return $result;
+        return \team\Config::get($var, $default);
 	}
 
 
@@ -177,7 +121,7 @@ class Context implements \ArrayAccess  {
 			@param String $name nombre de la opción de configuración de la que queremos devolver el valor.
 			@param mixed $default valor a devolver en caso de no existir la variable de $name 
 		*/
-		$value = self::$current['options'][$name]?? $default;
+		$value = self::$context['OPTIONS'][$name]?? $default;
 
         $value =  \team\Filter::apply('\team\options', $value, $name);
 
@@ -191,9 +135,13 @@ class Context implements \ArrayAccess  {
 		@param mixed $default valor a devolver en caso de no existir la variable de $name 
 	*/
 
-	public static function before($name, $default = null) {
-		if(isset(self::$current['before'][$name]) &&  array_key_exists($name, self::$current['before'])  ) {
-			return self::$current['before'][$name];
+	public static function before($name = null, $default = null) {
+        if(!isset($name)){
+            return self::$context['BEFORE']?? [];
+        }
+
+		if(isset(self::$context['BEFORE'][$name]) &&  array_key_exists($name, self::$context['BEFORE'])  ) {
+			return self::$context['BEFORE'][$name];
 		}
 		return $default;
 	}
@@ -203,10 +151,13 @@ class Context implements \ArrayAccess  {
 		@param String $name nombre de la variable de configuración de la que queremos devolver el valor.
 		@param mixed $default valor a devolver en caso de no existir la variable de $name 
 	*/
-	public static function last($name, $default = null){
+	public static function last($name = null, $default = null){
+        if(!isset($name)){
+            return self::$context['LAST']?? [];
+        }
 
-		if(isset(self::$current['last'][$name]) &&  array_key_exists($name, self::$current['last'])  ) {
-			return self::$current['last'][$name];
+		if(isset(self::$context['LAST'][$name]) &&  array_key_exists($name, self::$context['LAST'])  ) {
+			return self::$context['LAST'][$name];
 		}
 		return $default;
 	}
@@ -216,45 +167,23 @@ class Context implements \ArrayAccess  {
 		@param String $name nombre de la variable de configuración de la que queremos devolver el valor.
 		@param mixed $default valor a devolver en caso de no existir la variable de $name 
 	*/
-	public static function main($name, $default = null) {
-		if(!empty(self::$contexts[1]) && array_key_exists($name, self::$contexts[1]) ) {
-			return self::$contexts[1][$name];
+	public static function main($name = null, $default = null) {
+        $main_level = 1;
+
+        if(!isset($name)){
+	        return self::$context[$main_level]?? [];
+        }
+
+
+		if(!empty(self::$context[$main_level]) && array_key_exists($name, self::$context[$main_level]) ) {
+			return self::$context[$main_level][$name];
 		}
 		return $default;
 	}
 
-	/**
-		Devolvemos un nivel de contexto.
-		@param int $index nivel de contexto a devolver. Si no se espcifica se devuelve el actual.
-	*/
-	public static function getState($index = null) { 
-		if(null === $index)
-			return self::$current; 
-		else if($index > 0)
-			return self::$contexts[$index];
-	
-		return [];		
-	}
-
-	/**
-		Deolvemos el número de nivel en el que nos encontramos.
-	*/
-	public static function getIndex() { return (int) self::$index; }
-
-	/**
-		Devuelve un Data que contiene todas las variables de configuración del contexto actual
-		Además, como está referenciado. Permite cambiar fácilmente sus valores.
-	*/
-	public static function getContext() {
-		$data = new \team\Data();
-		$data->setRef(self::$current);
-
-		return $data;
-	}
-
-	public static function getCurrent() {
-		return new \team\Data(self::$current);
-	}
+	public static function & getContext() {
+        return self::$context;
+    }
 
 
 	/* ------------------- SETTERS  ---------------------- */
@@ -262,19 +191,10 @@ class Context implements \ArrayAccess  {
 		Añade nuevas variables de configuración al nivel actual
 		@param array $vars variables nuevas a añadir.
 	*/
-	public static function add(array $vars) {
-		$last_vars =  self::$current;
-		self::$current = $vars + $last_vars;
+	public static function defaults(array $vars) {
+		self::$context =  self::$context + $vars;
 	}
 
-    /**
-        Añade nuevas variables de configuración al nivel actual
-        Se diferencia del método add en que este es un método más rápido y optimo en últimas versiones de PHP
-        @param array $vars variables nuevas a añadir.
-     */
-    public static function setContexts(array $vars) {
-        self::$current = $vars;
-    }
 
 
     /**
@@ -284,74 +204,37 @@ class Context implements \ArrayAccess  {
 		@nota: He quitado caché, así siempre se dispararán los setups de los configs
 	*/
 	public static function setNamespace($namespace){
-
-		self::$context->configloader->load($namespace);
-        self::$current['SUBPATH'] =   str_replace('\\', '/', $namespace);
-
-		//Notificamos del nuevo evento. @AMEDIDA
-		//\Team::event('\team\context\Set_Namespace', $namespace);
+	    self::$context['NAMESPACE'] = $namespace;
+        self::$context['SUBPATH'] =   str_replace('\\', '/', $namespace);
 	}
 
 	/** Asignamos un valor de configuración.  */
-	public static function set($name, $value = NULL){
-		self::$current[$name] = $value; 
-	}
-	
-	public static function exists($key) {
-		return array_key_exists($key, self::$current);
+	public static function set($var, $value = NULL){
+	    if(is_array($var)) {
+            self::$context = $var + self::$context;
+        }else if(is_string($var)) {
+		    self::$context[$var] = $value;
+        }
 	}
 
-	/** Asignamos un grupo de variables de configuración como contexto actual */
-	public static function setState($context) { self::$current = & $context; }
+	public static function exists($key) {
+		return array_key_exists($key, self::$context);
+	}
+
 
 	/**
 		Depuración. Only Developer
 	*/
-	public  function debug($str = '') {
+	public static function debug($str = '') {
 		$backtrace = debug_backtrace();
 		$file = $backtrace[0]['file'];
 		$line = $backtrace[0]['line'];
 		
-		\team\Debug::me(self::$current, 'Context Log:'.$str, $file, $line);
+		\team\Debug::me(self::$context, 'Context Log:'.$str, $file, $line);
 	}
 
 
-	/* ------------------- ArrayAccess  ---------------------- */
 
-    public function offsetUnset($offset){
-        if(array_key_exists($offset, self::$current)  ) {
-            unset(self::$current[$offset]);
-        }
-    }
-
-    public function offsetExists($offset) {
-        return  isset(self::$current[$offset]);
-    }
-
-    public function &  offsetGet($offset) {
-		$result = null;
-
-		if(is_numeric($offset) &&  isset(self::$contexts[self::$index]) ) {
-			$result =& self::$contexts[self::$index];
-		}elseif(!isset( self::$current[$offset]) ) {
-		   self::$current[$offset] = null;
-		}else {
-			$result =&  self::$current[$offset];
-		}
-
-		return $result;
-    }
-
-
-
-    public function & offsetSet($offset, $valor) {
-		if(is_numeric($offset) && isset(self::$contexts[self::$index]) ) {
- 			self::$contexts[self::$index] = $valor;
-		}else {
-			self::$current[$offset] = $valor;
-    	    return  self::$current[$offset];
-		}
-    }
 
 
 }

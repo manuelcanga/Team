@@ -11,7 +11,7 @@ include(__DIR__ . '/start/configure.php');
   En el event start, añadimos los hooks necesarios para parsear los datos de entrada y devolverlos para poder ser usado para lanzar la acción main( ver abajo )
 */
 \Team::addListener('\team\start', function() {
-    global $argv, $argc, $_CONTEXT;
+    global $argv, $argc;
 
 	//Es posible lanzar TEAM framework desde terminal
 	//Así que comprobamos si se está haciendo
@@ -21,7 +21,7 @@ include(__DIR__ . '/start/configure.php');
 	}
 
 	\team\Debug::trace('¿Cli mode activo?', $cli_mode);
-	$_CONTEXT['CLI_MODE'] =  $cli_mode;
+	\team\Context::set('CLI_MODE',   $cli_mode );
 
 	if($cli_mode) {
 	  return include(__DIR__ . '/start/cli.php');
@@ -43,12 +43,10 @@ include(__DIR__ . '/start/configure.php');
   También permite crear pequeños comandos cli que no necesitan ser organizados en paquetes/componentes 
 */
 if(function_exists('__main') ) {
-	\team\Task::join('\team\main', function ($args, $_CONTEXT) {
+	\team\Task::join('\team\main', function ($args) {
 		$this->finish();
 
-		\team\Context::open('\\');
-		$result =  __main($args, $_CONTEXT);
-		\team\Context::close();
+		$result =  __main($args);
 
 		return $result;
 	});

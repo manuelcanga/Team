@@ -36,24 +36,34 @@ function parse_action($request) {
 
 
 		 \team\Debug::trace("Vamos a procesar la url pedida", $url );
-		global $_CONTEXT;
-		
+
 		//Este worker acabará la tarea de url, así que ya notificamos que no queremos que se siga propagando .
 		$this->finish();
 		
-        $_CONTEXT['WEB'] = $web = $_CONTEXT['PROTOCOL'].$_CONTEXT['DOMAIN'];
+        $web = \team\Config::get('PROTOCOL').\team\Config::get('DOMAIN');
+        \team\Config::set('WEB', $web);
 
-		
+
         list($package, $default_component, $default_response_component, $default_out) = array_pad(explode('/',trim($this->main,'/') ), 4, null);
 
-        $_POST = \team\Filter::apply('\team\parse_post', $_POST);
+
+
+    $_POST = \team\Filter::apply('\team\parse_post', $_POST);
 
         //Parseamos la url en busca de los parámetros de la web, los argumentos base serán los de post
 		$args = new \team\Data('Url',$url, [], $_POST +((array)$this->area_params) + ['out' => $default_out]);
         $url = $args->base_url;
-		
-        //Asignamos los parámetros fijos no dependientes del exterior
-        $args->package =   \team\Sanitize::identifier($package);
+
+        $package =  \team\Filter::apply('\team\package',  $package, $url );
+        $args->package = \team\Sanitize::identifier($package);
+
+        //Aquí ya sabemos el package del main, así que le mandamos un Start
+        //Así pueden añadir filtros o tasks dependientes del package( por ejemplo, para parseos de urls dependiendo del paquete )
+        \team\FileSystem::load("/{$package}/commons/config/Start.php");
+
+        \team::event("\\team\\package", $package, $url, $args );
+
+        //Evitamos que desde el exterior se creen parámetros propios del framework y que no se deberían de modificar directamente
         $args->component = null;
         //_self_ determina la ruta url que se utilizó para llegar al response actual ( normalmente url_path_list en forma de path pero sin filtros )
         //por tanto es muy útil para que un response se refiera así mismo.
@@ -65,10 +75,10 @@ function parse_action($request) {
             $args->out = $args->item_ext?: $default_out;
 	    }
 
-		$args->action = parse_action($args->action?:  $_CONTEXT['REQUEST_METHOD']);
+		$args->action = parse_action($args->action?:  \team\Config::get('REQUEST_METHOD') );
 
-		
-		//El contexto MAIN, permite forzar la carga de un paquete/componente determinado
+
+		//La variable de configuración MAIN, permite forzar la carga de un paquete/componente determinado
 		//Por tanto, su existencia implica que no queremos el flujo normal de parseo de url 
 		//Es muy útil,por ejemplo, por si en el evento Start hemos detectado que el usuario está
 		//tratando de entrar en una zona restringuida. Asígando un MAIN tal como: '/user/login'
@@ -76,12 +86,13 @@ function parse_action($request) {
 		//También es útil para crear archivos que determinen dónde se gestionara su lógica.
 		//por ejepmlo, podríamos crear un archivo /rss.php que tenga un define('MAIN', '/tools/rss');
 		//Así al cargarse ese archivo automaticamente se iría a rss( paquete tools )
-		if($_CONTEXT['MAIN']) {
+		if(\team\Config::get('MAIN') ) {
 			$args->component = $default_component;
 			$args->response = $default_response_component;
 			$args->out = $default_out;
 		}else {
-		  //Le damos la opción al programador de que implemente su propio sistema de parseo de urls
+
+            //Le damos la opción al programador de que implemente su propio sistema de parseo de urls
 		  $args = \team\Task('\team\parse_url', $args)->with($args, $url, $package );
 		}
         
@@ -111,17 +122,19 @@ function parse_action($request) {
 		$_GET = $_POST = array();
 
         //_SELF_  debe empezar y terminar  / y terminar con  /
-        $_CONTEXT["_SELF_"] =  \team\Sanitize::trim(  $_CONTEXT["_AREA_"].ltrim( $args->_self_, '/'), '/');
-        $_CONTEXT["URL"] = $url;
+        $_SELF_ =  \team\Sanitize::trim( \team\Config::get("_AREA_").ltrim( $args->_self_, '/'), '/');
+        \team\Config::set('_SELF_', $_SELF_);
 
-        $_CONTEXT['ARGS'] = $args;
+        \team\Config::set('URL',  $url);
+
+        \team\Config::set('ARGS',  $args);
+
 
         unset($args->_self_); //ya no lo necesitamos, está en context
 
         \team\Debug::trace("Acabado el proceso de analisis de url", $args);
 
-      // $_CONTEXT->debug();
-
+        \team::event("\\team\\conponent", $package, $args->component, $url, $args );
 
 
 		return $args;

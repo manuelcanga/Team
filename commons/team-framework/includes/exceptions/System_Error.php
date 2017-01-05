@@ -81,7 +81,7 @@ class System_Error extends \Exception {
 			}
 		}
 
-		$this->level = \team\Context::getState(); //estado actual
+		$this->level = \team\Context::getLevel(); //estado actual
 		$this->namespace = \team\Context::get('NAMESPACE');
 
 		parent::__construct($_msg, $_code);

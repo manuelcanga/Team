@@ -30,19 +30,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace team;
 
+
+//Clase para gestionar variables de configuracion
+require_once(\_TEAM_.'/includes/data/Vars.php');
 abstract class Config{
+    use \team\data\Vars;
 
     private static $vars = [];
     private static $databases = [];
 
-
-    public static function set($var, $value = null) {
-        if(is_array($var)) {
-            self::$vars =  $var + self::$vars;
-        }else if(is_string($var)){
-            self::$vars[$var] = $value;
-        }
-    }
 
     public static function setDatabase(array $options, $databaseid = 'main') {
         $defaults = [
@@ -61,17 +57,7 @@ abstract class Config{
         self::$databases[$databaseid] = $options + $defaults;
     }
 
-    public static function push($var, $value = null) {
-        if(isset(self::$vars[$var]) && is_array(self::$vars[$var])) {
-            self::$vars[$var][] = $value;
-        }
-    }
 
-    public static function add($var, $key, $value = null) {
-        if(isset(self::$vars[$var]) && is_array(self::$vars[$var])) {
-            self::$vars[$var][$key] = $value;
-        }
-    }
 
     public static function get($var, $default = null) {
         return \team\Filter::apply('\team\configs\\'.$var, self::$vars[$var]?? $default );
@@ -83,18 +69,10 @@ abstract class Config{
         return \team\Filter::apply('\team\db\\'.$conname, $connection_data, $conname );
     }
 
-
-    public static function defaults($vars) {
-        self::$vars =  self::$vars + $vars;
-    }
-
-
     public static function setUp() {
         \Team::event('\team\setup', self::$vars);
+        \team\I18N::setUp();
     }
 
 
-    public static function debug() {
-        \team\Debug::me(self::$vars);
-    }
 }

@@ -39,7 +39,7 @@ class Apcu {
 	}
 
 	function clear() {
-		return apcu_clear_cache('user');
+		return apcu_clear_cache();
 	}
 
 	function overwrite($key, $value, $time = 0) {

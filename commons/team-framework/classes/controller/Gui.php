@@ -47,7 +47,7 @@ class Gui extends Controller {
     function ___load($response) {
 
         //Add Default template and layout
-        $this->setView($this->_CONTEXT['RESPONSE']);
+        $this->setView(\team\Context::get('RESPONSE'));
 
         //Por defecto, no habrá layout
         $this->noLayout();
@@ -61,7 +61,6 @@ class Gui extends Controller {
 
         if( $this->isMain() ) {
             if($this->view){
-
                 $this->addViewToPlace($this->view,'main_view',  [], $isolate=false, 50);
             }
         }
@@ -84,7 +83,7 @@ class Gui extends Controller {
         }
 
         if(empty($file) )
-            $file = $this->_CONTEXT['RESPONSE'];
+            $file = \team\Context::get('RESPONSE');
 
         $file = $this->getPath("views", $component, $package)."{$file}";
 
@@ -127,6 +126,7 @@ class Gui extends Controller {
 
 
         \team\Filter::add($pipeline,function($content, $params, $engine) use ($view, $options, $isolate, $idView, $cache_id) {
+
 
             //Comprobamos si ya estaba la plantilla cacheada
             if(isset($cache_id) ) {

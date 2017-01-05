@@ -46,12 +46,10 @@ abstract class Controller  implements \ArrayAccess{
 
 
     protected $params;
-	protected $_CONTEXT;
 
     function __construct($params, $response ) {
-		global $_CONTEXT;
 
-		$_CONTEXT['CONTROLLER'] = $this;
+		\team\Context::set('CONTROLLER',  $this );
 
 		if($params instanceof \team\Data) {
 		  $this->params = $params;
@@ -59,10 +57,9 @@ abstract class Controller  implements \ArrayAccess{
 	      $this->params = new \team\Data($params);
 		}
 
-		$this->_CONTEXT = $_CONTEXT;
 
         //Contamos las veces que se ha creado
-        $this->_CONTEXT['TIMES']=  static::controllerInitialized($response);
+        \team\Context::set('TIMES',  static::controllerInitialized($response) );
     }
 
 
@@ -78,7 +75,7 @@ abstract class Controller  implements \ArrayAccess{
                         false si hubo más veces
 	*/
 	function isFirstTime() {
-		return (1 === $this->_CONTEXT['TIMES']['commons']);
+        return (1 === \team\Context::get('TIMES')['commons'] );
 	}
 
 
@@ -88,21 +85,21 @@ abstract class Controller  implements \ArrayAccess{
                         false si se pidió deesde otro controlador
 	*/
     function isMain() {
-		return (bool) $this->params->is_main;
+        return (bool) $this->params->is_main;
     }
 
     /*
         Devuelve el nombre del componente al que pertenece este controlador
     */
     function getComponent() {
-        return $this->_CONTEXT['COMPONENT'];
+        return \team\Context::get('COMPONENT');
     }
 
     /*
         Devuelve el nombre del paquete al que pertenece este controlador
     */
     function getPackage() {
-        return $this->_CONTEXT['PACKAGE'];
+        return \team\Context::get('PACKAGE');
     }
 
 
@@ -157,7 +154,7 @@ abstract class Controller  implements \ArrayAccess{
 			//pero no su salida
 			$this->custom($response);
 
-			//Igual que los trait tienen su método de inicialización( con nombre igual que el trait )
+	        //Igual que los trait tienen su método de inicialización( con nombre igual que el trait )
 			//También tienen su método de finalización: end + nombre de trait.
 			$this->callTemplates($response, 'end', '', $result);
 
@@ -247,7 +244,7 @@ abstract class Controller  implements \ArrayAccess{
                     $result = $new_controller->___unload($result, $response, $new_controller);
                 }
 
-                $_CONTEXT['CONTROLLER'] = $this;
+                \team\Context::set('CONTROLLER',  $this );
             }
 
         }
@@ -303,12 +300,11 @@ abstract class Controller  implements \ArrayAccess{
 		@param $package paquete dónde se encuentra el recurso ( por defecto el actual )
 	*/
 	public static function getPath($subpath, $component = null, $package = null) {
-		global $_CONTEXT;
-		
+
 
 		$subpath = trim($subpath, '/');
-		$component = $component?? $_CONTEXT['COMPONENT'];
-		$package =  $package?? $_CONTEXT['PACKAGE'];
+		$component = $component?? \team\Context::get('COMPONENT');
+		$package =  $package?? \team\Context::get('PACKAGE');
 
 		if('root' == $package || 'root' == $component) {
 			return "commons/{$subpath}/";
@@ -335,10 +331,13 @@ abstract class Controller  implements \ArrayAccess{
 		//Sólo nos importa el nombrebase de cada trait
 		$skels = array_map(['\team\NS', 'basename'], $skels);
 
-		if(!empty($skels) ) {
+
+        if(!empty($skels) ) {
 			foreach($skels as  $trait => $name) {
+
 				$name = $prefix.$name.$postfix;
-				if(is_callable([$this, $name]) ) {
+
+                if(is_callable([$this, $name]) ) {
 						$result_skel = $this->$name($response, $result);
 						if($result_skel) 
 							$result = $result_skel;

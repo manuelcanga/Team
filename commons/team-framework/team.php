@@ -106,6 +106,8 @@ require(\_TEAM_.'/classes/hooks/Filter.php');
 require(\_TEAM_.'/classes/Config.php');
 //Classes se encarga de la autocarga y manejo de clases
 require(\_TEAM_.'/classes/loaders/Classes.php');
+//Manejo de configuración de locales
+require(\_TEAM_.'/classes/I18N.php');
 //Plantilla para la gestión fáci de datos de una clase
 require(\_TEAM_.'/includes/data/Storage.php');
 //La clase que gestiona caché
@@ -172,8 +174,7 @@ try {
     \team\Config::setUp();
 
 
-    /**
-    Se inicia el proceso de gestión de errores
+    /**5. Se inicia el proceso de gestión de errores
      */
     \Team::__initialize();
 
@@ -187,23 +188,23 @@ try {
      *   Los Config mantiene las opciones de configuracion del sitio web(tanto a bajo nivel: key con uppercase ) como a
      *   alto nivel ( keys con lowercase ).
      */
-	$_CONTEXT = new \team\Context();
     $_STORE = new \team\Data();
-	global $_CONTEXT, $_STORE;
-	$_CONTEXT->initialize();
+
+
 
      \team\Debug::trace("Se inicializo el contexto. Ya podemos empezar a inicializar todo el framwork");
+    \Team::event('\team\start');
 
-    $args = \team\Task('\team\url', array() )->with($_SERVER["REQUEST_URI"]);
+
+    $REQUEST_URI = \team\Filter::apply('\team\request_uri', $_SERVER["REQUEST_URI"]);
+    $args = \team\Task('\team\url', array() )->with($REQUEST_URI);
 
 
     //Es necesario que un worker se haga cargo de la creación del primer response( o main )
-	$result =  \team\Task('\team\main', '')->with($args, $_CONTEXT );
+	$result =  \team\Task('\team\main', '')->with($args);
 
 	
 	\team\Debug::trace("Se acabó, ya hemos realizado todas las operaciones pedidas. Bye!");
-	//Bajamos el ultimo nivel que queda.
-	\team\Context::close();
 
 	\Team::event('\team\end', $result);
 
