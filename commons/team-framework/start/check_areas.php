@@ -21,6 +21,12 @@ if(!defined("_SITE_") ) die("Hello,  World");
      */
     $main = getMainFromConfig($url);
 
+
+    /*
+     * Las areas son un mecanismos para crear zonas dentro del sitio web. Las zonas no son más que una asociación de una url base a un paquete o response.
+     * Ejemplo: Podríamos tener una zona area_privada con url base ( /clientes ) asociado al paquete 'usuarios'. Así, para cualquier suburl de /clientes
+     * se haría cargo el paquete usuarios
+     */
     list($_area_, $area_params) = findCurrentArea( $url, $main);
 
 
@@ -46,11 +52,6 @@ function getAreasFromConfig() {
 function findCurrentArea( & $url, &$main) {
 
 
-    /*
- * Las areas son un mecanismos para crear zonas dentro del sitio web. Las zonas no son más que una asociación de una url base a un paquete o response.
- * Ejemplo: Podríamos tener una zona area_privada con url base ( /clientes ) asociado al paquete 'usuarios'. Así, para cualquier suburl de /clientes
- * se haría cargo el paquete usuarios
- */
     $areas = getAreasFromConfig();
     $_area_ = '/'; //current area path
     $area_params = []; //curren area params

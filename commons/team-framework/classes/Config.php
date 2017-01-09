@@ -57,17 +57,17 @@ abstract class Config{
         self::$databases[$databaseid] = $options + $defaults;
     }
 
+    public static function database($conname = 'main') {
+        $connection_data = self::$databases[$conname]?? [];
+
+        return \team\Filter::apply('\team\db\\'.$conname, $connection_data, $conname );
+    }
 
 
     public static function get($var, $default = null) {
         return \team\Filter::apply('\team\configs\\'.$var, self::$vars[$var]?? $default );
     }
 
-    public static function database($conname = 'main') {
-        $connection_data = self::$databases[$conname]?? [];
-
-        return \team\Filter::apply('\team\db\\'.$conname, $connection_data, $conname );
-    }
 
     public static function setUp() {
         \Team::event('\team\setup', self::$vars);
@@ -75,4 +75,16 @@ abstract class Config{
     }
 
 
+    public static function setMainPackage($package) {
+        if(self::get('PACKAGE')) return ;
+
+        \team\Config::set('PACKAGE', $package);
+        \team\Config::set('_PACKAGE_', _SITE_.'/'.$package);
+        \team\Config::set('BASE', '/'.$package);
+
+
+        //Aquí ya sabemos el package del main, así que le mandamos un Start
+        //Así pueden añadir filtros o tasks dependientes del package( por ejemplo, para parseos de urls dependiendo del paquete )
+        \team\FileSystem::load("/{$package}/commons/config/Start.php");
+    }
 }
