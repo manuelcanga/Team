@@ -47,7 +47,7 @@ function smarty_block_head($params, $content, Smarty_Internal_Template $template
 	}else {//close tag
         $responsive = '';
         if(isset($params['responsive']) ) {
-            $responsive = "<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0' />";
+            $responsive = "<meta name='viewport' content='width=device-width, initial-scale=1.0' />";
             unset($params['responsive']);
         }
 
