@@ -87,8 +87,10 @@ function parse_action($request) {
 			$args->component = $default_component;
 			$args->response = $default_response_component;
 			$args->out = $default_out;
-		}else {
+            $args->filters_list = [];
+            $args->_self_ = \team\Sanitize::trim( implode('/', $args->url_path_list), '/');
 
+        }else {
             //Le damos la opción al programador de que implemente su propio sistema de parseo de urls
 		  $args = \team\Task('\team\parse_url', $args)->with($args, $url, $package );
 		}
@@ -118,12 +120,12 @@ function parse_action($request) {
         //Reseteamos las variables superglobales porque ya la hemos procesado
 		$_GET = $_POST = array();
 
+
         //_SELF_  debe empezar y terminar  / y terminar con  /
         $_SELF_ =  \team\Sanitize::trim( \team\Config::get("_AREA_").ltrim( $args->_self_, '/'), '/');
+
         \team\Config::set('_SELF_', $_SELF_);
-
         \team\Config::set('URL',  $url);
-
         \team\Config::set('ARGS',  $args);
 
 
