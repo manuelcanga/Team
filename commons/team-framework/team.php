@@ -179,18 +179,6 @@ try {
     \Team::__initialize();
 
 
-    /**
-     *  Se cargan las clases de opciones
-     *  Los Context van cambiando en un mismo request según el componente/response que estemos
-     *  Los STORE sería un almacen de datos que permanece inmutable aunque cambiemos de component/response pero sólo dura
-     * hasta que se acaba el request.
-     *   Los CACHE serían como STORE pero mantienen inmutables entre distintos request. Normalmente se guardan en memoria
-     *   Los Config mantiene las opciones de configuracion del sitio web(tanto a bajo nivel: key con uppercase ) como a
-     *   alto nivel ( keys con lowercase ).
-     */
-    $_STORE = new \team\Data();
-
-
 
      \team\Debug::trace("Se inicializo el contexto. Ya podemos empezar a inicializar todo el framwork");
     \Team::event('\team\start');
