@@ -271,4 +271,7 @@ abstract class Check
 		( count( $string_keys ) === 0 )?: $default;
 	}
 
+	static function __callStatic($name, $arguments) {
+        return \team\Filter::apply('\team\Check\\'.$name, ...$arguments );
+    }
 }
