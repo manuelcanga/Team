@@ -74,8 +74,8 @@ class DB {
 	}
 
     public function connect($conname = null) {
+        $connection= \team\DB::getConfig($conname);
 
-        $connection= \team\DB::getConfig($conname?: 'main');
         extract( $connection, EXTR_SKIP);
 
         //Conectamos a la base de datos segun la configuracion
@@ -106,7 +106,7 @@ class DB {
         return null;
     }
 
-	public static function connectionExists($conname = 'main') {
+	public static function connectionExists($conname = null) {
 		return isset(self::$connections[$conname]);
 	}
 
@@ -114,9 +114,7 @@ class DB {
 		Seleccionamos entre una de las bases de datos en las que hayamos abierto una conexion
 	*/
 	public  function change($conname = null) {
-	    $conname = $conname?: 'main';
-
-        $conname = \team\Filter::apply('\team\db\conname', $conname);
+        $conname =  $conname?: $this->conname;
 
         if(self::connectionExists($conname)) {
             $this->server = self::$connections[$conname]['link'];
@@ -127,15 +125,13 @@ class DB {
 
         if($this->server )
             $this->conname =  $conname;
-            
-        
 
 	}
 
     public function close($conname = null) {
         $conname =  $conname?: $this->conname;
 
-        if(isset($conname) && isset(self::$connections[$conname])) {
+        if(self::connectionExists($conname)) {
            self::$connections[$conname]['link']->close();
         }
 
@@ -161,8 +157,8 @@ class DB {
 	}
 	
 	public function getDatabase() {
-	
-        if(isset($this->conname) &&  isset(self::$connections[$this->conname]) ) {
+
+        if(self::connectionExists($this->conname)) {
             return self::$connections[$this->conname]['database'];
         }else {
             return null;

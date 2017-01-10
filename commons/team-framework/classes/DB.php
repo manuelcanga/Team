@@ -25,7 +25,9 @@ class DB
     }
 
     public static function get($new_conection_name = null, $place = null){
-        $DB_class = \team\Filter::apply('\team\DB', '\team\db\DB', self::getConnection($new_conection_name, $place) );
+        $new_conection_name = self::getConnection($new_conection_name, $place);
+
+        $DB_class = \team\Filter::apply('\team\DB', '\team\db\DB',  $new_conection_name);
 
         /** Las clases de base de datos también gestionan las conexiones. Así para  */
         return new $DB_class($new_conection_name);
@@ -54,8 +56,6 @@ class DB
     }
 
     public static function getConfig($conname = null) {
-        $conname = self::getConnection($conname);
-
         $connection_data = self::$databases[$conname]?? [];
 
         return \team\Filter::apply('\team\db\\'.$conname, $connection_data, $conname );
