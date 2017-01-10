@@ -77,7 +77,7 @@ class Notice {
     /**
     Se acabó el proceso con fallo
      */
-    public function error($msg, $code = null, $data = null, $file = null, $line = nul){
+    public function error($msg, $code = null, $data = null, $file = null, $line = null){
 
         \team\Debug::me($msg, $code, $file, $line, 2);
         return $this->addNotice(self::ERROR, 'ERROR', $data, $code, $msg,  $this->WARNINGS);

@@ -55,7 +55,7 @@ class Member {
 
     public function & get($var, $default = null) {
 		if(isset($this->data[$var]) )
-			return $var;
+			return $this->data[$var];
 		else
 			return $default;
 	}
@@ -186,6 +186,6 @@ class Member {
 
     /* *************** ÚTILES  *************** */
     public function debug() {
-        \team\team\Debug::me($this->data, '\team\user\Member');
+       \team\Debug::me($this->data, '\team\user\Member');
     }
 }

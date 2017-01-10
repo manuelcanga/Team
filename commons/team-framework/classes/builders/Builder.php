@@ -275,7 +275,7 @@ abstract class Builder implements \ArrayAccess {
 //$component->var1 = valor1;
 //$component->list(); //ej: $noticia->list();   
 
-    function buildResponse() {
+    public function buildResponse() {
         \Team::up();
 
         $result = NULL; //Resultado de lanzar la accion
