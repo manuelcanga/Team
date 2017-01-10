@@ -36,8 +36,8 @@ namespace team;
 class User {
     /** Definimos la visibilidad */
     const ADMIN = 2 /** Access to private area and admin area. This also is logged */, 
-		USER = 1 /** Access to private area. Meaning the same: active but not admin.  */, 
-		GUEST = 0 /* Only access to public area.  This cannot logged */;
+          USER = 1  /** Access to private area. Meaning the same: active but not admin.  */,
+		  GUEST = 0 /* Only access to public area.  This cannot logged */;
 
 	/**
 		logged when a user or admin login 
@@ -52,7 +52,7 @@ class User {
      * Así ahorramos que se inicie sesión para un visitante que no haga falta( ej: bots )
      *
      */
-    static function __initialize() {
+    public static function __initialize() {
 		if(isset(self::$current) ) return  ;
 
       $user_class =\team\Filter::apply('\team\User', '\team\defaults\Member');
@@ -62,17 +62,17 @@ class User {
 	  }
     }
 
-     function  __call($func, $args) {
+    public function  __call($func, $args) {
 		return call_user_func_array([self::$current, $func],$args);
     }
 
 
-    static function  __callStatic($func, $args) {
+    public static function  __callStatic($func, $args) {
 		return call_user_func_array([self::$current, $func],$args);
     }
 
 
-	static function getCurrent() {
+    public static function getCurrent() {
 		if(!isset( self:: $current) ) {
 				self::__initialize();
 		}
@@ -80,7 +80,7 @@ class User {
 		return  self::$current;
 	}
 
-	static function setCurrent($user) {
+    public static function setCurrent($user) {
 		self::$current = $user;
 	}
 
@@ -91,14 +91,14 @@ class User {
 
 
     /** *************** Comprobaciones de seguridad  *************** */
-    static function mustBeAdmin() {
+    public static function mustBeAdmin() {
         if(!self:: $current->isAdmin() ){
             self:: $current->notValidUser();
         }
     }
 
 
-    static function mustBeLogged() {
+    public  static function mustBeLogged() {
         if(!sself:: $current->isLogged() ){
             self:: $current->notValidUser();
         }
@@ -107,17 +107,17 @@ class User {
 
 
     /** *************** getters y setters  generales   *************** */
-    static function & set($field, $value) {
+    public static function & set($field, $value) {
         return self::$current->set($field, $value);
     }
 
-    static function & get($field = 'level', $default = null)
+    public static function & get($field = 'level', $default = null)
     {
         return self::$current->get($field, $default);
     }
 
 
-    static function levels() {
+    public static function levels() {
         return ['All the Internet', 'Users who can login', 'Admins' ];
     }
 
@@ -146,7 +146,7 @@ class User {
      *
      * @return bool Whether the device is able to upload files.
      */
-    function canUpload() {
+    public function canUpload() {
         if ( \team\Http::checkUserAgent('desktop') )
             return true;
 

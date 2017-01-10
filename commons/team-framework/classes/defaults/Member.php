@@ -53,23 +53,23 @@ class Member {
 	}
 
 
-	function & get($var, $default = null) {
+    public function & get($var, $default = null) {
 		if(isset($this->data[$var]) )
 			return $var;
 		else
 			return $default;
 	}
 
-    function & set($field, $value) {
+    public function & set($field, $value) {
         return $this->data[$field] = $value;
     }
 
-    function id() {
+    public function id() {
         return (int) $this->get('id', 0);
     }
 
 
-    function level() {
+    public function level() {
         if($this->isAdmin() ) {
 			return \team\User::ADMIN;
 		}else if($this->isLogged() ) {
@@ -79,24 +79,24 @@ class Member {
 		return \team\User::GUEST;
     }
 
-	function isGuest() {
+    public function isGuest() {
 		 return  !$this-> isLogged();
 	}
 
 
-	function isUser($strict = true) {
+    public function isUser() {
 		 return  $this->isLogged() &&  !$this->isAdmin();
 	}
 
-	function isAdmin() {
+    public function isAdmin() {
 		 return $this->isLogged() && $this->get('admin', false);
 	}
 
-    function isLogged() {
+    public function isLogged() {
         return $this->get('active', false);
     }
 
-    function notValidUser() {
+    public  function notValidUser() {
 		\Team::system('User not valid', '\team\user\notValid');
         exit();
     }
@@ -112,18 +112,18 @@ class Member {
      * Si no existe es que sólo queremos obtener el valor de la variable.
      * @return mixed Retornamos el valor de la variable de sesión
      */
-    static function & __callStatic($func, $args) {
+    public static function & __callStatic($func, $args) {
         if(!empty($args)) {
-            return  $this->set($func, $args[0]);
+            return  self::$current->set($func, $args[0]);
         }else {
-            return $this->get($func);
+            return self::$current->get($func);
         }
     }
 	
 
     /* *************** Operaciones relacionadas con comienzo y finalización de sessions *************** */
 
-	public function start($default = [], $force_activation = false, $name = null) {
+    public function doStart($default = [], $force_activation = false, $name = null) {
 		$this->activeSession($force_activation, $default, $name);
 	}
 
@@ -133,10 +133,10 @@ class Member {
      *  @param strng $correo_electronico es el email del usuario
      *  @param string $clave	es la clave que ha introducido el usuario (sin md5).
      */
-     function login($email, $passwd, $others_data)
+    public function doLogin($email, $passwd, $others_data)
     {
 
-		$this->data = \team\Task('\team\login', function($email, $passwd, $others_data) {
+		$this->data = \team\Task('\team\login', function($user, $passwd = null, $others_data = []) {
 
 		    $passwd = trim($passwd);
 		    $without_passwd = empty($passwd);
@@ -145,19 +145,25 @@ class Member {
 		        return [];
 
 
-		    $datos_usuario = \team\Filter::apply('\team\session\login', $email);
-		    $no_encontrado_usuario = empty($datos_usuario);
+		    $user_data = \team\Filter::apply('\team\session\login',[],  $user);
+		    $user_not_found = empty($user_data);
 
-		    if($no_encontrado_usuario) return [];
+		    if($user_not_found) return [];
 
-		    $clave_hasheada = md5($passwd);
-		    $clave_valida = $datos_usuario['password'] === $clave_hasheada;
-		    $usuario_puede_loguearse = \team\Check::id($datos_usuario['active'],0) > 0 ;
+		    $hash_passwd = md5($passwd);
+		    $right_passwd = isset($user_data['password']) &&  $user_data['password'] === $hash_passwd;
+            $right_passwd = \team\Filter::apply('\team\session\right_passwd', $right_passwd, $user_data,  $passwd, $others_data );
 
-		    if(!$clave_valida || !$usuario_puede_loguearse)  return [];
+            if(!$right_passwd) return [];
 
 
-		    return  $datos_usuario;
+            $user_can_login = \team\Check::id($user_data['active'],0) > 0 ;
+            $user_can_login = \team\Filter::apply('\team\session\user_can_login', $user_can_login, $user_data, $others_data );
+
+            if(!$user_can_login)  return [];
+
+
+		    return  $user_data;
 			
 		})->with($email, $passwd, $others_data);
 
@@ -170,8 +176,7 @@ class Member {
     /**
             Función que cierra la sessión del usuario activo
      */
-    function logout()
-    {
+    public function doLogout()  {
         if(!empty($this->data) ) {
 			$this->data->close();
         }
@@ -180,7 +185,7 @@ class Member {
 
 
     /* *************** ÚTILES  *************** */
-    function debug() {
+    public function debug() {
         \team\team\Debug::me($this->data, '\team\user\Member');
     }
 }
