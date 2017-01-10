@@ -65,7 +65,7 @@ class Date {
 		@param string|numeric $time_expression_human time in human language
 		@return int  seconds according to $time_expression_human
 	*/
-	static function strToTime($time_expresion_human) {
+	public static function strToTime($time_expresion_human) {
         if(is_numeric($time_expresion_human)) {
             return $time_expresion_human;
         }
@@ -80,12 +80,12 @@ class Date {
 	/**
 	* Retrieve the current time based on specified format.
 	*/
-	static function current($format = null) {
+	public static function current($format = null) {
 		return self::convert( null, $format );
 	}
 
 
-	static function getUnits() {
+	public static function getUnits() {
 		return \team\Filter::apply('\team\date\units', [ 
 			self::A_YEAR  =>  ['a&ntilde;o', 'a&ntilde;os'], 
 			self::A_MONTH => ['mes','meses'],
@@ -101,7 +101,7 @@ class Date {
 	/**
 	*	Diff from a date until now
 	*/
-	static function diff($date, $from_format  = null, $with_units = true) {
+	public static function diff($date, $from_format  = null, $with_units = true) {
 		$diff = [];
 		$date_in_seconds = self::toTime($date, $from_format);
 		$now = time();		
@@ -149,7 +149,7 @@ class Date {
 	/**
 		Transform a day of week in leters(e.g: Miércoles in its position( 3)
 	*/
-	static function getDayOfWeek($day) {
+	public static function getDayOfWeek($day) {
 		if(empty($day) ) return false;
 
 		return array_search(ucfirst(strtolower($day)), self::getDaysOfWeek());
@@ -160,7 +160,7 @@ class Date {
 	* Retrieve days of week.
 	* @return array with days of week
 	*/
-	static function  getDaysOfWeek() {
+	public static function  getDaysOfWeek() {
 		$days_of_week = [1=>'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo' ];
 
 		return  \team\Filter::apply('\team\days_of_week', $days_of_week  );
@@ -169,7 +169,7 @@ class Date {
 	/**
 		Transform a month in leters(e.g: Abril in its position( 4 ) /
 	*/
-	static function getMonth($month) {
+	public static function getMonth($month) {
 			if(empty($month) ) return false;
 
 			$months =  self::getMonths();
@@ -187,7 +187,7 @@ class Date {
 	* Retrieve months.
 	* @return array with months
 	*/
-	static function getMonths() {
+	public static function getMonths() {
 		$months = [ 1 =>'Enero', 'Febrero', 'Marzo', 'Abril','Mayo','Junio','Julio',
 				'Agosto','Sepiembre', 'Octubre','Noviembre','Diciembre'];
 
@@ -203,7 +203,7 @@ class Date {
 	 * @param int|string $start_of_week Optional. Start of the week as an integer(offset from first day). Default empty string.
 	 * @return array Keys are 'start' and 'end'.
 	 */
-	static function weekStartEnd( $timestamp, $start_of_week = '' ) {
+	public static function weekStartEnd( $timestamp, $start_of_week = '' ) {
 		$day = $timestamp;
 
 		// The day of the week from the timestamp.
@@ -234,7 +234,7 @@ class Date {
 	 * @param string     $timestamp   Timestamp of a day
 	 * @return array Keys are 'start' and 'end'.
 	 */
-	static function dayStartEnd( $timestamp  = null) {
+	public static function dayStartEnd( $timestamp  = null) {
 		if(isset($timestamp) ) {
 			$start = strtotime(self::convert($timestamp,'mysql') );
 		}else {
@@ -260,7 +260,7 @@ class Date {
 	 * @param string $format    Format of the date to return.
 	 * @return string|int|bool Formatted date string or Unix timestamp. False if $date is empty.
 	 */
-	static function fromDatabase( $date, $new_format) {
+	public static function fromDatabase( $date, $new_format) {
 		if ( empty( $date ) )
 			return false;
 
@@ -272,7 +272,7 @@ class Date {
 	 * e.g. \ team\Date::get('+2 days', 'day'); //result 'wednesday' if today is 'monday'
      * e.g2:  \team\Date::get('-1 Week')
      **/
-	static function get($change, $to_format =  'timestamp', $timestamp = null) {
+	public static function get($change, $to_format =  'timestamp', $timestamp = null) {
 		$timestamp = $timestamp?: time();
 		$new_date_timestamp = strtotime($change, $timestamp);
 
@@ -282,7 +282,7 @@ class Date {
     /**
      * Parses English $time( from $date )
      **/
-    static function change($change, $date, $format = null, $format_out = null) {
+    public static function change($change, $date, $format = null, $format_out = null) {
         $timestamp = self::toTime($date, $format);
 
         if(!isset($format_out)) {
@@ -296,7 +296,7 @@ class Date {
 	 * Retrieve time from $date with format $from_format
 	 *
 	 **/
-	static function toTime( $date, $from_format  = null) {
+	public static function toTime( $date, $from_format  = null) {
 		$datetime = self::split($date, $from_format );
 
 		if(empty($datetime) ) {
@@ -314,7 +314,7 @@ class Date {
 	 * Comprueba si la fecha $date con formato $with_format está correcta.
 	 * Si lo es se devuelve $date sino se devuelve $default
 	 */
-	static function check($date, $with_format = null, $default = false) {
+	public static function check($date, $with_format = null, $default = false) {
 		$datetime = self::split($date,  $with_format, $with_default = false);
 		if(empty($datetime) ) {
 			return $default;
@@ -333,7 +333,7 @@ class Date {
 	/**
 	 *
 	*/
-	static function split($date, $from_format = null, $with_defaults = true) {
+	public static function split($date, $from_format = null, $with_defaults = true) {
 		$format = self::getWithRealFormat($from_format );
 
 		//Detect date elements
@@ -359,7 +359,7 @@ class Date {
 	 * @param float $timestamp Timestamp to convert to date
 	 * @param string $format format( in PHP format ) to use if this is not null
 	*/
-	static function convert($timestamp = null, $format = null) {
+	public static function convert($timestamp = null, $format = null) {
 		$timestamp = $timestamp?: time();
 
         if(!is_numeric($timestamp)) return null;
@@ -370,7 +370,7 @@ class Date {
 	/**
      * Change $date from format $format_start to format $end
 	 **/
-	static function transform($date, $format_start, $format_end = null) {
+	public static function transform($date, $format_start, $format_end = null) {
 		$timestamp = self::toTime($date,  $format_start);
 		return self::convert($timestamp, $format_end);
 	}
@@ -379,7 +379,7 @@ class Date {
 		Tranform human format to strftime format
 		@see http://strftime.net/ ( very useful )
 	*/
-	static function getWithRealFormat($format = null, $timestamp = null) {
+	public static function getWithRealFormat($format = null, $timestamp = null) {
 		if(empty($format) ) {
 			$format = \team\Context::getOption('date_format',  'i18n');
 		}
