@@ -75,7 +75,7 @@ class DB {
 
     public function connect($conname = null) {
 
-        $connection= \team\Config::database($conname?: 'main');
+        $connection= \team\DB::getConfig($conname?: 'main');
         extract( $connection, EXTR_SKIP);
 
         //Conectamos a la base de datos segun la configuracion
@@ -98,7 +98,7 @@ class DB {
 
             $this->conname = $conname;
 
-            return $this->server = self::$connections[$conname]['link'];
+            return  self::$connections[$conname]['link'];
 
         }catch(\Exception $e) {
             \Team::system("ERROR: Problem with connection to the database. {$e->getMessage()}", '\team\system\database\Connection');

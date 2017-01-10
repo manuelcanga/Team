@@ -5,7 +5,7 @@ namespace team;
 if(!defined('_SITE_')) die("Hello, World!");
 
 
-\team\Config::setDatabase([
+\team\DB::set([
         'user'       => 'my_user',
         'password'   => 'my_passwd',
         'name'       => 'my_db',

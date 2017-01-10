@@ -12,8 +12,6 @@ namespace team;
 class Http
 {
 
-
-
     /**
      * Send a HTTP header to disable content type sniffing in browsers which support it.
      *
@@ -21,7 +19,7 @@ class Http
      * @see http://blogs.msdn.com/ie/archive/2008/07/02/ie8-security-part-v-comprehensive-protection.aspx
      * @see http://src.chromium.org/viewvc/chrome?view=rev&revision=6985
      */
-    static function sendNoSniffHeader() {
+    public static function sendNoSniffHeader() {
         @header( 'X-Content-Type-Options: nosniff' );
     }
 
@@ -31,7 +29,7 @@ class Http
      *
      * @see https://developer.mozilla.org/en/the_x-frame-options_response_header
      */
-    static function sendFrameOptionsHeader() {
+    public static function sendFrameOptionsHeader() {
         @header( 'X-Frame-Options: SAMEORIGIN' );
     }
 
@@ -44,7 +42,7 @@ class Http
      *
      * @return array The associative array of header names and field values.
      */
-    static function getNoCacheHeaders() {
+    public static function getNoCacheHeaders() {
         $headers = array(
             'Expires' => 'Wed, 11 Jan 1984 05:00:00 GMT',
             'Cache-Control' => 'no-cache, must-revalidate, max-age=0',
@@ -67,7 +65,7 @@ class Http
      *
      * @see \team\Http::getNocacheHeaders()
      */
-    static function sendNoCacheHeaders() {
+    public static function sendNoCacheHeaders() {
         $headers = self::getNocacheHeaders();
 
         unset( $headers['Last-Modified'] );
@@ -80,7 +78,7 @@ class Http
     /**
      * Set the headers for caching for $days days with JavaScript content type.
      */
-    function sendCacheJavascriptHeaders($days = 10) {
+    public function sendCacheJavascriptHeaders($days = 10) {
         $expiresOffset = $days * \team\Date::A_DAY;
 
         header( "Content-Type: text/javascript; charset=" . get_bloginfo( 'charset' ) );
@@ -95,7 +93,7 @@ class Http
      * @params boolean $mustRecheck forcing a check of user agent again
      *
      */
-    static function checkUserAgent($key = null, $mustRecheck = false) {
+    public static function checkUserAgent($key = null, $mustRecheck = false) {
         static $user_agent;
 
         if(!$mustRecheck && isset($user_agent) )  {
@@ -155,7 +153,7 @@ class Http
 
 
 
-    function redirect($redirect, $code = 301, $protocol = null) {
+    public function redirect($redirect, $code = 301, $protocol = null) {
         $redirect = \team\Sanitize::internalUrl($redirect);
 
         $domain = \team\Config::get('DOMAIN');
@@ -177,7 +175,7 @@ class Http
      * @param int $code HTTP status code.
      * @return string Empty string if not found, or description if found.
      */
-    function getStatusHeaderDesc( $code ) {
+    public function getStatusHeaderDesc( $code ) {
         static $code2header_desc;
 
         $code = \team\Check::id( $code, 0);
@@ -260,7 +258,7 @@ class Http
      * @param int    $code        HTTP status code.
      * @param string $description Optional. A custom description for the HTTP status.
      */
-    function sendStatusHeader( int $code, $description = '' ) {
+    public function sendStatusHeader( int $code, $description = '' ) {
         if ( ! $description ) {
            http_response_code($code);
             return ;

@@ -37,32 +37,6 @@ abstract class Config{
     use \team\data\Vars;
 
     private static $vars = [];
-    private static $databases = [];
-
-
-    public static function setDatabase(array $options, $databaseid = 'main') {
-        $defaults = [
-            'user'      => 'my_user',
-            'password'  => 'my_password',
-            'name'      => 'my_db',
-            'host'      => 'localhost',
-            'port'      => '5432',
-            'prefix'    => '',
-            'charset'   => 'UTF8',
-            'type'      => 'mysql',
-            'options'   =>  [],
-        ];
-
-
-        self::$databases[$databaseid] = $options + $defaults;
-    }
-
-    public static function database($conname = 'main') {
-        $connection_data = self::$databases[$conname]?? [];
-
-        return \team\Filter::apply('\team\db\\'.$conname, $connection_data, $conname );
-    }
-
 
     public static function get($var, $default = null) {
         return \team\Filter::apply('\team\configs\\'.$var, self::$vars[$var]?? $default );

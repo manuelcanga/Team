@@ -135,6 +135,8 @@ require(\_TEAM_.'/classes/controller/Controller.php');
 require(\_TEAM_.'/classes/Sanitize.php');
 //Clase que maneja cabeceras http
 require(\_TEAM_.'/classes/Http.php');
+//Clase que maneja base de datos
+require(\_TEAM_.'/classes/DB.php');
 
 
 //Añadimos la clase que gestiona los datos de session
