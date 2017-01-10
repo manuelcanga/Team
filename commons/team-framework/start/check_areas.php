@@ -33,6 +33,7 @@ if(!defined("_SITE_") ) die("Hello,  World");
 	$this->main = $main;
 	$this->area_params = $area_params;
 
+
     setConfigArea($_area_);
 
 }, 45);
@@ -100,6 +101,7 @@ function findCurrentArea( & $url, &$main) {
     }else { //'/panel/' => 'panel:component:response',
         $main = $main;
     }
+
 
     return [$_area_, $area_params];
 }
