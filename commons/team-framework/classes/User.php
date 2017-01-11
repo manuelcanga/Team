@@ -55,7 +55,7 @@ class User {
     public static function __initialize() {
 		if(isset(self::$current) ) return  ;
 
-      $user_class =\team\Filter::apply('\team\User', '\team\defaults\Member');
+      $user_class =\team\Config::get('\team\User', '\team\defaults\Member');
 
 	  if(isset($user_class) && class_exists($user_class )  ) {
 		 self::$current  = new  $user_class();

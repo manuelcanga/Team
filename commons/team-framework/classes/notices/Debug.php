@@ -197,7 +197,7 @@ final  class Debug
 			
 		if($is_object || $is_array  ) {
 
-			$data->view = \team\Filter::apply('\team\debug\compound_template', 'team:framework/debug/compound');
+			$data->view = \team\Config::get('\team\debug\compound_template', 'team:framework/debug/compound');
 			$data->label = $label;
 			$data->sublabel = null;
 
@@ -213,7 +213,7 @@ final  class Debug
 			$data->vars = self::normalizeCompound($var);
         }else {
                 $data->view = 'team:framework/debug/scalar';
-                $data->view = \team\Filter::apply('\team\debug\scalar_template', 'team:framework/debug/scalar');
+                $data->view = \team\Config::get('\team\debug\scalar_template', 'team:framework/debug/scalar');
 
                 $data->msg = self::normalizeScalar($var);
 		}

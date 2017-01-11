@@ -162,7 +162,7 @@ try {
      *  Este método define un autoloader por defecto llamado Casses y avisa a php para que lo utilice
      */
 
-    spl_autoload_register(\team\Filter::apply('\team\autoload', ['\team\Classes', 'factory'] ));
+    spl_autoload_register(\team\Config::get('\team\autoload', ['\team\Classes', 'factory'] ));
 
 
     /**
@@ -174,9 +174,11 @@ try {
      * 4. Inicializamos el sistema de configuración
      */
     \team\Config::setUp();
+    \team\I18N::setUp();
 
 
-    /**5. Se inicia el proceso de gestión de errores
+    /**
+     * 5. Se inicia el proceso de gestión de errores
      */
     \Team::__initialize();
 

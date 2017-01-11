@@ -43,12 +43,7 @@ trait Seo {
             $order = $position;
         }
 
-        //Creamos un id segun el orden
-        if(!isset($idcrumb)) {
-            $idcrumb = 'crumb_'.$order;
-        }
-
-        \team\Filter::addValue('breadcrumbs', ['name' => $name, 'url' => $link], $idcrumb, $order);
+        \team\Config::push('\team\gui\breadcrumbs', ['name' => $name, 'url' => $link]);
     }
 
     
@@ -59,16 +54,10 @@ trait Seo {
     function seo($key, $value, $options = null) {
         if(!$this->isMain()) return false;
 
-        global $_CONTEXT;
-
-        if(!isset($_CONTEXT['SEO_METAS'])) {
-            $_CONTEXT['SEO_METAS'] = [];
-        }
-
         if(isset($options) ) {
-            $_CONTEXT['SEO_METAS'][$key] = ['value'=> $options, 'options' => $options];
+            \team\Config::add('SEO_METAS', $key, ['value'=> $options, 'options' => $options]);
         }else {
-            $_CONTEXT['SEO_METAS'][$key] = $value;
+            \team\Config::add('SEO_METAS', $key, $value);
         }
     }
     
@@ -81,17 +70,28 @@ trait Seo {
      * @param ?bool $separator false(not separator), true(with separator), null(remove previous title )
      *
      */
-    function setTitle($title, $separator = true) {
+    function setTitle($title, $separator = true, $before = false) {
         if(!$this->isMain()) return false;
 
-        global $_CONTEXT;
+        $SEO_TITLE = \team\Config::get('SEO_TITLE', '', 'setTitle');
 
-        if(null === $separator || !$this->SEO_TITLE) {
-            $this->SEO_TITLE = $title;
-        }else if(!$separator) {
-            $this->SEO_TITLE = $title.' '.$this->SEO_TITLE;
+
+        if(null === $separator || !$SEO_TITLE) {
+            $SEO_TITLE = $title;
+        }else if($separator) {
+            if($before) {
+                $SEO_TITLE = $title.' '.\team\Config::get('SEO_TITLE_SEPARATOR', '-').' '.$SEO_TITLE;
+            }else {
+                $SEO_TITLE = $SEO_TITLE.' '.\team\Config::get('SEO_TITLE_SEPARATOR', '-').' '.$title;
+            }
         }else {
-            $this->SEO_TITLE = $title.' '.$_CONTEXT['SEO_TITLE']['separator'].' '.$this->SEO_TITLE;
+            if($before) {
+                $SEO_TITLE = $title . ' ' . $SEO_TITLE;
+            }else {
+                $SEO_TITLE = $SEO_TITLE. ' '.$title ;
+            }
         }
+
+        \team\Config::set('SEO_TITLE', $SEO_TITLE);
     }
 }

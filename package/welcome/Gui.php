@@ -8,15 +8,14 @@ class Gui extends \team\Gui {
 	  Before response
 	*/
 	protected function commons() {
-		$this->SEO_TITLE = ' - By Trasweb'; 
+		$this->setTitle('By Trasweb');
 	}
 
 	/**
 	  Default response
 	*/
     public function index() {
-		$this->SEO_TITLE = 'Index response '.$this->title;
-		 $this->setLayout('team:layouts/default');
+        $this->setTitle('Index response', $separator=true, $before=true);
     }
     
     
@@ -24,6 +23,6 @@ class Gui extends \team\Gui {
 	  After response
     */
     protected function custom() {
-		$this->SEO_TITLE .= ' - TEAM framework '.TEAM_VERSION;    
+        $this->setTitle('TEAM framework '.TEAM_VERSION);
 	}
 }

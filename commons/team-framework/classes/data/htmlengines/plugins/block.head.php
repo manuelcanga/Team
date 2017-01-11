@@ -94,7 +94,7 @@ function smarty_block_head($params, $content, Smarty_Internal_Template $template
 
         /* ******************** TOP CSS Y JS FILES *************** */
         //TOP CSS
-        $css_files =  \team\Filter::apply('\team\css\top', []);
+        $css_files =  \team\Config::get('\team\css\top', []);
 
         if(!empty($css_files) ) {
             foreach($css_files as $id => $file) {
@@ -103,7 +103,7 @@ function smarty_block_head($params, $content, Smarty_Internal_Template $template
         }
 
         //TOP JS
-        $js_files =  \team\Filter::apply('\team\js\top', []);
+        $js_files =  \team\Config::get('\team\js\top', []);
 
         if(!empty($js_files) ) {
             foreach($js_files as $id => $file) {

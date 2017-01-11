@@ -32,33 +32,110 @@ namespace team;
 
 
 //Clase para gestionar variables de configuracion
-require_once(\_TEAM_.'/includes/data/Vars.php');
 abstract class Config{
-    use \team\data\Vars;
-
-    private static $vars = [];
-
-    public static function get($var, $default = null) {
-        return \team\Filter::apply('\team\configs\\'.$var, self::$vars[$var]?? $default );
-    }
-
+    protected static $vars = [];
+    protected static $modifiers = [];
 
     public static function setUp() {
         \Team::event('\team\setup', self::$vars);
-        \team\I18N::setUp();
+    }
+
+    public static function replace($var, $value = null) {
+        self::$vars[$var] = $value;
+    }
+
+    public static function set($var, $value = null) {
+        if(is_array($var)) {
+            self::$vars =  $var + self::$vars;
+        }else if(is_string($var)){
+            self::$vars[$var] = $value;
+        }
+    }
+
+    public static function push($var, $value = null) {
+        if(!isset(self::$vars[$var]) || is_array(self::$vars[$var])) {
+            self::$vars[$var][] = $value;
+        }
+    }
+
+    public static function add($var, $key, $value = null) {
+        if(!isset(self::$vars[$var]) || is_array(self::$vars[$var])) {
+            self::$vars[$var][$key] = $value;
+        }
+    }
+
+    public static function unset($var, $key = null) {
+        if(isset($key)) {
+            if(isset(self::$vars[$var][$key])) {
+                unset(self::$vars[$var][$key]);
+                return true;
+            }
+            return false;
+        }
+
+        if(isset(self::$vars[$var])) {
+            unset(self::$vars[$var]);
+            return true;
+        }
+
+        return false;
+    }
+
+    public static function get(string $var_name, $default = null, $place = null) {
+        return self::applyModifiers($var_name, self::$vars[$var_name]?? $default, $place );
+    }
+
+    public static function getKey(string $key, string $var_name, $default = null, $place = null) {
+        $var =  self::get($var_name, $default, $place);
+        return $var[$key]?? $default;
+    }
+
+    public static function getVars() {
+        return self::$vars;
+    }
+
+    public static function defaults($vars) {
+        self::$vars +=  $vars;
+    }
+
+    public static function exists($var) {
+        return array_key_exists($var, self::$vars);
     }
 
 
-    public static function setMainPackage($package) {
-        if(self::get('PACKAGE')) return ;
-
-        \team\Config::set('PACKAGE', $package);
-        \team\Config::set('_PACKAGE_', _SITE_.'/'.$package);
-        \team\Config::set('BASE', '/'.$package);
+    public static function debug() {
+        \team\Debug::me(self::$vars);
+    }
 
 
-        //Aquí ya sabemos el package del main, así que le mandamos un Start
-        //Así pueden añadir filtros o tasks dependientes del package( por ejemplo, para parseos de urls dependiendo del paquete )
-        \team\FileSystem::load("/{$package}/commons/config/Start.php");
+    public static function addModifier($config_var, $function, int $order = 50){
+
+        if(!is_callable($config_var,  $syntax_only = true)) {
+            \team\Debug::me('You are adding a modifier to ' . $config_var . ' which isn\'t a callback');
+            return false;
+        }
+
+        self::$modifiers[$config_var] = self::$modifiers[$config_var]?? [];
+
+        //Vamos buscando un hueco libre para el modificador a partir del orden que pidió
+        for($max_order = 100; isset(self::$modifiers[$config_var][$order]) && $order < $max_order; $order++);
+
+        //Lo almacemanos todo para luego poder usarlo
+        self::$modifiers[$config_var][$order] =  $function;
+
+        return false;
+    }
+
+    protected static function applyModifiers($config_var, $value, $place) {
+        if(!isset(self::$modifiers[$config_var])  ) return $value;
+
+        $modifiers =& self::$modifiers[$config_var];
+
+        ksort($modifiers);
+
+        foreach($modifiers as $modifier) {
+            $value = $modifier($value, $place);
+        }
+        return $value;
     }
 }

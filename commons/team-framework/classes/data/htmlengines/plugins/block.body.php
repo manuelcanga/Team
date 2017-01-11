@@ -85,7 +85,7 @@ function smarty_block_body($params, $content, Smarty_Internal_Template $template
 		/* ******************** BOTTOM CSS Y JS FILES *************** */
 
 		//BOTTOM CSS
-		$css_files =  \team\Filter::apply('\team\css\bottom', []);
+		$css_files =  \team\Config::get('\team\css\bottom', []);
 
 		if(!empty($css_files) ) {
 			foreach($css_files as $id => $file) {
@@ -94,7 +94,7 @@ function smarty_block_body($params, $content, Smarty_Internal_Template $template
 		}
 		
 		//BOTTOM JS
-		$js_files =  \team\Filter::apply('\team\js\bottom', []);
+		$js_files =  \team\Config::get('\team\js\bottom', []);
 
 		if(!empty($js_files) ) {
 			foreach($js_files as $id => $file) {

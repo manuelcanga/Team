@@ -41,7 +41,7 @@ class Cache {
     public  static function __initialize() {
 		if(isset(self::$current) ) return  ;
 
-		  $cache_class = \team\Filter::apply('\team\Cache', '\team\defaults\Apcu');
+		  $cache_class = \team\Config::get('\team\Cache', '\team\defaults\Apcu');
 
 
 		  if(isset($cache_class) && class_exists($cache_class )  ) {

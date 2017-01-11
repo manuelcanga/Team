@@ -43,23 +43,10 @@ function smarty_block_title($params, $content, Smarty_Internal_Template $templat
 	$out = '';
 	if($repeat) { //open tag
 		$out = '<title>';
-		$title = \team\Context::get('SEO_TITLE');
-		if(isset($title['before']) ){
-			$out .= $title['before'];
-		}
-
 	}else {//close tag
-
-		$title = \team\Context::get('SEO_TITLE');
+		$title = \team\Config::get('SEO_TITLE');
 		$content =  \team\Filter::apply('\team\tag\title', $content);
-
-		if(isset($title['after']) ){
-			$content .= $title['after'];
-		}
-
-
-		$out = trim($content).'</title>';
-
+		$out = trim($content).$title.'</title>';
 	}
 
 	return $out;
