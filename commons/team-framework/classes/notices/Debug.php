@@ -138,7 +138,7 @@ final  class Debug
 					$value = "Object of ".get_class($value)." ";
 				else {
 					$key = "{$key} [ ".get_class($value)." ] ";
-					$value = $value->getData(); //it's now a array, so we'll proccess in next if
+					$value = $value->get(); //it's now a array, so we'll proccess in next if
 				}
 			}
 

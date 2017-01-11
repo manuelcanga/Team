@@ -93,7 +93,7 @@ abstract class Model implements \ArrayAccess{
 
 	protected function loadData(array $data = []) {
 		if(!empty($data) ) {
-			$this->setData($data);
+			$this->set($data);
 		}
 	}
 

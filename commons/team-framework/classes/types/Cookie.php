@@ -28,9 +28,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-namespace team\interfaces\data;
-
-interface Store {
-	function import(/* string */ $_origin, Array $_options = [], Array $_default = []);
-	function export(/* string */ $_target, Array $_data = [], Array $_options = [] );
-}
+/**
+ * TODO
+ */

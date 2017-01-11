@@ -102,7 +102,7 @@ class System_Error extends \Exception {
 	public function setLine($line) { $this->line = $line; }
 	public function setState($state) { $this->level = $state; }
 	
-	public function & getData() {
+	public function & get() {
 		$info = new \team\Data();
 		$info->msg = $this->getMessage();
 		$info->line = $this->getLine();

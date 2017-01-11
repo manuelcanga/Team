@@ -100,7 +100,7 @@ trait Select {
 			$this->limit = $limit;
 		}
 
-		$sentences = $this->getData();
+		$sentences = $this->get();
 		$values = $this->values;
 
 

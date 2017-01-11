@@ -38,9 +38,10 @@ class Member {
 	public function __construct() {
 		$user_data = ['active' => 0, 'level' => \team\User::GUEST];
 	
-		$this->data = \team\Task('\team\member', function($data, $options) {
-			   	$this->data = new \team\Data('Session', 'User', $options , $data); 
+		$this->data = \team\Task('\team\member', function($data) {
+            return new \team\types\Session($data, []);
 		})->with($user_data);
+
 	}
 
 	
@@ -123,8 +124,8 @@ class Member {
 
     /* *************** Operaciones relacionadas con comienzo y finalización de sessions *************** */
 
-    public function doStart($default = [], $force_activation = false, $name = null) {
-		$this->activeSession($force_activation, $default, $name);
+    public function doStart($defaults = [], $force_activation = false) {
+		$this->data->activeSession($force_activation, $defaults);
 	}
 
 
@@ -136,7 +137,7 @@ class Member {
     public function doLogin($email, $passwd, $others_data)
     {
 
-		$this->data = \team\Task('\team\login', function($user, $passwd = null, $others_data = []) {
+		$data = \team\Task('\team\login', function($user, $passwd = null, $others_data = []) {
 
 		    $passwd = trim($passwd);
 		    $without_passwd = empty($passwd);
@@ -167,6 +168,7 @@ class Member {
 			
 		})->with($email, $passwd, $others_data);
 
+        $this->data = new \team\Session($data);
 
         return !empty($this->data);
     }

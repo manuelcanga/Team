@@ -54,13 +54,13 @@ class Query implements \ArrayAccess{
     function __construct($values = null,  $database, array $sentences = []) {
 
         if($values instanceof \team\Data ) {
-            $this->values = $values->getData();
+            $this->values = $values->get();
         }else {
             $this->values = (array)$values;
         }
         $this->database = $database;
 
-		$this->setData($sentences);
+		$this->set($sentences);
 
     }
 

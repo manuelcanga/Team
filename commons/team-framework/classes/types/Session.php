@@ -28,32 +28,46 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-namespace team\data\stores;
-
+namespace team\types;
 /** Seguridad antes que nada  */
-ini_set('session.cookie_httponly', 1 );
-ini_set('session.use_cookies', 1);
-ini_set('session.use_only_cookies',1);
+ini_set('session.cookie_httponly'   , 1);
+ini_set('session.use_cookies'       , 1);
+ini_set('session.use_only_cookies',   1);
 
-class Session  implements \team\interfaces\data\Store 
+class Session  extends Base
 {
     /** Identificador que se le dará a la cookie de sessión */
     const ID_COOKIE = \team\SITE_ID;
 
+
     /**
-     * Mantiene los datos de la sesion
-     * Entre esta variable estática y la función self::checkSession()
-     * nos abstraemos totalmente de la variable de sesión de PHP
+     * Preparamos el sistema de sesiones
+     * y mantenemos activa la sesión si ya se había activado anteriormente.
+     * Así ahorramos que se inicie sesión para un visitante que no haga falta( ej: bots )
+     *
      */
-    private $session = array();
+    public function  __construct( $data = null, Array $_options = []) {
 
-	private $name = null;
+        $with_previous_session = isset($_COOKIE[self::ID_COOKIE]);
+        $force_activation =  isset($_options['force']) && $_options['force'];
 
+        if ( $with_previous_session || $force_activation ) {
+            $this->activeSession($force_activation,  $data);
+        }else{
+            //Si está activa sólo necesitamos enganchar los datos de sessiona activo con los nuevos
+            //si no estaba activa pero tampoco hay interes en activarlo, lo unico que tendremos es un almacen de datos temporal
+            $this->data =&  self::session($data, $_options['overwrite']?? false);
+        }
 
-	function setName($name = null) {
-		if(isset($name) ) 
-			$this->name = $name;
-	}
+    }
+
+    /**
+     * Check if session is already active
+     * @return bool
+     */
+    protected function isActive() {
+        return PHP_SESSION_NONE != session_status();
+    }
 
     /**
      * Esta función sirve para abstraernos de la variable sesión de PHP y del
@@ -63,40 +77,19 @@ class Session  implements \team\interfaces\data\Store
      *
      * @return ref array devuelve el array que usaremos para almacenar los datos de sesión
      */
-    function & session($name = null, $default = []) {
-		$this->setName($name);
-
-        if( !isset($_SESSION[self::ID_COOKIE])) {
+    protected function & session($defaults = [], $overwrite = false) {
+        if(!isset($_SESSION[self::ID_COOKIE])) {
             $_SESSION[self::ID_COOKIE] = [];
         }
 
-        if( !isset($_SESSION[self::ID_COOKIE][$this->name])) {
-            $_SESSION[self::ID_COOKIE][$this->name] = $default;
+        if($overwrite) {
+            $_SESSION[self::ID_COOKIE] = (array)$defaults;
+        }else if(!empty($defaults)) {
+           $_SESSION[self::ID_COOKIE] = (array)$defaults + (array)$_SESSION[self::ID_COOKIE];
         }
 
-        return $_SESSION[self::ID_COOKIE][$this->name];
+        return $_SESSION[self::ID_COOKIE];
     }
-
-
-    /**
-     * Preparamos el sistema de sesiones
-     * y mantenemos activa la sesión si ya se había activado anteriormente.
-     * Así ahorramos que se inicie sesión para un visitante que no haga falta( ej: bots )
-     *
-     */
-	 function & import( $_origin, Array $_options = [], Array $_default = []) {
-         $with_previous_session = isset($_COOKIE[self::ID_COOKIE]);
-         $force_activation =  isset($_options['force']) && $_options['force'];
-
-         if ($with_previous_session || $force_activation) {
-             $this->activeSession($force_activation,  $_default,  $_origin);
-         }else{
-             $this->session =&  self::session( $_origin, $_default) ;
-         }
-
-         return $this->session;
-     }
-
 
     /**
      * Iniciamos una session ( sólo si no se había activado anteriormente  ) o se especifico forzado
@@ -104,36 +97,27 @@ class Session  implements \team\interfaces\data\Store
      * @param boolean $forzar_activacion nos permite forzar el comienzo de una nueva sesión
      *
      */
-     function activeSession($force_activation = false, $default = [],  $name = null) {
-        $session_not_initialized = PHP_SESSION_NONE == session_status();
-
-		if($session_not_initialized && $force_activation) {
+     public function activeSession($force_activation = false, $defaults = []) {
+		if( $this->isActive() && $force_activation) {
 			$this->close();
 		}
 
-        if($session_not_initialized || $force_activation) {
+        if(!$this->isActive() || $force_activation  ) {
             session_name(self::ID_COOKIE);
             session_start();
-            $this->session = &  self::session($name, $default);
         }
-    }
 
-    function close() {
-        $this->session = array();
+         $this->data = &  self::session($defaults);
+     }
+
+    public function close() {
+        $this->data = array();
         session_unset();
         return session_destroy();
     }
 
-	function debuglolo() {
-		\team\Debug::out($this->data);
-	}
 
-
-    function export($_target, Array $_data = [], Array $_options = [] ) {
-        $session =& $this->session($_target);
-
-        $session = $_data;
-
-        return $session = $_data;
+    public function __destruct() {
+        session_commit();
     }
 }

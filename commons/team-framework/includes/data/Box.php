@@ -18,15 +18,7 @@ trait Box {
         return $this;
     }
 
-    function setData(array $_data = null) {
-        $this->data = (array) $_data;
-        return $this;
-    }
 
-    function setBox($_data = null) {
-        $this->data = $_data;
-        return $this;
-    }
 
     function addData(array $values = []) {
         $this->data = (array)$values + (array)$this->data;
@@ -42,25 +34,27 @@ trait Box {
      * @param unknown $value
      * @return \team\Storage
      */
-    function set($name, $value = null) {
-        $this->__set($name, $value);
+    public function set($var , $value = null) {
+        $this->__set($var, $value);
         return $this;
     }
 
     //Acceso directo para asignar todos los elementos. $data->elem1, $data->elemen2
-    function  __set($name, $value = null) {
-        //Ya lo que queda es asignar el valor a data.
-        return $this->data[$name] = $value;
+    public function  __set($var, $value = null) {
+        if(is_array($var)) {
+            $this->data = $var;
+        }else {
+            //Ya lo que queda es asignar el valor a data.
+            return $this->data[$var] = $value;
+        }
     }
 
     /**** GETTER ****/
-    function & getData($var = null) {
-        return $this->data;
-    }
-    function getDataObj() { return new \team\Data($this->data); }
+
+    public function getDataObj() { return new \team\Data($this->data); }
 
 
-    function  get($name = null, $default = null) {
+    public function  get($name = null, $default = null) {
         if(!isset($name)) return $this->data;
 
         if(array_key_exists($name, $this->data) ) {

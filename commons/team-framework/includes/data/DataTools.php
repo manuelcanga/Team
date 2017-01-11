@@ -56,8 +56,14 @@ trait DataTools {
     
 
 	/** Por si necesitamos depurar datos */
-    public function debug($name='\$data') {
-        \team\Debug::me($this->data, $name='');
+    public function debug() {
+        $_class = 'Object of '.get_class( $this );
+
+        $file = null;
+        $line = null;
+        \team\Debug::getFileLine($file, $line);
+
+        \team\Debug::me($this->data, $_class, $file, $line);
     }
 }
 

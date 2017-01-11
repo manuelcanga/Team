@@ -70,7 +70,7 @@ trait Update {
      */
     public function update($table, $secure = true) {
 
-		$sentences =  $this->getData();
+		$sentences =  $this->get();
 
 		$sets = (array) $this->values;
 

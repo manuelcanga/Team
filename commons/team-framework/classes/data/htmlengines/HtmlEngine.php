@@ -32,10 +32,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace team\data\htmlengines;
 
 
-class HtmlEngine  implements \team\interfaces\data\HtmlEngine { {
+class HtmlEngine  implements \team\interfaces\data\HtmlEngine {
 
 
-    function transform($data) {
+    public function transform(array $data = []) {
 		
     }
 }

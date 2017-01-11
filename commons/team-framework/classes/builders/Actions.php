@@ -82,7 +82,7 @@ class Actions extends Builder {
 
 			//Si es una operacion y se devuelve un array. Se considera ese el resultado
 			if( is_array($_result) ) {
-				$_data->setData($_result);
+				$_data->set($_result);
 			}
 		}
 

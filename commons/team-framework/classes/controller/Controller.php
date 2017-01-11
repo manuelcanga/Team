@@ -65,7 +65,7 @@ abstract class Controller  implements \ArrayAccess{
 
     
     function getParams() {
-		return $this->params->getData();
+		return $this->params->get();
 	}
 	
 	

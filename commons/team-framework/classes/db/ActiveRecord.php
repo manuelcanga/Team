@@ -79,7 +79,7 @@ abstract class ActiveRecord extends \team\db\Model{
 
     protected function loadData(array $data = []) {
         if(!empty($data) ) {
-            $this->setData($data);
+            $this->set($data);
             $this->safeId = $this[static::ID];
         }
     }
@@ -98,7 +98,7 @@ abstract class ActiveRecord extends \team\db\Model{
 		$record = $query->getRow(static::TABLE);
 
 		if(!empty($record) ) {
-			 $this->setData($record);
+			 $this->set($record);
 		}
 
 		$this[static::ID] = $id;

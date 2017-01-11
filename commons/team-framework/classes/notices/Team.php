@@ -198,7 +198,7 @@ class Team
 	public static function systemException(\Exception $exception) {
 
         $error_type = "SYSTEM";
-        $result = \Team::event($exception->getCode(), $exception->getData(), $error_type);
+        $result = \Team::event($exception->getCode(), $exception->get(), $error_type);
 		if($result) {
 			return $resut;
 		}

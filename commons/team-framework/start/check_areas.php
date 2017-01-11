@@ -54,6 +54,8 @@ function findCurrentArea( & $url, &$main) {
 
 
     $areas = getAreasFromConfig();
+
+
     $_area_ = '/'; //current area path
     $area_params = []; //curren area params
 
@@ -65,7 +67,7 @@ function findCurrentArea( & $url, &$main) {
 
         //las áreas más largas tienen prioridad a la hora de comprobación con url
     //esto es así porque una base /noticias/enlaces es mas especifica(menos matchs) que /noticias
-    sortAreas($areas);
+    $areas = sortAreas($areas);
     //Nos aseguramos que las comparaciones no coja en mitad de la cadena añadiendo un / a la url y a las áreas.
     //Ej:  base: /noticias/listado  url: /noticias/listado-autores, daría un match. Sin embargo, si trimeamos y añaddimos un /
     //Ej2:   base: noticias/listado url: noticias/listado-autores/  no daría match.

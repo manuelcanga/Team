@@ -26,7 +26,7 @@ trait Delete {
 */
     public function delete($_table, $secure = true) {
         //Obtenemos los datos que se han guardados
-        $sentences = $this->getData();
+        $sentences = $this->get();
 
         if(!isset($sentences["where"])) {
             $sentences["where"] = '';

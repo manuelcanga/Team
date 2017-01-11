@@ -67,6 +67,7 @@ class DB {
 	/** Abre una conexion a la base de datos */
 	public  function __construct($conname = null ) {
         $this->change($conname);
+
 	}
 
 	public static function createConnection($conname ) {
@@ -75,6 +76,7 @@ class DB {
 
     public function connect($conname = null) {
         $connection= \team\DB::getConfig($conname);
+
 
         extract( $connection, EXTR_SKIP);
 

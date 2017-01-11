@@ -29,14 +29,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-namespace team\data\stores;
+namespace team\types;
 
-\team\Classes::add('team\Url', "/classes/Url.php", _TEAM_);
-
-class Url implements \team\interfaces\data\Store 
+class Url extends Type
 {
-	
-	protected $data = [];
 
 
     /**
@@ -44,8 +40,10 @@ class Url implements \team\interfaces\data\Store
      * @param $_url , url completa que queremos parsear
      * return array con todos los parámetros encontrados en dicha url
      */
-    function & import($_url, array $_options = array(), Array $defaults = [])
+    public function initialize($_url = null, array $_options = [])
     {
+        if(!isset($_url)) return ;
+
         $_url = '/'.trim($_url, '/');
 
 
@@ -83,7 +81,7 @@ class Url implements \team\interfaces\data\Store
         }
         
         //Assign defaults params
-        $args = $args + $defaults;
+        $args = $args + $this->data;
 
         if(isset($url["path"])) {
             $args['url_path_list'] = explode('/', trim($url["path"], '/'));
@@ -149,12 +147,9 @@ class Url implements \team\interfaces\data\Store
 
 
 		$this->data = $args;
-        return $this->data;
     }
 
-    public function setData(&$data) {
-            $this->data =& $data;
-     }
+
 
 	public function check($pattern, &$new_args = [], $defaults = []) {
 		return \team\Url::match($this->data['raw_url'], $pattern, $new_args, $defaults);
@@ -187,8 +182,7 @@ class Url implements \team\interfaces\data\Store
 	}
 
 
-    function export($_target = null, Array $_data = [], Array $_options = [] ) {
-
+    public function export($_target = null, Array $_data = [] ) {
 		return \team\Url::to($_target, $_data);
 
     }

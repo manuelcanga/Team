@@ -28,31 +28,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-namespace team\data\stores;
-
-
-\team\Classes::add('\team\data\Store', "/includes/interfaces/data/Store.interface.php", _TEAM_);
-
-\team\Classes::add('\team\data\stores\Config', "/classes/data/stores/Config.php", _TEAM_);
-\team\Classes::add('\team\data\stores\Ini', "/classes/data/stores/Ini.php", _TEAM_);
-\team\Classes::add('\team\data\stores\Json', "/classes/data/stores/Json.php", _TEAM_);
-\team\Classes::add('\team\data\stores\Sql', "/classes/data/stores/Sql.php", _TEAM_);
-\team\Classes::add('\team\data\stores\Url', "/classes/data/stores/Url.php", _TEAM_);
-
-
-final class Store {
-
-	static function filter($_type, $_default = null) {
-		return  ucfirst(strtolower(\team\Check::key($_type, $_default)));
-	}
-
-	static function get($_type) {
-		$type = self::filter($_type);
-		if(!isset($type) ) return null;
-	
-		$class = \team\Filter::apply('\team\stores\\'.$type, '\team\data\stores\\'.$type);
-
-		return  \team\Classes::factory($class, true);
-	}
-
-} 
+/**
+ * TODO
+ */

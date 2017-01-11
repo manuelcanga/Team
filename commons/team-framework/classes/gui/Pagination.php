@@ -157,7 +157,7 @@ class Pagination extends \team\db\Find{
 
 
 
-		return $this->pagination = $this->onBuild($collection + $this->url->getData(), $collection);
+		return $this->pagination = $this->onBuild($collection + $this->url->get(), $collection);
 	}
 
 	public function getCollection() {
@@ -416,7 +416,7 @@ class Pagination extends \team\db\Find{
 
 
 	public function getPagedUrl($vars = []) {
-		return \team\Url::to($this->baseUrl, $vars + $this->url->getData() );
+		return \team\Url::to($this->baseUrl, $vars + $this->url->get() );
 	}
 
 }

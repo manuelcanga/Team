@@ -76,13 +76,13 @@ abstract class Builder implements \ArrayAccess {
         //Preparamos los datos para filtrar
         $data = new \team\Data($this->data);
         if($this['is_main']) {
-            $data->setStore('url');
+            $data = new \team\types\Url(null, [], $data->get());
         }
 
         //Vamos a mandar un filtro de personalización de argumentos. Por si un package quiere personalizar sus argumentos( por ejemplo, acorde a la url de entrada )
         $data = \team\Filter::apply('\team\builder_data', $data);
 
-        $this->setData($data->getData() );
+        $this->set($data->get() );
     }
 
     /**
@@ -92,7 +92,7 @@ abstract class Builder implements \ArrayAccess {
         $component = \team\Sanitize::identifier($component);
 
         if(empty($component)) {
-            \Team::system("Component in package '{$this->package}' not specified", '\team\responses\Response_Not_Found', $this->getData(), $level = 5);
+            \Team::system("Component in package '{$this->package}' not specified", '\team\responses\Response_Not_Found', $this->get(), $level = 5);
 
         }
 
@@ -102,7 +102,7 @@ abstract class Builder implements \ArrayAccess {
         $this->path = str_replace("\\", "/", $this->namespace);
 
         if(empty($component) || !\team\Filesystem::exists($this->path) ) {
-            \Team::system("Component '{$this->package}/{$component}' not found", '\team\responses\Response_Not_Found', $this->getData(), $level = 5);
+            \Team::system("Component '{$this->package}/{$component}' not found", '\team\responses\Response_Not_Found', $this->get(), $level = 5);
         }
 
 
@@ -215,7 +215,7 @@ abstract class Builder implements \ArrayAccess {
             $method  =  $reflection_class->getMethod($response);
 
             //Sólo se permite lanzar métodos directos(de la clase de componente ) o derivados, pero no de los métodos de las clases de team )
-            //ejemplo, no se permite un response como addCss o getData() por ser de team/controller/*
+            //ejemplo, no se permite un response como addCss o get() por ser de team/controller/*
             //Sin embargo cualquier otro response del controller del usuario sí se permite ( incluso si esta derivada de otra clase suya )
             $not_team = strpos(trim($method->class, '\\'), 'team');
 
@@ -243,7 +243,7 @@ abstract class Builder implements \ArrayAccess {
         }
 
         if( !$response_exists  ) {
-            return \Team::system("Response method '{$this->response}' in controller class $class  not found", '\team\responses\Response_Not_Found', $this->getData(), $level = 5 );
+            return \Team::system("Response method '{$this->response}' in controller class $class  not found", '\team\responses\Response_Not_Found', $this->get(), $level = 5 );
         }
 
         return $method;
@@ -257,7 +257,7 @@ abstract class Builder implements \ArrayAccess {
 
         if(\team\Config::get('TRACE_REQUESTS') ) {
             \team\Debug::me("{$class}->{$method}()", "Cargando response.");
-            $this->getData()->debug("Params");
+            $this->get()->debug("Params");
         }
 
         //Launch response
@@ -298,7 +298,7 @@ abstract class Builder implements \ArrayAccess {
 
 
             //-------- Nos preparamos para lanzar la accion -------------
-            $controller = new $class($this->getData(), $this->response );
+            $controller = new $class($this->get(), $this->response );
 
 
             $result = $this->dispatch($controller,$method, $this->response);

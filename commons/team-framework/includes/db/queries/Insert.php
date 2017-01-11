@@ -36,7 +36,7 @@ trait Insert {
     @param String $_sql consulta sql a la que se le añadira los campos
      */
     protected function getInsertValues( ) {
-        $sentences = $this->getData();
+        $sentences = $this->get();
 
         $fields = [];
         $values = [];

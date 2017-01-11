@@ -11,7 +11,7 @@ trait DataArrayAccess {
 
 
 
-    function offsetUnset($offset){
+    public function offsetUnset($offset){
         if(!isset($offset) ) {
             $this->data = [];
         }if(array_key_exists($offset, $this->data)  ) {
@@ -19,12 +19,12 @@ trait DataArrayAccess {
         }
     }
 
-    function offsetExists($offset) {
+    public function offsetExists($offset) {
         return  isset($this->data[$offset]);
     }
 
 
-    function &  offsetGet($offset) {
+    public function &  offsetGet($offset) {
         if(!isset( $this->data[$offset]) )
             $this->data[$offset] = null;
 
@@ -34,7 +34,7 @@ trait DataArrayAccess {
 
 
 
-    function & offsetSet($offset, $valor) {
+    public function & offsetSet($offset, $valor) {
 
         if(is_null($offset)) {
             return $this->data[] = $valor;
