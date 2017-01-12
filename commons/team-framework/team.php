@@ -102,6 +102,8 @@ require(\_TEAM_.'/classes/FileSystem.php');
 require(\_TEAM_.'/classes/Check.php');
 //Filter, permite el filtrado de datos de modo desacoplado.
 require(\_TEAM_.'/classes/hooks/Filter.php');
+//Trait para las clases que manejan variables de configuración: Config y Context
+require(\_TEAM_.'/includes/data/Vars.php');
 //La clase que gestiona opciones de configuración
 require(\_TEAM_.'/classes/Config.php');
 //Classes se encarga de la autocarga y manejo de clases

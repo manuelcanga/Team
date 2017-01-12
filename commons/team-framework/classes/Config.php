@@ -33,6 +33,8 @@ namespace team;
 
 //Clase para gestionar variables de configuracion
 abstract class Config{
+    use \team\data\Vars;
+
     protected static $vars = [];
     protected static $modifiers = [];
 
@@ -40,46 +42,6 @@ abstract class Config{
         \Team::event('\team\setup', self::$vars);
     }
 
-    public static function replace($var, $value = null) {
-        self::$vars[$var] = $value;
-    }
-
-    public static function set($var, $value = null) {
-        if(is_array($var)) {
-            self::$vars =  $var + self::$vars;
-        }else if(is_string($var)){
-            self::$vars[$var] = $value;
-        }
-    }
-
-    public static function push($var, $value = null) {
-        if(!isset(self::$vars[$var]) || is_array(self::$vars[$var])) {
-            self::$vars[$var][] = $value;
-        }
-    }
-
-    public static function add($var, $key, $value = null) {
-        if(!isset(self::$vars[$var]) || is_array(self::$vars[$var])) {
-            self::$vars[$var][$key] = $value;
-        }
-    }
-
-    public static function unset($var, $key = null) {
-        if(isset($key)) {
-            if(isset(self::$vars[$var][$key])) {
-                unset(self::$vars[$var][$key]);
-                return true;
-            }
-            return false;
-        }
-
-        if(isset(self::$vars[$var])) {
-            unset(self::$vars[$var]);
-            return true;
-        }
-
-        return false;
-    }
 
     public static function get(string $var_name, $default = null, $place = null) {
         return self::applyModifiers($var_name, self::$vars[$var_name]?? $default, $place );
@@ -90,30 +52,8 @@ abstract class Config{
         return $var[$key]?? $default;
     }
 
-    public static function getVars() {
-        return self::$vars;
-    }
-
-    public static function defaults($vars) {
-        self::$vars +=  $vars;
-    }
-
-    public static function exists($var) {
-        return array_key_exists($var, self::$vars);
-    }
-
-
-    public static function debug() {
-        \team\Debug::me(self::$vars);
-    }
-
 
     public static function addModifier($config_var, $function, int $order = 50){
-
-        if(!is_callable($config_var,  $syntax_only = true)) {
-            \team\Debug::me('You are adding a modifier to ' . $config_var . ' which isn\'t a callback');
-            return false;
-        }
 
         self::$modifiers[$config_var] = self::$modifiers[$config_var]?? [];
 
@@ -134,7 +74,12 @@ abstract class Config{
         ksort($modifiers);
 
         foreach($modifiers as $modifier) {
-            $value = $modifier($value, $place);
+            if(!is_callable($config_var,  $syntax_only = true)) {
+                \team\Debug::me('You are adding a modifier to ' . $config_var . ' which isn\'t a callback');
+                return false;
+            }else {
+                $value = $modifier($value, $place);
+            }
         }
         return $value;
     }

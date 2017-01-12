@@ -43,7 +43,8 @@ namespace team;
 	Los contextos sirve de substituto a las constantes y a las variables globales. 
 */
 class Context  {
-	private static $context = ['LEVEL'  => 0, 'NAMESPACE' => '\\'];
+    use \team\data\Vars;
+    protected static $vars =  ['LEVEL'  => 0, 'NAMESPACE' => '\\'];
 
 
 	/**
@@ -52,15 +53,15 @@ class Context  {
      */
 	public static function open( ) {
 
-        $context = [];
-        $context['BEFORE'] = self::$context; //Guardamos el contexto anterior( es decir, el que lanzó el response )
-        $context['LEVEL'] = $context['BEFORE']['LEVEL'] + 1;
-        $context['LAST'] = []; //Aún no se ha lanzado un response desde el contexto actual
-        $context['OPTIONS'] = []; //Esto en el futuro pasará a Config
-        self::$context = $context;
+        $vars = ['LEVEL'  => 0, 'NAMESPACE' => '\\'];
+        $vars['BEFORE'] = self::$vars?: $vars; //Guardamos el contexto anterior( es decir, el que lanzó el response )
+        $vars['LEVEL'] = $vars['BEFORE']['LEVEL'] + 1;
+        $vars['LAST'] = []; //Aún no se ha lanzado un response desde el contexto actual
+        $vars['OPTIONS'] = []; //Esto en el futuro pasará a Config
+        self::$vars = $vars;
 
 
-		return  self::$context;
+		return  self::$vars;
 	}
 
 	/**
@@ -69,26 +70,26 @@ class Context  {
      */
 	public static function close() {
 
-         $namespace = self::$context['NAMESPACE'];
+         $namespace = self::$vars['NAMESPACE'];
 
         //Obtenemos el namespace del contexto que se va a cerrar
         \team\Debug::trace("Context[{$namespace}]: Ending");
 
         if(self::getLevel()> 0) {
-            $context = self::$context['BEFORE']; //El contexto que llamó al contexto actual pasa a ser el nuevo activo
+            $vars = self::$vars['BEFORE']; //El contexto que llamó al contexto actual pasa a ser el nuevo activo
 
 
             //Asignamos el contexto actual como el last del nuevo activo
-            unset(self::$context['BEFORE']);
-            $context['LAST'] = self::$context;
-            self::$context = $context;
+            unset(self::$vars['BEFORE']);
+            $vars['LAST'] = self::$vars;
+            self::$vars = $vars;
 
 
             //Devolvemos el contexto que se ha cerrado
-            return self::$context['LAST'];
+            return self::$vars['LAST'];
         }
 
-        return self::$context;
+        return self::$vars;
 	}
 
 	public static function isMain() {
@@ -96,22 +97,20 @@ class Context  {
     }
 
 	/* ------------------- GETTERS  ---------------------- */
-    public static function getLevel() { return self::$context['LEVEL']; }
-    public static function getIndex() { return self::getLevel(); }
+    public static function get($var, $default = null){
 
-	/* 
-		Devolvemos el valor de una variable de configuración existente. 
-		@param String $name nombre de la variable de configuración de la que queremos devolver el valor.
-		@param mixed $default valor a devolver en caso de no existir la variable de $name 
-	*/
-	public static function get($var, $default = null){
         //Primero comprobamos si existe la variable a nivel de contexto
-        if(isset(self::$context[$var])) {
-            return self::$context[$var];
+        if(isset(self::$vars[$var])) {
+            return self::$vars[$var];
         }
 
         return \team\Config::get($var, $default);
-	}
+    }
+
+    public static function getLevel() { return self::$vars['LEVEL']; }
+    public static function getIndex() { return self::getLevel(); }
+
+
 
 
 	public static function getOption($name, $default = null) {
@@ -121,7 +120,7 @@ class Context  {
 			@param String $name nombre de la opción de configuración de la que queremos devolver el valor.
 			@param mixed $default valor a devolver en caso de no existir la variable de $name 
 		*/
-		$value = self::$context['OPTIONS'][$name]?? $default;
+		$value = self::$vars['OPTIONS'][$name]?? $default;
 
         $value =  \team\Filter::apply('\team\options', $value, $name);
 
@@ -137,11 +136,11 @@ class Context  {
 
 	public static function before($name = null, $default = null) {
         if(!isset($name)){
-            return self::$context['BEFORE']?? [];
+            return self::$vars['BEFORE']?? [];
         }
 
-		if(isset(self::$context['BEFORE'][$name]) &&  array_key_exists($name, self::$context['BEFORE'])  ) {
-			return self::$context['BEFORE'][$name];
+		if(isset(self::$vars['BEFORE'][$name]) &&  array_key_exists($name, self::$vars['BEFORE'])  ) {
+			return self::$vars['BEFORE'][$name];
 		}
 		return $default;
 	}
@@ -153,11 +152,11 @@ class Context  {
 	*/
 	public static function last($name = null, $default = null){
         if(!isset($name)){
-            return self::$context['LAST']?? [];
+            return self::$vars['LAST']?? [];
         }
 
-		if(isset(self::$context['LAST'][$name]) &&  array_key_exists($name, self::$context['LAST'])  ) {
-			return self::$context['LAST'][$name];
+		if(isset(self::$vars['LAST'][$name]) &&  array_key_exists($name, self::$vars['LAST'])  ) {
+			return self::$vars['LAST'][$name];
 		}
 		return $default;
 	}
@@ -171,32 +170,24 @@ class Context  {
         $main_level = 1;
 
         if(!isset($name)){
-	        return self::$context[$main_level]?? [];
+	        return self::$vars[$main_level]?? [];
         }
 
 
-		if(!empty(self::$context[$main_level]) && array_key_exists($name, self::$context[$main_level]) ) {
-			return self::$context[$main_level][$name];
+		if(!empty(self::$vars[$main_level]) && array_key_exists($name, self::$vars[$main_level]) ) {
+			return self::$vars[$main_level][$name];
 		}
 		return $default;
 	}
 
 	public static function & getContext() {
-        return self::$context;
+        return self::$vars;
     }
 
 
+
+
 	/* ------------------- SETTERS  ---------------------- */
-	/**
-		Añade nuevas variables de configuración al nivel actual
-		@param array $vars variables nuevas a añadir.
-	*/
-	public static function defaults(array $vars) {
-		self::$context =  self::$context + $vars;
-	}
-
-
-
     /**
 		Asignamos un nuevo namespace al contexto actual.
 		Esto también hace que el contexto se actualize según el namespace que vaya tomando
@@ -204,36 +195,17 @@ class Context  {
 		@nota: He quitado caché, así siempre se dispararán los setups de los configs
 	*/
 	public static function setNamespace($namespace){
-	    self::$context['NAMESPACE'] = $namespace;
-        self::$context['SUBPATH'] =   str_replace('\\', '/', $namespace);
+	    self::$vars['NAMESPACE'] = $namespace;
+        self::$vars['SUBPATH'] =   str_replace('\\', '/', $namespace);
 	}
 
-	/** Asignamos un valor de configuración.  */
-	public static function set($var, $value = NULL){
-	    if(is_array($var)) {
-            self::$context = $var + self::$context;
-        }else if(is_string($var)) {
-		    self::$context[$var] = $value;
+
+
+    public static function add($var, $key, $value = null) {
+        if(!isset(self::$vars[$var]) || is_array(self::$vars[$var])) {
+            self::$vars[$var][$key] = $value;
         }
-	}
-
-	public static function exists($key) {
-		return array_key_exists($key, self::$context);
-	}
-
-
-	/**
-		Depuración. Only Developer
-	*/
-	public static function debug($str = '') {
-		$backtrace = debug_backtrace();
-		$file = $backtrace[0]['file'];
-		$line = $backtrace[0]['line'];
-		
-		\team\Debug::me(self::$context, 'Context Log:'.$str, $file, $line);
-	}
-
-
+    }
 
 
 
