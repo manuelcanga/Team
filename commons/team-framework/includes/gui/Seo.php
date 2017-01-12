@@ -55,9 +55,9 @@ trait Seo {
         if(!$this->isMain()) return false;
 
         if(isset($options) ) {
-            \team\Config::add('SEO_METAS', $key, ['value'=> $options, 'options' => $options]);
+            \team\Context::add('SEO_METAS', $key, ['value'=> $options, 'options' => $options]);
         }else {
-            \team\Config::add('SEO_METAS', $key, $value);
+            \team\Context::add('SEO_METAS', $key, $value);
         }
     }
     
@@ -70,28 +70,23 @@ trait Seo {
      * @param ?bool $separator false(not separator), true(with separator), null(remove previous title )
      *
      */
-    function setTitle($title, $separator = true, $before = false) {
+    public function setTitle($title, $separator = true, $after = false) {
         if(!$this->isMain()) return false;
 
-        $SEO_TITLE = \team\Config::get('SEO_TITLE', '', 'setTitle');
+        $SEO_TITLE = \team\Context::get('SEO_TITLE', '');
 
 
         if(null === $separator || !$SEO_TITLE) {
             $SEO_TITLE = $title;
-        }else if($separator) {
-            if($before) {
-                $SEO_TITLE = $title.' '.\team\Config::get('SEO_TITLE_SEPARATOR', '-').' '.$SEO_TITLE;
-            }else {
-                $SEO_TITLE = $SEO_TITLE.' '.\team\Config::get('SEO_TITLE_SEPARATOR', '-').' '.$title;
-            }
+        }else if(!$after) {
+            $SEO_TITLE = $title . ' ' . ($separator? \team\Config::get('SEO_TITLE_SEPARATOR', '-', 'setTitle') : '') . ' ' . $SEO_TITLE;
         }else {
-            if($before) {
-                $SEO_TITLE = $title . ' ' . $SEO_TITLE;
-            }else {
-                $SEO_TITLE = $SEO_TITLE. ' '.$title ;
-            }
+            $SEO_TITLE = $SEO_TITLE.' '.($separator? \team\Config::get('SEO_TITLE_SEPARATOR', '-', 'setTitle') : '').' '.$title;
         }
 
-        \team\Config::set('SEO_TITLE', $SEO_TITLE);
+
+        \team\Context::set('SEO_TITLE', $SEO_TITLE);
+
+        return $SEO_TITLE;
     }
 }

@@ -44,10 +44,12 @@ function smarty_block_title($params, $content, Smarty_Internal_Template $templat
 	if($repeat) { //open tag
 		$out = '<title>';
 	}else {//close tag
-		$title = \team\Config::get('SEO_TITLE');
-		$content =  \team\Filter::apply('\team\tag\title', $content);
-		$out = trim($content).$title.'</title>';
+        error_log(\team\Context::get('SEO_TITLE'));
+
+        $content =  \team\Filter::apply('\team\tag\title', $content);
+		$out = trim($content).'</title>';
 	}
+
 
 	return $out;
 }
