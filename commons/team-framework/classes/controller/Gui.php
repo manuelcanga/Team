@@ -40,6 +40,7 @@ class Gui extends Controller {
     use \team\gui\Assets;
 
     const DEPENDENCIES = '/guis/';
+    private $places = [];
 
     /* ____________ METHODS DE EVENTOS BASES DEL FRAMEWORK___________ */
 
@@ -109,6 +110,23 @@ class Gui extends Controller {
         $this->addViewToPlace($this->view,'main_view',  [], $isolate=false, 50);
     }
 
+    public function addContentToPlace($new_content, $place) {
+        $pipeline = ('\\' == $place[0])? $place : '\team\places\\'.$place;
+
+        return \team\Filter::add($pipeline,function($content, $params, $engine) use ($new_content) {
+            return $content. $new_content;
+
+        });
+    }
+
+
+    public function addWrapperToPlace($wrapper_start, $wrapper_end, $place) {
+        $pipeline = ('\\' == $place[0])? $place : '\team\places\\'.$place;
+        return \team\Filter::add($pipeline,function($content, $params, $engine) use ($wrapper_start, $wrapper_end) {
+            return $wrapper_start.$content. $wrapper_end;
+        });
+    }
+
     /**
      * @param $view vista que se incluirá en el lugar
      * @param $place punto de anclaje en el que queremos incluir la vista. Si empieza por \, se tomará como pipeline el lugar completo.
@@ -116,8 +134,7 @@ class Gui extends Controller {
      * @param bool $isolate determinada si la plantilla heredará el entorno de la plantilla padre( isolate = false ) o será independiente( isolate = true )
      * @param bool $order  orden de colocación de la vista respecto a otra en el mismo lugar.
      */
-    function addViewToPlace($view, $place,  $_options = [], $isolate = false, $order = 65) {
-
+    public function addViewToPlace($view, $place,  $_options = [], $isolate = false, $order = 65) {
         $view =  \team\FileSystem::stripExtension($view);
         $idView = \team\Sanitize::identifier($view).'_'.$order;
         $pipeline = ('\\' == $place[0])? $place : '\team\places\\'.$place;
@@ -130,7 +147,7 @@ class Gui extends Controller {
         }
 
 
-        \team\Filter::add($pipeline,function($content, $params, $engine) use ($view, $options, $isolate, $idView, $cache_id) {
+        return \team\Filter::add($pipeline,function($content, $params, $engine) use ($view, $options, $isolate, $idView, $cache_id) {
 
 
             //Comprobamos si ya estaba la plantilla cacheada
@@ -143,7 +160,7 @@ class Gui extends Controller {
 
             //    \Debug::out(get_class_methods($engine) );
             //Si se quiere con todas las variables del padre
-            if($isolate) { //aislado, sólo se quiere las variables que se le pasen		
+            if($isolate) { //aislado, sólo se quiere las variables que se le pasen
                 $engine->assign($params);
                 $engine->assign($options);
                 $view_content = $engine->fetch($view.'.tpl');
@@ -159,25 +176,24 @@ class Gui extends Controller {
             if(isset($cache_id) ) {
                 $cache_time = $options['cachetime']?? null;
 
-
                 \team\Cache::overwrite($cache_id,  $view_content, $cache_time );
             }
 
             return $content. $view_content;
-        }, $order, $idView);
+        }, $order);
 
     }
 
-    function addWidgetToPlace($widget_name, $place, $_options = [], $order = 65) {
+    public function addWidgetToPlace($widget_name, $place, $_options = [], $order = 65) {
         $idwidget = \team\Sanitize::identifier($widget_name).'_'.$order;
 
         //Puede haber ocasiones que un widget requiera de colocar información en otras partes del html
         //es por ello, que le damos la oportunidad de que carguen la información que necesiten ya
-        //para ello, cargaremos el script /events/placed.php
+        //para ello, cargaremos el script /config/placed.php
         //y llamaremos al evento \team\widget\{id_widget}
         $namespace =  \team\NS::explode($widget_name);
 
-        \team\FileSystem::ping("/{$namespace['package']}/{$namespace['component']}/events/placed.php");
+        \team\FileSystem::ping("/{$namespace['package']}/{$namespace['component']}/config/placed.php");
         \Team::event('\team\placed\\'.$idwidget, $place, $_options, $order, $this);
 
 
@@ -192,7 +208,7 @@ class Gui extends Controller {
         }
 
         $options = $_options;
-        \team\Filter::add($pipeline,function($content, $params, $engine) use ($widget_name, $options,  $cache_id) {
+        return \team\Filter::add($pipeline,function($content, $params, $engine) use ($widget_name, $options,  $cache_id) {
 
             $params = $params + $options;
             $params['engine'] = $engine;
@@ -201,9 +217,8 @@ class Gui extends Controller {
             $widget_content =  \team\Component::call($widget_name, $params,  $cache_id);
 
             return $content.$widget_content;
-        }, $order, $idwidget);
+        }, $order);
 
-        return true;
     }
 
     function noLayout() {
