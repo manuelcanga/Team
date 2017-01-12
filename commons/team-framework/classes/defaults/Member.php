@@ -32,7 +32,7 @@ namespace team\defaults;
 
 
 
-class Member {
+class Member implements \ArrayAccess {
 	use \team\data\Box;
 
 	public function __construct() {

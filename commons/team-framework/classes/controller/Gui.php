@@ -60,9 +60,9 @@ class Gui extends Controller {
     function ___unload($result, $response) {
         $result = parent::___unload($result, $response);
 
-        if( $this->isMain() ) {
+        if( $this->isMain() && empty($result) ) {
             if($this->view){
-                $this->addViewToPlace($this->view,'main_view',  [], $isolate=false, 50);
+                $this->addMainViewToPlace();
             }
         }
 
@@ -103,6 +103,10 @@ class Gui extends Controller {
      */
     function setView($_file, $component = null, $package = null) {
         return $this->view = $this->getView($_file, $component, $package);
+    }
+
+    protected function addMainViewToPlace() {
+        $this->addViewToPlace($this->view,'main_view',  [], $isolate=false, 50);
     }
 
     /**
