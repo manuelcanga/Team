@@ -52,6 +52,7 @@ class Gui extends Controller {
         //Por defecto, no habrá layout
         $this->noLayout();
 
+
         return parent::___load($response);
     }
 
@@ -228,7 +229,7 @@ class Gui extends Controller {
 
     public static function render($string, $params = null) {
 
-        if(is_a($params, '\trrasweb\Data', false) ) {
+        if(is_a($params, '\team\Data', false) ) {
             $data = $params;
         }else {
             $data = new \team\Data($params);
@@ -256,18 +257,10 @@ class Gui extends Controller {
 
     function isTablet() { return  \team\Http::checkUserAgent('tablet'); }
 
-    function getBodyClasses($classes = '') {
-
-        if($this->isMobile()) {
-            $classes  .= " movil ";
-        }else {
-            $classes .= " desktop ";
-        }
-
-        $classes .= $this->getNavigator();
-
-        return \team\Filter::apply('\team\body_classes', trim($classes));
+    function addBodyClass($class = '') {
+        \team\Context::push('BODY_CLASSES', $class);
     }
+
 
 
     /* ____________ Helpers ___________ */

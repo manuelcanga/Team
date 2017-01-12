@@ -40,9 +40,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 function smarty_block_body($params, $content, Smarty_Internal_Template $template, &$repeat)
 {
-	$controller = \team\Context::get('CONTROLLER');
-
-	
 
 	$out = '';
 	if($repeat) { //open tag
@@ -61,14 +58,24 @@ function smarty_block_body($params, $content, Smarty_Internal_Template $template
 			 'data-response' => $response,
 		];
 
-		if (isset($controller) ) {
-			$class = $controller->getBodyClasses($response);
-			if(isset($params['class']) ) {
-				$params['class'] = trim($class.' '.$params['class']);
-			}else {
-				$params['class'] = trim($class);
-			}
-		}
+
+		/* Body Classes */
+		$body_classes = \team\Context::get('BODY_CLASSES');
+
+        if( \team\Http::checkUserAgent('mobile') ) {
+            $body_classes[] = 'movil';
+        }else {
+            $body_classes[] = 'desktop';
+        }
+        $body_classes[] = \team\Http::checkUserAgent('navigator');
+        $classes = implode(' ', $body_classes);
+
+
+        if(isset($params['class']) ) {
+            $params['class'] = trim($classes.' '.$params['class']);
+        }else {
+            $params['class'] = trim($classes);
+        }
 
 
 		$out .= '<body';
