@@ -55,9 +55,9 @@ trait Seo {
         if(!$this->isMain()) return false;
 
         if(isset($options) ) {
-            \team\Context::add('SEO_METAS', $key, ['value'=> $options, 'options' => $options]);
+            \team\Config::add('SEO_METAS', $key, ['value'=> $options, 'options' => $options]);
         }else {
-            \team\Context::add('SEO_METAS', $key, $value);
+            \team\Config::add('SEO_METAS', $key, $value);
         }
     }
     
