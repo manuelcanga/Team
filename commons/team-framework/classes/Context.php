@@ -51,9 +51,14 @@ class Context  {
      * Abrimos un contexto( es decir, se lanza un nuevo response )
      * @return array contexto nuevo
      */
-	public static function open( ) {
+	public static function open( $isolate = true) {
 
-        $vars = ['LEVEL'  => 0, 'NAMESPACE' => '\\'];
+        if($isolate) {
+            $vars = ['LEVEL'  => 0, 'NAMESPACE' => '\\'];
+        }else { //reuse parent vars
+            $vars = self::$vars;
+        }
+
         $vars['BEFORE'] = self::$vars?: $vars; //Guardamos el contexto anterior( es decir, el que lanzó el response )
         $vars['LEVEL'] = $vars['BEFORE']['LEVEL'] + 1;
         $vars['LAST'] = []; //Aún no se ha lanzado un response desde el contexto actual
