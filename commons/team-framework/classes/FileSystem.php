@@ -50,6 +50,8 @@ final  class Filesystem
 		@return booleean si existe(true) o no existe(false)
 	*/
 	public static function exists($file, $base = _SITE_) {
+	    if(!is_string($file) ||  '/' !== $file[0]) return false;
+
 		return file_exists($base.$file);
 	}
 

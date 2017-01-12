@@ -151,11 +151,11 @@ class Team
 	*/
 	public static function addListener($event, $listener, $order = 65) {
 		$event = rtrim($event, '\\');
-		if(!is_callable($listener) ) return ;
+
 		$order = \team\Check::id($order);
 
 		//Si no habia listeners asociados al evento, ahora si
-		self::$listeners[$event] =  isset(self::$listeners[$event])? self::$listener : [];
+		self::$listeners[$event] =  self::$listeners[$event]??  [];
 
 		//Vamos buscando un hueco libre para el trabajador a partir del orden que pidió
 		for($max_order = 100; isset(self::$listeners[$event][$order]) && $order < $max_order; $order++);
@@ -183,9 +183,17 @@ class Team
 			$data[] = $namespace;	
 
 		    foreach(self::$listeners[$namespace] as $listener) {
-		        //mandamos el trabajo al listener
-		        $result =  $listener(...$data);
-		        if($result) return $result;
+
+		        //Si el listener es una ruta a un archivo, entonces se carga ese archivo si existe
+		        if(\team\Filesystem::exists($listener)) {
+		            \team\Filesystem::load($listener);
+                }else if ( is_callable($listener,  $syntax_only = true) ){
+                    //mandamos el trabajo al listener
+                    $result = $listener(...$data);
+                    if ($result) return $result;
+                }else {
+                    \team\Debug::me('You are adding a listener to event ' . $namespace . ' which isn\'t neither a callback nor file( with linux path )');
+                }
 		    }
 		}
 
