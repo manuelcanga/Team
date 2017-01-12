@@ -261,8 +261,12 @@ class Gui extends Controller {
 
     function isTablet() { return  \team\Http::checkUserAgent('tablet'); }
 
-    function addBodyClass($class = '') {
-        \team\Context::push('BODY_CLASSES', $class);
+    function addBodyClass($class = '', $overwrite = false) {
+        if($overwrite) {
+            \team\Context::set('BODY_CLASSES', [$class]);
+        }else {
+            \team\Context::push('BODY_CLASSES', $class);
+        }
     }
 
 
