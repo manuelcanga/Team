@@ -61,12 +61,6 @@ class Gui extends Controller {
     function ___unload($result, $response) {
         $result = parent::___unload($result, $response);
 
-        if( $this->isMain() && empty($result) ) {
-            if($this->view){
-                $this->addMainViewToPlace();
-            }
-        }
-
         return $result;
     }
 
@@ -103,12 +97,13 @@ class Gui extends Controller {
 
      */
     function setView($_file, $component = null, $package = null) {
-        return $this->view = $this->getView($_file, $component, $package);
+        $view =  $this->getView($_file, $component, $package);
+        \team\Context::set('VIEW', $view);
+
+        return $view;
     }
 
-    protected function addMainViewToPlace() {
-        $this->addViewToPlace($this->view,'main_view',  [], $isolate=false, 50);
-    }
+
 
     public function addContentToPlace($new_content, $place, $order = 65) {
         $pipeline = ('\\' == $place[0])? $place : '\team\places\\'.$place;
@@ -227,12 +222,12 @@ class Gui extends Controller {
 
     function setLayout($_file = null, $component = null, $package = null) {
         if(!isset($_file)) {
-            $this->layout = null;
+            \team\Context::set('LAYOUT', null);
         }else {
             //para layout el component por defecto siempre será commons
             $component = $component?: 'commons';
 
-            $this->layout =  $this->getView($_file, $component, $package);
+            \team\Context::set('LAYOUT', $this->getView($_file, $component, $package) );
         }
     }
 
@@ -246,7 +241,9 @@ class Gui extends Controller {
     OJO: Esto es independiente de la acción
      */
 
-    public static function render($string, $params = null) {
+    public static function render($string, $params = null, $isolate = true) {
+
+        \team\Context::open($isolate);
 
         if(is_a($params, '\team\Data', false) ) {
             $data = $params;
@@ -254,10 +251,14 @@ class Gui extends Controller {
             $data = new \team\Data($params);
         }
 
-        $data->layout = "string";
-        $data->view = $string;
+        \team\Context::set('LAYOUT', 'string');
+        \team\Context::set('VIEW', $string);
 
-        return $data->out("html");
+        $result =  $data->out("html");
+
+        \team\Context::close();
+
+        return $result;
     }
 
 

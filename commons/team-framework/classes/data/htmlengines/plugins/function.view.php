@@ -31,23 +31,22 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*
  * Smarty plugin
  * -------------------------------------------------------------
- * File:     smarty_block_html
- * Type:     block
- * Name:     title
- * Purpose:  output a title tag
+ * File:     function.view.php
+ * Type:     function
+ * Name:     view
+ * Purpose:  Visualiza la plantilla principal
  * -------------------------------------------------------------
  */
 
-function smarty_block_title($params, $content, Smarty_Internal_Template $template, &$repeat)
+function smarty_function_view($params, &$engine)
 {
-	$out = '';
-	if($repeat) { //open tag
-		$out = '<title>';
-	}else {//close tag
-        $content =  \team\Filter::apply('\team\tag\title', $content);
-		$out = trim($content).'</title>';
-	}
 
 
-	return $out;
+    $father = $engine;
+    $view = $params['name']?? \team\Context::get('VIEW');
+    $idView = \team\Sanitize::identifier($view);
+    $template = $engine->createTemplate($view.'.tpl', $idView, $idView, $father);
+    $template->assign($params);
+
+    return $template->fetch();
 }

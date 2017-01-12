@@ -177,15 +177,16 @@ final  class Debug
 	*/
 	private static function formatDisplay( $var, $label, $file, $line) {
 	
-        if(class_exists('\team\data\formats\Html', false) ) {
+        if(class_exists('\team\Data', false) ) {
             return self::withData( $var, $label, $file, $line);
-        }else { 
+        }else {
             return self::withString( $var, $label, $file, $line);
         }
 	}
 	
    private static function withData($var, $label, $file, $line) {
-        
+
+	    \team\Context::open();
 		$data = new \team\Data();
 		$data->file = $file;
 		$data->line = $line;
@@ -197,7 +198,7 @@ final  class Debug
 			
 		if($is_object || $is_array  ) {
 
-			$data->view = \team\Config::get('\team\debug\compound_template', 'team:framework/debug/compound');
+            \team\Context::set('VIEW',  \team\Config::get('\team\debug\compound_template', 'team:framework/debug/compound') );
 			$data->label = $label;
 			$data->sublabel = null;
 
@@ -212,14 +213,17 @@ final  class Debug
 		
 			$data->vars = self::normalizeCompound($var);
         }else {
-                $data->view = 'team:framework/debug/scalar';
-                $data->view = \team\Config::get('\team\debug\scalar_template', 'team:framework/debug/scalar');
+
+                \team\Context::set('VIEW',  \team\Config::get('\team\debug\scalar_template', 'team:framework/debug/scalar') );
 
                 $data->msg = self::normalizeScalar($var);
 		}
 
 
-		return $data->out('html');
+		$result =  $data->out('html');
+       \team\Context::close();
+
+       return $result;
     }
         
     private static function withString($var, $label, $file, $line) {

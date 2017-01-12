@@ -7,5 +7,5 @@
 
 {/head}
 {body}
-{place name='main_view'}
+{view}
 {/body}

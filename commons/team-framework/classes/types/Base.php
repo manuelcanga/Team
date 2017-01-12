@@ -15,18 +15,7 @@ abstract class Base implements \ArrayAccess
 
     /**** FORMATS ****/
     public function __toString() {
-
-        if(!isset($this->data['view']) && !isset($this->data['layout'])) {
-            $_class = 'Object of '.get_class( $this );
-
-            $file = null;
-            $line = null;
-            \team\Debug::getFileLine($file, $line);
-
-            return \team\Debug::get($this->data, $_class, $file, $line);
-        }else {
             return self::out('Html');
-        }
     }
 
     public function out($_type = NULL, $options = [], $defaults = []) {

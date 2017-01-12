@@ -26,14 +26,14 @@
 		{place name='template_top_content'}
 
 
-		{if ( $without_content && $view)}
-		    {place name='main_view'}
+		{if ( $without_content)}
+            {view}
 		{else}
 		    {wrapper class="content"}
 		        <main class="{$type} {#RESPONSE#}"  id="{#COMPONENT#}">
                     {place name='template_top_main'}
 
-                    {place name='main_view'}
+                    {view}
 
                     {place name='template_bottom_main'}
 		        </main>

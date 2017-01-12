@@ -104,10 +104,6 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 				$_data['layout'] = \team\FileSystem::stripExtension($_data['layout']);
 			}
 
-			if(isset($_data['view']) ) {
-				$_data['view'] = \team\FileSystem::stripExtension($_data['view']);
-			}
-
 			$engine = new \Smarty();
 
 			//Obtenemos la plantilla que vamos a procesar
@@ -180,7 +176,7 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
        $package = '/'.\team\Context::get('PACKAGE');
 
 
-
+        $template = $name;
 		$found_type = false;
         switch($type) {
               case 'team':
@@ -280,42 +276,50 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 	*/
 	function getView(Array $_data = null) {
 
-		$is_string = isset($_data["layout"]) && "string" == $_data["layout"];
-		$is_layout = !$is_string && isset($_data["layout"]);
-		$view_exists = isset($_data['view']);
+	    $layout = \team\Context::get('LAYOUT');
+        $view = \team\Context::get('VIEW');
+
+
+        if(isset($view) ) {
+            $view = \team\FileSystem::stripExtension($view);
+        }
+
+        $is_string = "string" === $layout;
+		$is_layout = !$is_string && !empty($layout);
+		$view_exists = !empty($view);
+
 
 		//Si es un layout que usa el  "default_template_handler_func" de smarty(team:framework/debug.tpl) la devolvemos ta cual
-		if( $is_layout  && strpos($_data['layout'], ':') ) return $_data["layout"];
+		if( $is_layout  && strpos($layout, ':') ) return $layout;
 		//lo mismo que el anterior pero para vistas
-		if(!$is_string &&  $view_exists && strpos($_data['view'], ':') ) return $_data["view"];
-
-
-		$is_view =  $view_exists &&  file_exists(_SITE_."/".$_data["view"].".tpl");
+		if(!$is_string &&  $view_exists && strpos($view, ':') ) return $view;
 
 
 		$template = '';
 		if($is_string) {
-			 $template = "eval:".$_data["view"];
+			 $template = "eval:".$view;
 		}else if($is_layout) {
-            $layout = $_data["layout"].".tpl";
-			$template = _SITE_."/".$layout;
+			$template = _SITE_."/".$layout.".tpl";
             if(!file_exists($template)) {
                 \Team::system("Not found layout in {$template}",  "\\team\\gui\\ViewNotFound");
                 $template = '';
             }
-		}else if (!$is_layout && $is_view ) {
-            $view = $_data["view"].".tpl";
-			$template = _SITE_."/".$view;
-            if(!file_exists($template)) {
-                \Team::system("Not found view in {$template}",  "\\team\\gui\\ViewNotFound");
-                $template = '';
-            }
-		}else if (isset($_data["response"])  )  {
-			\Team::system("Not assign view for [{$_data["package"]}, {$_data["component"]}, {$_data["response"]}]", "\\team\\gui\\ViewNotFound");
 		}else {
-			\Team::system("Not assign, or not found, either view or layout",  "\\team\\gui\\ViewNotFound");
-		}
-		
+            $is_view =  $view_exists &&  \team\FileSystem::exists("/".$view.".tpl");
+
+            if (!$is_layout && $is_view ) {
+                $template = _SITE_."/".$view.".tpl";
+                if(!file_exists($template)) {
+                    \Team::system("Not found view in {$template}",  "\\team\\gui\\ViewNotFound");
+                    $template = '';
+                }
+            }else if (isset($_data["response"])  )  {
+                \Team::system("Not assign view for [{$_data["package"]}, {$_data["component"]}, {$_data["response"]}]", "\\team\\gui\\ViewNotFound");
+            }else {
+                \Team::system("Not assign, or not found, either view or layout",  "\\team\\gui\\ViewNotFound");
+            }
+        }
+
 
 		return $template;
 	}
