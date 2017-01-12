@@ -31,29 +31,24 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /*
  * Smarty plugin
  * -------------------------------------------------------------
- * File:     smarty_block_wrapper
+ * File:     smarty_block_main
  * Type:     block
- * Name:     wrapper
- * Purpose:  output a wrapper "tag"
+ * Name:     main
+ * Purpose:  output a main "tag"
  * -------------------------------------------------------------
  */
 
-function smarty_block_wrapper($params, $content, Smarty_Internal_Template $template, &$repeat)
+function smarty_block_main($params, $content, Smarty_Internal_Template $template, &$repeat)
 {
 
 	$out = '';
 	if($repeat) { //open tag
-		$out = '<div';
+		$out = '<main';
 
-        $wrapper = 'wrapper';
-        $params['class'] = $params['class']?? '';
-        $params['class'] = $wrapper.' '.$params['class'];
-
-        if(isset($params['wrapper'])) {
-            $params['class'] = \team\Filter::apply('\team\gui\wrappers\\'.$params['wrapper'], $params['class']);
-            unset($params['wrapper']);
+        $params['class'] = \team\Filter::apply('\team\gui\wrappers\main', $params['class']?? '');
+        if(empty( $params['class'] )) {
+            unset($params['class']);
         }
-
 
         foreach($params as $attr => $value) {
 				$out .= " {$attr}='{$value}'";
@@ -61,7 +56,7 @@ function smarty_block_wrapper($params, $content, Smarty_Internal_Template $templ
 
 		$out .= '>';
 	}else {//close tag
-		$out = trim($content).'</div>';
+		$out = trim($content).'</main>';
 	}
 
 	return $out;

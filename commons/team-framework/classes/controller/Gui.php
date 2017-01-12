@@ -104,12 +104,20 @@ class Gui extends Controller {
     }
 
 
+    public function addClassToWrapper($class, $wrapper, $order = 50) {
+        $pipeline = '\team\gui\wrappers\\'.$wrapper;
+
+        return \team\Filter::add($pipeline,function($classes) use ($class) {
+            return trim($classes.' '.$class);
+        }, $order);
+    }
+
 
     public function addContentToPlace($new_content, $place, $order = 65) {
         $pipeline = ('\\' == $place[0])? $place : '\team\places\\'.$place;
 
         return \team\Filter::add($pipeline,function($content, $params, $engine) use ($new_content) {
-            return $content. $new_content;
+            return $content.$new_content;
 
         }, $order);
     }

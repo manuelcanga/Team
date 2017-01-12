@@ -77,8 +77,9 @@ function smarty_block_body($params, $content, Smarty_Internal_Template $template
             $params['class'] = trim($classes);
         }
 
+        $params['class'] = \team\Filter::apply('\team\gui\wrappers\body', $params['class']);
 
-		$out .= '<body';
+        $out .= '<body';
 		$params =  \team\Filter::apply('\team\tag\body\params', $params + $default);
 		foreach($params as $attr => $value) {
 				$out .= " {$attr}='{$value}'";
