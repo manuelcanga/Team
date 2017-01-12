@@ -33,11 +33,12 @@ namespace team\types;
 ini_set('session.cookie_httponly'   , 1);
 ini_set('session.use_cookies'       , 1);
 ini_set('session.use_only_cookies',   1);
-
+ini_set('session.use_trans_sid',      0);
 class Session  extends Base
 {
     /** Identificador que se le dará a la cookie de sessión */
     const ID_COOKIE = \team\SITE_ID;
+    protected static $active = false;
 
 
     /**
@@ -47,6 +48,7 @@ class Session  extends Base
      *
      */
     public function  __construct( $data = null, Array $_options = []) {
+        $this->initialize();
 
         $with_previous_session = isset($_COOKIE[self::ID_COOKIE]);
         $force_activation =  isset($_options['force']) && $_options['force'];
@@ -61,12 +63,20 @@ class Session  extends Base
 
     }
 
+    protected function initialize() {
+        if(!isset($_SESSION[self::ID_COOKIE])) {
+            $_SESSION[self::ID_COOKIE] = [];
+        }
+    }
+
+
     /**
      * Check if session is already active
      * @return bool
      */
     protected function isActive() {
-        return PHP_SESSION_NONE != session_status();
+        //return PHP_SESSION_ACTIVE == session_status(); //No funciona corréctamente. Quizás un bug
+        return static::$active;
     }
 
     /**
@@ -78,10 +88,6 @@ class Session  extends Base
      * @return ref array devuelve el array que usaremos para almacenar los datos de sesión
      */
     protected function & session($defaults = [], $overwrite = false) {
-        if(!isset($_SESSION[self::ID_COOKIE])) {
-            $_SESSION[self::ID_COOKIE] = [];
-        }
-
         if($overwrite) {
             $_SESSION[self::ID_COOKIE] = (array)$defaults;
         }else if(!empty($defaults)) {
@@ -98,26 +104,32 @@ class Session  extends Base
      *
      */
      public function activeSession($force_activation = false, $defaults = []) {
-		if( $this->isActive() && $force_activation) {
-			$this->close();
-		}
 
-        if(!$this->isActive() || $force_activation  ) {
+         if($force_activation) {
+             $this->close();
+         }
+
+         if(!$this->isActive() || $force_activation ) {
+             $data = $_SESSION;
             session_name(self::ID_COOKIE);
             session_start();
-        }
+            static::$active = true;
+            //Recolocamos cualquier dato que hubiera antes de iniciar sesión
+            $_SESSION += $data;
+
+             $this->initialize();
+         }
 
          $this->data = &  self::session($defaults);
      }
 
     public function close() {
+        session_commit();
         $this->data = array();
+        static::$active = false;
         session_unset();
         return session_destroy();
     }
 
 
-    public function __destruct() {
-        session_commit();
-    }
 }

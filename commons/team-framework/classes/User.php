@@ -161,5 +161,8 @@ class User {
         return true;
     }
 
+    public static function debug() {
+        self::$current->debug();
+    }
 }
 

@@ -151,8 +151,8 @@ try {
      */
 
     \team\FileSystem::load('/Start.php', _TEAM_);
-    \team\FileSystem::load('/commons/config/Start.php');
-    \team\FileSystem::load('/commons/config/'. \team\Config::get('ENVIROMENT').'/Initialize.php');
+    \team\FileSystem::load('/commons/config/setup.php');
+    \team\FileSystem::load('/commons/config/'. \team\Config::get('ENVIROMENT').'/setup.php');
 
 
     /**
@@ -186,6 +186,7 @@ try {
 
      \team\Debug::trace("Se inicializo el contexto. Ya podemos empezar a inicializar todo el framwork");
     \Team::event('\team\start');
+
 
 
     $REQUEST_URI = \team\Filter::apply('\team\request_uri', $_SERVER["REQUEST_URI"]);
