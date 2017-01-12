@@ -1,6 +1,6 @@
 <html>
 <body>
-{foreach $allData as $data => $value}
+{foreach $EMAIL as $data => $value}
 	{if ('view' !=$data)}
 		<p><strong>{$data}:</strong> {$value}</p>
 	{/if}

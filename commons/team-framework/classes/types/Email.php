@@ -34,6 +34,8 @@ namespace team\types;
 
 class Email extends Type
 {
+    private $id = null;
+    private $options = [];
 
     private $to = [];
     private $from = [];
@@ -46,8 +48,9 @@ class Email extends Type
      * Inicializamos el envío de correo
      *
      */
-    public function initialize($_to = null, array $_options = []) {
-        $this->to = $_to;
+    public function initialize($id =  'email', array $options = []) {
+        $this->id = $id;
+        $this->options = $options;
     }
 
     public function to($email, $name = '') { $this->addTo($email, $name); }
@@ -64,32 +67,37 @@ class Email extends Type
         $this->subject = $subject;
     }
 
-    public function send($_target, Array $_data = [], Array $_options = [] ) {
-
-        //Si no hay una plantilla de correo, cogemos una genérica
-        if(!isset($_data['view']) && !isset($_data['layout']) ) {
-            $_data['view'] = \team\Filter::apply('\team\email\template', 'team:framework/data/email.tpl');
-        }
+    public function send(Array $_data = [], $template = 'team:framework/data/email.tpl') {
 
         $emails = $this->to;
         if(empty($emails) ) return false;
 
+        $view = \team\Config::get('EMAIL_TEMPLATE',$template , $this->id);
+
         foreach((array) $emails as $to) {
-            $username = $to['name'];
-            $useremail = $to['email'];
-            //Tenemos que generar el correo electrónico que tendrá
-            $this->addCurrent($useremail, $username);
+
+            \team\Context::open();
+
+                $username = $to['name'];
+                $useremail = $to['email'];
+                //Tenemos que generar el correo electrónico que tendrá
+                $this->addCurrent($useremail, $username);
+
+                $email = new \team\Data($_data);
+                $email['EMAIL'] = $_data;
+                \team\Context::set('ToNAME', $username);
+                \team\Context::set('ToEMAIL', $useremail);
+                \team\Context::set('FromNAME',  $this->from['name']?? '');
+                \team\Context::set('FromEMAIL',  $this->from['email']?? '');
+                \team\Context::set('VIEW', $view);
+
+                $body_html = $email->out('html');
+
+                $body =  wordwrap($body_html, 70);
+
+            \team\Context::close();
 
 
-            $email = new \team\Data($_data);
-            $email['allData'] = $email->get();
-            $email['toname'] = $username;
-            $email['toemail'] = $useremail;
-            $email['fromname'] = $this->from['name'];
-            $email['fromemail'] = $this->from['email'];
-            $body_html = $email->out('html');
-
-            $body =  wordwrap($body_html, 70);
 
 
 

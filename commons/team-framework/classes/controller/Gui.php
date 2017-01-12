@@ -40,7 +40,7 @@ class Gui extends Controller {
     use \team\gui\Assets;
 
     const DEPENDENCIES = '/guis/';
-    private $places = [];
+
 
     /* ____________ METHODS DE EVENTOS BASES DEL FRAMEWORK___________ */
 
@@ -110,21 +110,21 @@ class Gui extends Controller {
         $this->addViewToPlace($this->view,'main_view',  [], $isolate=false, 50);
     }
 
-    public function addContentToPlace($new_content, $place) {
+    public function addContentToPlace($new_content, $place, $order = 65) {
         $pipeline = ('\\' == $place[0])? $place : '\team\places\\'.$place;
 
         return \team\Filter::add($pipeline,function($content, $params, $engine) use ($new_content) {
             return $content. $new_content;
 
-        });
+        }, $order);
     }
 
 
-    public function addWrapperToPlace($wrapper_start, $wrapper_end, $place) {
+    public function addWrapperToPlace($wrapper_start, $wrapper_end, $place, $order = 65) {
         $pipeline = ('\\' == $place[0])? $place : '\team\places\\'.$place;
         return \team\Filter::add($pipeline,function($content, $params, $engine) use ($wrapper_start, $wrapper_end) {
             return $wrapper_start.$content. $wrapper_end;
-        });
+        }, $order);
     }
 
     /**

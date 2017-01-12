@@ -56,10 +56,7 @@ trait Vars
 
 
     public static function get($var, $default = null){
-        //Primero comprobamos si existe la variable a nivel de contexto
-        if(isset(self::$vars[$var])) {
-            return self::$vars[$var];
-        }
+            return self::$vars[$var]?? $default;
     }
 
     public static function getKey(string $key, string $var_name, $default = null, $place = null) {
@@ -80,12 +77,12 @@ trait Vars
     }
 
 
-    public static function debug() {
+    public static function debug($str = '') {
         $backtrace = debug_backtrace();
         $file = $backtrace[0]['file'];
         $line = $backtrace[0]['line'];
 
-        \team\Debug::me(self::$vars, 'Vars Log:'.$str, $file, $line);
+        \team\Debug::me(self::$vars, $str.' log:', $file, $line);
     }
 
 }
