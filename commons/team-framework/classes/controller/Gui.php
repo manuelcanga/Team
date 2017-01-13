@@ -38,6 +38,7 @@ Es la base para las acciones tipo GUI
 class Gui extends Controller {
     use \team\gui\Seo;
     use \team\gui\Assets;
+    use \team\gui\View;
 
     const DEPENDENCIES = '/guis/';
 
@@ -67,41 +68,6 @@ class Gui extends Controller {
 
 
     /* ____________ Views / Templates___________ */
-    function getView($_file, $component = null, $package = null ) {
-
-        //Eliminamos la extensión( ya que eso depende del sistema de render escogido )
-        $file = \team\FileSystem::stripExtension($_file);
-
-
-        //Es un resource
-        if(strpos($_file, ':')) {
-            return $file;
-        }
-
-        if(empty($file) )
-            $file = \team\Context::get('RESPONSE');
-
-        $file = $this->getPath("views", $component, $package)."{$file}";
-
-        if(\team\FileSystem::filename('/'.$file)) {
-            return $file;
-        }else if(\team\Config::get('SHOW_RESOURCES_WARNINGS', false) ) {
-            \team\Debug::me("View {$file}[{$_file}] not found in {$package}/{$component}", 3);
-            return null;
-        }
-
-    }
-
-    /**
-     * Asigna la vista principal
-
-     */
-    function setView($_file, $component = null, $package = null) {
-        $view =  $this->getView($_file, $component, $package);
-        \team\Context::set('VIEW', $view);
-
-        return $view;
-    }
 
 
     public function addClassToWrapper($class, $wrapper, $order = 50) {
@@ -112,53 +78,15 @@ class Gui extends Controller {
         }, $order);
     }
 
+    /* ____________ Contextos ___________ */
 
-    function noLayout() {
-        $this->setLayout();
+    public function getContext($var, $default = null) {
+        return \team\Context::get($var, $default);
+
     }
-
-    function setLayout($_file = null, $component = null, $package = null) {
-        if(!isset($_file)) {
-            \team\Context::set('LAYOUT', null);
-        }else {
-            //para layout el component por defecto siempre será commons
-            $component = $component?: 'commons';
-
-            \team\Context::set('LAYOUT', $this->getView($_file, $component, $package) );
-        }
+    public function setContext($var, $value) {
+        \team\Context::set($var, $value);
     }
-
-    /**
-    Renderizamos una cadena de texto
-    @string Cadena a renderizar
-    @param array||\team\Data Variables de transformación que se usarán en la transformación
-    ej: $this->parseString('Hola {$nombre}', ["nombre" => "mundo"]);
-    Se podría usar también filtros, shortcodes, etc.
-    También se importa las variables de contexto actual
-    OJO: Esto es independiente de la acción
-     */
-
-    public static function render($string, $params = null, $isolate = true) {
-
-        \team\Context::open($isolate);
-
-        if(is_a($params, '\team\Data', false) ) {
-            $data = $params;
-        }else {
-            $data = new \team\Data($params);
-        }
-
-        \team\Context::set('LAYOUT', 'string');
-        \team\Context::set('VIEW', $string);
-
-        $result =  $data->out("html");
-
-        \team\Context::close();
-
-        return $result;
-    }
-
-
 
     /* ____________ UserAgent ___________ */
 

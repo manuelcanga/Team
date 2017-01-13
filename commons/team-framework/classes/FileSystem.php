@@ -265,8 +265,28 @@ final  class Filesystem
         return $path;
     }
 
-
     /**
+    Obtiene la ruta absoluta(desde el raiz del proyecto ) de un recurso.
+    @param path $suppath, es la ruta desde la raiz del component( si el rescurso esta en un component)
+    o desde el paquete( si el recurso está en commons de un paquete )
+    @param $component componente en el que se encuentra el recurso ( por defecto el actual )
+    @param $package paquete dónde se encuentra el recurso ( por defecto el actual )
+     */
+    public static function getPath($subpath, $component = null, $package = null) {
+
+        $subpath = trim($subpath, '/');
+        $component = $component?? \team\Context::get('COMPONENT');
+        $package = $package?? \team\Context::get('PACKAGE');
+
+        if ('root' === $package || 'root' === $component) {
+            return "commons/{$subpath}/";
+        }
+
+        return "{$package}/{$component}/{$subpath}/";
+    }
+
+
+        /**
      * Test if a given path is a stream URL
      *
      * @param string $path The resource path or URL.

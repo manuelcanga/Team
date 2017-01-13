@@ -82,15 +82,14 @@ class Email extends Type
             //Tenemos que generar el correo electrónico que tendrá
             $this->addCurrent($useremail, $username);
 
-            $email = new \team\Data($_data);
+            $email = new \team\gui\Template($view, [], $_data);
             $email['EMAIL'] = $_data;
             $email->setContext('ToNAME', $username);
             $email->setContext('ToEMAIL', $useremail);
             $email->setContext('FromNAME',  $this->from['name']?? '');
             $email->setContext('FromEMAIL',  $this->from['email']?? '');
-            $email->setContext('VIEW', $view);
 
-            $body_html = $email->out('html');
+            $body_html = $email->getHtml();
 
             $body =  wordwrap($body_html, 70);
 

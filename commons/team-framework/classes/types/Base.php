@@ -19,9 +19,16 @@ abstract class Base implements \ArrayAccess
             return self::out('Html');
     }
 
+    public function getContext($context, $default = null) {
+        return $this->contexts[$context]?? $default;
+    }
+
     public function setContext($context, $value) {
         $this->contexts[$context] = $value;
+        return $this;
     }
+
+
 
     public function out($_type = NULL, $options = [], $isolate = true) {
         \team\Context::open($isolate);

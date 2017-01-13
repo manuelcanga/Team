@@ -13,15 +13,21 @@ trait Box {
     protected $data = [];
 
     /**** SETTER ****/
-    function setRef(array & $data) {
+    public function setRef(array & $data) {
         $this->data = &$data;
         return $this;
     }
 
 
 
-    function addData(array $values = []) {
+    public function addData(array $values = []) {
         $this->data = (array)$values + (array)$this->data;
+
+        return $this;
+    }
+
+    public function defaults(array $values = []) {
+        $this->data = (array)$this->data + (array)$values;
 
         return $this;
     }

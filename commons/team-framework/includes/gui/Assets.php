@@ -56,7 +56,7 @@ trait Assets {
         if("internet" === $component)
             $file = $_file;
         else {
-            $file = "/".$this->getPath("css", $component, $package )."{$_file}";
+            $file = "/".\team\FileSystem::getPath("css", $component, $package )."{$_file}";
 
         }
 
@@ -95,7 +95,7 @@ trait Assets {
         if("internet" === $component)
             $file = $_file;
         else
-            $file = "/".$this->getPath("js", $component, $package)."{$_file}";
+            $file = "/".\team\FileSystem::getPath("js", $component, $package)."{$_file}";
 
         if('internet' == $component || \team\Filesystem::exists($file) ) {
             \team\Config::add("\\team\\js\\{$position}", $idfile, $file);
