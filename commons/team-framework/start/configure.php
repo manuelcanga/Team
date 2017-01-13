@@ -15,7 +15,7 @@ if(!defined("_SITE_") ) die("Hello,  World");
  * y zonas( suburls asociadas a package y componentes )
  *
  */
-\team\Config::set('AREAS',  ['/' =>  '/package/welcome'] );
+\team\Config::set('AREAS',  ['/' =>  '/web/welcome'] );
 \team\Config::set('DOMAIN',  trim($_SERVER["SERVER_NAME"], '/') );
 
 

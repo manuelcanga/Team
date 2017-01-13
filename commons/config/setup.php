@@ -10,6 +10,6 @@ if(!defined('_SITE_')) die("Hello, World!");
  * Time: 15:39
  */
 
-\team\Config::set('AREAS',  ['/' =>  '/package/welcome']);
+\team\Config::set('AREAS',  ['/' =>  '/demo/welcome']);
 
 \team\Config::set('ENVIROMENT', 'local');
