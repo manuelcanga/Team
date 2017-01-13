@@ -1,32 +1,29 @@
 <?php
 /**
-New Licence bsd:
-Copyright (c) <2016>, Manuel Jesus Canga Muñoz
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of the trasweb.net nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS IS' AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL Manuel Jesus Canga Muñoz BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
+ * New Licence bsd:
+ * Copyright (c) <2016>, Manuel Jesus Canga Muñoz
+ * All rights reserved.
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * - Redistributions of source code must retain the above copyright
+ * notice, this list of conditions and the following disclaimer.
+ * - Redistributions in binary form must reproduce the above copyright
+ * notice, this list of conditions and the following disclaimer in the
+ * documentation and/or other materials provided with the distribution.
+ * - Neither the name of the trasweb.net nor the
+ *  names of its contributors may be used to endorse or promote products
+ * derived from this software without specific prior written permission.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS IS' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL Manuel Jesus Canga Muñoz BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 namespace team;
 
@@ -149,7 +146,8 @@ require(\_TEAM_.'/classes/DB.php');
 try {
 
     /**
-     * 1. Llamamos a los scripts de comienzos. Estos scripts deberían de asignar filtros, eventos y tareas deseados
+     * 1. Llamamos a los scripts de comienzos.
+     * Estos scripts deberían de asignar filtros, eventos y tareas deseados
      */
 
     \team\FileSystem::load('/Start.php', _TEAM_);
@@ -184,29 +182,50 @@ try {
      */
     \Team::__initialize();
 
-
-
-     \team\Debug::trace("Se inicializo el contexto. Ya podemos empezar a inicializar todo el framwork");
-    \Team::event('\team\start');
-
-
-
-    $REQUEST_URI = \team\Filter::apply('\team\request_uri', $_SERVER["REQUEST_URI"]);
-    $args = \team\Task('\team\url', array() )->with($REQUEST_URI);
-
-
-    //Es necesario que un worker se haga cargo de la creación del primer response( o main )
-	$result =  \team\Task('\team\main', '')->with($args);
-
-	
-	\team\Debug::trace("Se acabó, ya hemos realizado todas las operaciones pedidas. Bye!");
-
-	\Team::event('\team\end', $result);
-
-	echo $result;
-
 //Evitamos a toda costa que se quede congelado el sistema
 }catch(\Throwable $e) { 
 	\Team::critical($e);
 
+}
+
+
+function up() {
+
+    try {
+
+        \team\Debug::trace("Se inicializo el contexto. Ya podemos empezar a inicializar todo el framwork");
+
+        /**
+         * 6. Se levanta el sistema MVC
+         */
+        \Team::event('\team\start');
+
+
+        /**
+         * 7. Se parsea los parámetros de entrada
+         */
+        $REQUEST_URI = \team\Filter::apply('\team\request_uri', $_SERVER["REQUEST_URI"]);
+        $args = \team\Task('\team\url', array() )->with($REQUEST_URI);
+
+
+        /**
+         * 8. Se llama al encargado( un componente o función __main ) de procesar el primer response o main
+         */
+        $result =  \team\Task('\team\main', '')->with($args);
+
+        \team\Debug::trace("Se acabó, ya hemos realizado todas las operaciones pedidas. Bye!");
+
+
+        /**
+         * 9. Se acaba de procesar y se devuelve la respuesta
+         */
+        \Team::event('\team\end', $result);
+        return $result;
+
+
+        //Evitamos a toda costa que se quede congelado el sistema
+    }catch(\Throwable $e) {
+        \Team::critical($e);
+
+    }
 }
