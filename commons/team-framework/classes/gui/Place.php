@@ -13,7 +13,7 @@ class Place
 
     protected static $items = [];
 
-    public static function attachContent(string $place, $new_content, $position = "end", $order = 50) {
+    public static function content(string $place, $new_content, $position = "end", $order = 50) {
 
         return static::add($place, $order, 'content', function($content, $params, $engine) use ($new_content, $position) {
             if("start" === $position) {
@@ -43,7 +43,7 @@ class Place
      * @param bool $isolate determinada si la plantilla heredará el entorno de la plantilla padre( isolate = false ) o será independiente( isolate = true )
      * @param bool $order  orden de colocación de la vista respecto a otra en el mismo lugar.
      */
-    public static  function attachView(string $place, $view, $_options = [], $isolate = false, $order = 50) {
+    public static  function view(string $place, $view, $_options = [], $isolate = false, $order = 50) {
         $view =  \team\FileSystem::stripExtension($view);
         $idView = \team\Sanitize::identifier($view);
         $options =  $_options;
@@ -92,7 +92,7 @@ class Place
 
     }
 
-    public static  function attachWidget(string $place, $widget_name, $_options = [], $order = 50) {
+    public static  function widget(string $place, $widget_name, $_options = [], $order = 50) {
         $idwidget = \team\Sanitize::identifier($widget_name);
 
         //Puede haber ocasiones que un widget requiera de colocar información en otras partes del html
