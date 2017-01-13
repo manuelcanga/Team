@@ -92,7 +92,7 @@ class Gui extends Builder {
 		//Sólo para html añadimos los argumentos de la GUI
 		$_data['_'] = $params;
 
-		$out = $_data->out($this->out);	
+		$out = $_data->out($this->out, [], $isolate = false);
 
 		return $out;
 	}

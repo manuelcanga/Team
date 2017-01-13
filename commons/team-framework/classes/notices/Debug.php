@@ -186,7 +186,6 @@ final  class Debug
 	
    private static function withData($var, $label, $file, $line) {
 
-	    \team\Context::open();
 		$data = new \team\Data();
 		$data->file = $file;
 		$data->line = $line;
@@ -198,7 +197,7 @@ final  class Debug
 			
 		if($is_object || $is_array  ) {
 
-            \team\Context::set('VIEW',  \team\Config::get('\team\debug\compound_template', 'team:framework/debug/compound') );
+            $data->setContext('VIEW',  \team\Config::get('\team\debug\compound_template', 'team:framework/debug/compound') );
 			$data->label = $label;
 			$data->sublabel = null;
 
@@ -214,16 +213,14 @@ final  class Debug
 			$data->vars = self::normalizeCompound($var);
         }else {
 
-                \team\Context::set('VIEW',  \team\Config::get('\team\debug\scalar_template', 'team:framework/debug/scalar') );
+                $data->setContext('VIEW',  \team\Config::get('\team\debug\scalar_template', 'team:framework/debug/scalar') );
 
                 $data->msg = self::normalizeScalar($var);
 		}
 
 
-		$result =  $data->out('html');
-       \team\Context::close();
+		return  $data->out('html');
 
-       return $result;
     }
         
     private static function withString($var, $label, $file, $line) {

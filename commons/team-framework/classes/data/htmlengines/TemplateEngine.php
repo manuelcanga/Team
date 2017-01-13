@@ -116,6 +116,9 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 			$engine_data = $this->transformToEngineData($_data);
 
 
+			$is_main = \team\Context::isMain();
+			\Team::event('\team\view\fetching', $template, $engine, $engine_data, $is_main);
+
 			$result =  $engine->fetch($template, $engine_data);
 
 

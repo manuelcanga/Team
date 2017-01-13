@@ -76,30 +76,23 @@ class Email extends Type
 
         foreach((array) $emails as $to) {
 
-            \team\Context::open();
 
-                $username = $to['name'];
-                $useremail = $to['email'];
-                //Tenemos que generar el correo electrónico que tendrá
-                $this->addCurrent($useremail, $username);
+            $username = $to['name'];
+            $useremail = $to['email'];
+            //Tenemos que generar el correo electrónico que tendrá
+            $this->addCurrent($useremail, $username);
 
-                $email = new \team\Data($_data);
-                $email['EMAIL'] = $_data;
-                \team\Context::set('ToNAME', $username);
-                \team\Context::set('ToEMAIL', $useremail);
-                \team\Context::set('FromNAME',  $this->from['name']?? '');
-                \team\Context::set('FromEMAIL',  $this->from['email']?? '');
-                \team\Context::set('VIEW', $view);
+            $email = new \team\Data($_data);
+            $email['EMAIL'] = $_data;
+            $email->setContext('ToNAME', $username);
+            $email->setContext('ToEMAIL', $useremail);
+            $email->setContext('FromNAME',  $this->from['name']?? '');
+            $email->setContext('FromEMAIL',  $this->from['email']?? '');
+            $email->setContext('VIEW', $view);
 
-                $body_html = $email->out('html');
+            $body_html = $email->out('html');
 
-                $body =  wordwrap($body_html, 70);
-
-            \team\Context::close();
-
-
-
-
+            $body =  wordwrap($body_html, 70);
 
             $status = mail($this->getTo(), $this->getSubject(), $body, $this->getHeaders() );
             $this->status[] = ['name' => $username, 'email' =>  $useremail, 'status' => $status ];

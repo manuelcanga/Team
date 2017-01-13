@@ -11,6 +11,7 @@ abstract class Base implements \ArrayAccess
 {
     use \team\data\Box;
 
+    protected $contexts = [];
 
 
     /**** FORMATS ****/
@@ -18,7 +19,15 @@ abstract class Base implements \ArrayAccess
             return self::out('Html');
     }
 
-    public function out($_type = NULL, $options = [], $defaults = []) {
+    public function setContext($context, $value) {
+        $this->contexts[$context] = $value;
+    }
+
+    public function out($_type = NULL, $options = [], $isolate = true) {
+        \team\Context::open($isolate);
+
+        \team\Context::set($this->contexts);
+
         $format_class = new \team\data\formats\Format();
 
         $type = $_type?? $format_class->filter($_type);
@@ -38,7 +47,11 @@ abstract class Base implements \ArrayAccess
             \Team::system("Not found Data format  for {$type}", '\team\Dataformat_Not_Found');
         }
 
-        return $obj->renderer($this->data + $defaults, $options);
+        $out =  $obj->renderer($this->data, $options);
+
+        \team\Context::close();
+
+        return $out;
     }
 
 

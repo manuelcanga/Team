@@ -87,7 +87,7 @@ class Actions extends Builder {
 		}
 
 	//	Event("Pre_Out", '\team\actions')->ocurred($_data);
-		$_data->out = $_data->out($this->out);
+		$_data->out = $_data->out($this->out, [], $isolate = false);
 	//	Event("Post_Out", '\team\actions')->ocurred($_data);
 
 
