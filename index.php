@@ -38,3 +38,8 @@ define('_SITE_', 			__DIR__);
 
 //Ubicación actual:
 include(_SITE_.'/commons/team-framework/team.php');
+
+
+
+//Se lanza el MVC del sistema
+echo \team\up();

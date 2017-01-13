@@ -1,6 +1,6 @@
 <?php
 
-namespace package\welcome;
+namespace demo\welcome;
 
 class Gui extends \team\Gui {
 

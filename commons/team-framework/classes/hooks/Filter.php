@@ -117,6 +117,8 @@ class Filter {
             return $data;
         }
 
+        ksort(self::$filters[$pipeline]);
+
         $last['filters'] =  self::$filters[$pipeline];
 
 

@@ -34,8 +34,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * File:     function.place.php
  * Type:     function
  * Name:     place
- * Purpose:  Evento hooks para colocar en lugares especificos. Ejemplo: {place name="pie"} {place name="pie2"} {place name="top"} esto se convierte en: \template\places\pie, \template\places\pie2, \template\places\top
-	Se diferencia a filter, en que place es un evento( y los awaiters pueden generar contenido o hacer cualquier tipo de operación ) y filter es un filtro( con lo que puede ser usado para generar contenido o para asignar valores a variables )
+ * Purpose:  Evento hooks para colocar en lugares especificos. Ejemplo: {place name="pie"} {place name="pie2"} {place name="top"}
+ * A los place se le puede incrustar vistas, widgets, contenidos, ... e incluso envolverlo en un wrapper.
+ * Sólo usable desde las vistas pero se puede añadir elementos desde cualquier sitio a través de la clase \team\gui\Place
  * -------------------------------------------------------------
  */
 
@@ -45,13 +46,13 @@ function smarty_function_place($params, &$engine)
 
     $content = '';
     if(isset($params['name']) && is_string($params['name'])  && !empty($params['name'] )  ) {
-
-        $pipeline = ('\\' == $params['name'][0])?	$params['name'] : '\team\places\\'.$params["name"];
+        $place = $params['name'];
         unset($params['name']);
 
+        //¿ Está el contenido de este place disponible desde la caché ?
 		$cache_id = null; 
 		if(isset($params['cache']) ) {
-            $cache_id =  \team\Cache::checkIds($params['cache'], $pipeline);
+            $cache_id =  \team\Cache::checkIds($params['cache'], $place);
 
             $cache = \team\Cache::get($cache_id);
 
@@ -61,9 +62,18 @@ function smarty_function_place($params, &$engine)
 
 		}
 
-        $content =  \team\Filter::apply($pipeline, $content, $params, $engine);
+
+		$items = \team\gui\Place::getItems($place);
+
+		if(!empty($items)) {
+            foreach($items as $order => $target ) {
+                $func = $target['item'];
+                $content = $func( $content, $params, $engine );
+            }
+        }
 
 
+        //Guardamos el contendio del place en la caché para otra vez
 		if(isset($cache_id) ) {
             $cache_time = $params['cachetime']?? null;
 
