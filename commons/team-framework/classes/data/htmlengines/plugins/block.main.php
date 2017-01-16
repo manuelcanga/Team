@@ -38,14 +38,21 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * -------------------------------------------------------------
  */
 
-function smarty_block_main($params, $content, Smarty_Internal_Template $template, &$repeat)
+function smarty_block_main($params, $content, Smarty_Internal_Template $engine, &$repeat)
 {
+
+    $place = 'main';
+    if(isset($params['place'])) {
+        $place = $params['place'];
+        unset($params['place']);
+    }
 
 	$out = '';
 	if($repeat) { //open tag
 		$out = '<main';
 
-        $params['class'] = \team\Filter::apply('\team\gui\wrappers\main', $params['class']?? '');
+        $params['class'] = \team\gui\Place::getClasses($place, $params['class']?? []);
+
         if(empty( $params['class'] )) {
             unset($params['class']);
         }
@@ -56,7 +63,9 @@ function smarty_block_main($params, $content, Smarty_Internal_Template $template
 
 		$out .= '>';
 	}else {//close tag
-		$out = trim($content).'</main>';
+
+        $content = \team\gui\Place::getHtml($place, $content, $params, $engine);
+		$out = $content.'</main>';
 	}
 
 	return $out;

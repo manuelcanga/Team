@@ -41,7 +41,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 function smarty_block_body($params, $content, Smarty_Internal_Template $template, &$repeat)
 {
 
-	$out = '';
+    $place = 'body';
+    if(isset($params['place'])) {
+        $place = $params['place'];
+        unset($params['place']);
+    }
+
+    $out = '';
 	if($repeat) { //open tag
 		return $out;
 	}else {//close tag
@@ -68,16 +74,14 @@ function smarty_block_body($params, $content, Smarty_Internal_Template $template
             $body_classes[] = 'desktop';
         }
         $body_classes[] = \team\Http::checkUserAgent('navigator');
-        $classes = implode(' ', $body_classes);
+        $body_classes[] = $params['class']?? '';
 
+        $params['class'] = \team\gui\Place::getClasses($place,$body_classes);
 
-        if(isset($params['class']) ) {
-            $params['class'] = trim($classes.' '.$params['class']);
-        }else {
-            $params['class'] = trim($classes);
+        if(empty( $params['class'] )) {
+            unset($params['class']);
         }
 
-        $params['class'] = \team\Filter::apply('\team\gui\wrappers\body', $params['class']);
 
         $out .= '<body';
 		$params =  \team\Filter::apply('\team\tag\body\params', $params + $default);
@@ -111,8 +115,8 @@ function smarty_block_body($params, $content, Smarty_Internal_Template $template
 		}
 
 		/* ******************** /BOTTOM CSS Y JS FILES *************** */
-		$out =  trim(\team\Filter::apply('\team\tag\endbody', $out, $params, $template));
 
+        $out = \team\gui\Place::getHtml($place, $out, $params, $template);
 		$out .= '</body></html>';
 
 

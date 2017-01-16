@@ -33,7 +33,6 @@ namespace team\gui;
 trait Seo {
         /** -------------------- Breadscrumb --------------------  */
     public function addCrumb($name, $link, $idcrumb = null, $order = null) {
-        if(!$this->isMain()) return ;
 
         static $position = 5;
 
@@ -52,7 +51,6 @@ trait Seo {
     $this->seo('description', 'Hola Mundo');
      */
     function seo($key, $value, $options = null) {
-        if(!$this->isMain()) return false;
 
         if(isset($options) ) {
             \team\Config::add('SEO_METAS', $key, ['value'=> $options, 'options' => $options]);
@@ -71,7 +69,6 @@ trait Seo {
      *
      */
     public function setTitle($title, $separator = true, $after = false) {
-        if(!$this->isMain()) return false;
 
         $SEO_TITLE = \team\Context::get('SEO_TITLE', '');
 

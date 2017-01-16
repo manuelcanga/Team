@@ -40,7 +40,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 function smarty_block_head($params, $content, Smarty_Internal_Template $template, &$repeat)
 {
-
+    $place = 'head';
+    if(isset($params['place'])) {
+        $place = $params['place'];
+        unset($params['place']);
+    }
 	if($repeat) { //open tag
         return '';
 
@@ -58,6 +62,7 @@ function smarty_block_head($params, $content, Smarty_Internal_Template $template
         foreach($params as $attr => $value) {
             $out .= " {$attr}='{$value}'";
         }
+
         $out .= '><head>'.$responsive.trim($content);
 
 
@@ -112,8 +117,9 @@ function smarty_block_head($params, $content, Smarty_Internal_Template $template
         }
 
         /* ******************** /TOP CSS Y JS FILES *************** */
+        $out = \team\gui\Place::getHtml($place, $out, $params, $template);
 
-            return $out;
+        return $out;
 	}
 
 

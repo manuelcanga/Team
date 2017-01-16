@@ -41,6 +41,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 function smarty_function_view($params, &$engine)
 {
 
+    $place = '';
+    if(isset($params['place'])) {
+        $place = $params['place'];
+        unset($params['place']);
+    }
 
     $father = $engine;
     $view = $params['name']?? \team\Context::get('VIEW');
@@ -48,5 +53,8 @@ function smarty_function_view($params, &$engine)
     $template = $engine->createTemplate($view.'.tpl', $idView, $idView, $father);
     $template->assign($params);
 
-    return $template->fetch();
+    $content =  $template->fetch();
+
+    return  \team\gui\Place::getHtml($place, $content, $params, $engine);
+
 }

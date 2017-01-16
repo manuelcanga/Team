@@ -38,22 +38,31 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * -------------------------------------------------------------
  */
 
-function smarty_block_wrapper($params, $content, Smarty_Internal_Template $template, &$repeat)
+function smarty_block_wrapper($params, $content, Smarty_Internal_Template $engine, &$repeat)
 {
+
+    $place = '';
+    if(isset($params['place'])) {
+        $place = $params['place'];
+        unset($params['place']);
+    }
 
 	$out = '';
 	if($repeat) { //open tag
 		$out = '<div';
 
-        $wrapper = 'wrapper';
         $params['class'] = $params['class']?? '';
-        $params['class'] = $wrapper.' '.$params['class'];
 
-        if(isset($params['wrapper'])) {
-            $params['class'] = \team\Filter::apply('\team\gui\wrappers\\'.$params['wrapper'], $params['class']);
-            unset($params['wrapper']);
+        if(empty($place)) {
+            $params['class'] = trim('wrapper '.   $params['class']);
         }
 
+        $params['class'] = \team\gui\Place::getClasses($place, $params['class'] );
+
+
+        if(empty( $params['class'] )) {
+            unset($params['class']);
+        }
 
         foreach($params as $attr => $value) {
 				$out .= " {$attr}='{$value}'";
@@ -61,8 +70,10 @@ function smarty_block_wrapper($params, $content, Smarty_Internal_Template $templ
 
 		$out .= '>';
 	}else {//close tag
-		$out = trim($content).'</div>';
-	}
+        $content = \team\gui\Place::getHtml($place, $content, $params, $engine);
+        $out = $content.'</div>';
+
+    }
 
 	return $out;
 }

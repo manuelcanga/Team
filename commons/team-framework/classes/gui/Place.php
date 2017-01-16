@@ -8,30 +8,78 @@
 namespace team\gui;
 
 
-class Place
+use team\Sanitize;
+
+abstract class Place
 {
 
     protected static $items = [];
 
-    public static function content(string $place, $new_content, $position = "end", $order = 50) {
+    public static function getHtml($place, $content,  $params, $engine) {
+        if (empty($place)) {
+            return $content;
+        }
 
-        return static::add($place, $order, 'content', function($content, $params, $engine) use ($new_content, $position) {
-            if("start" === $position) {
-                return $new_content.$content;
-            }else if("end" === $position) {
-                return $content.$new_content;
-
-            }else if("full" === $position) {
-                return $new_content;
+        $items = self::getItems($place);
+        if(!empty($items)) {
+            foreach($items as $order => $target ) {
+                $func = $target['item'];
+                $content = $func( $content, $params, $engine );
             }
+        }
 
+        return trim($content);
+    }
+
+    public static function addClass($place, $class, $order = 40) {
+        $placeid = \team\Sanitize::identifier($place);
+
+        \team\Filter::add('\team\gui\classes\\'.$placeid, function($classes) use($class){
+            $classes[] = $class;
+        }, $order);
+    }
+
+    public static function getClasses($place, $classes) {
+        if(!empty($place)) {
+            $placeid = \team\Sanitize::identifier($place);
+            $classes = \team\Filter::apply('\team\gui\classes\\'.$placeid, (array)$classes, $place);
+        }
+
+        return implode(' ', (array)$classes);
+    }
+
+
+    public static function void(string $place) {
+
+        return self::add($place, $order, 'void', function($content, $params, $engine) {
+            return '';
         });
     }
 
 
-    public function wrap(string $place, $wrapper_start, $wrapper_end, $order = 50) {
+    protected static function addContentInPosition( $new_content, $position, $content ) {
+        if("start" === $position) {
+            return $new_content.$content;
+        }else if("end" === $position) {
+            return $content.$new_content;
 
-        return static::add($place, $order, 'wrapper', function($content, $params, $engine) use ($wrapper_start, $wrapper_end) {
+        }else if("full" === $position) {
+            return $new_content;
+        }
+    }
+
+    public static function content(string $place, $new_content, $position = "end", $order = 40) {
+
+        return self::add($place, $order, 'content', function($content, $params, $engine) use ($new_content, $position) {
+            return self::addContentInPosition($new_content, $position, $content);
+        });
+    }
+
+
+
+    public function wrap(string $place, $wrapper_start, $wrapper_end, $order = 40) {
+
+        return self::add($place, $order, 'wrapper', function($content, $params, $engine) use ($wrapper_start, $wrapper_end) {
             return $wrapper_start.$content. $wrapper_end;
         });
     }
@@ -43,10 +91,15 @@ class Place
      * @param bool $isolate determinada si la plantilla heredará el entorno de la plantilla padre( isolate = false ) o será independiente( isolate = true )
      * @param bool $order  orden de colocación de la vista respecto a otra en el mismo lugar.
      */
-    public static  function view(string $place, $view, $_options = [], $isolate = false, $order = 50) {
+    public static  function view(string $place, $view, $_options = [], $order = 40, $position = 'end') {
         $view =  \team\FileSystem::stripExtension($view);
         $idView = \team\Sanitize::identifier($view);
         $options =  $_options;
+
+        $isolate = true;
+        if(isset($_options['isolate']) ) {
+            $isolate = (bool)$_options['isolate'];
+        }
 
         //Comprobamos si se quiere caché o no
         $cache_id = null;
@@ -55,7 +108,8 @@ class Place
         }
 
 
-        return static::add( $place, $order, 'view', function($content, $params, $engine) use ($view, $options, $isolate, $idView, $cache_id) {
+        return self::add( $place, $order, 'view', function($content, $params, $engine)
+                        use ($view, $options, $isolate, $idView, $cache_id, $position) {
 
 
             //Comprobamos si ya estaba la plantilla cacheada
@@ -87,12 +141,13 @@ class Place
                 \team\Cache::overwrite($cache_id,  $view_content, $cache_time );
             }
 
-            return $content. $view_content;
+            return self::addContentInPosition($view_content, $position, $content);
+
         }, $idView);
 
     }
 
-    public static  function widget(string $place, $widget_name, $_options = [], $order = 50) {
+    public static  function widget(string $place, $widget_name, $_options = [], $order = 40, $position = 'end') {
         $idwidget = \team\Sanitize::identifier($widget_name);
 
         //Puede haber ocasiones que un widget requiera de colocar información en otras partes del html
@@ -112,7 +167,7 @@ class Place
         }
 
         $options = $_options;
-        return static::add($place, $order, 'widget', function($content, $params, $engine) use ($widget_name, $options,  $cache_id) {
+        return self::add($place, $order, 'widget', function($content, $params, $engine) use ($widget_name, $options,  $cache_id,  $position) {
 
             $params = $params + $options;
             $params['engine'] = $engine;
@@ -120,79 +175,80 @@ class Place
 
             $widget_content =  \team\Component::call($widget_name, $params,  $cache_id);
 
-            return $content.$widget_content;
+            return self::addContentInPosition($widget_content, $position, $content);
+
         }, $idwidget);
 
     }
 
-    protected static function add(string $place, int $order = 50, string $type, callable $item, string $itemid = null) {
+    protected static function add(string $place, int $order = 40, string $type, callable $item, string $itemid = null) {
         //Si no existe una tubería asociada, la creamos
         if(!self::exists($place)  ) {
             self::restore($place);
         }
 
         //Vamos buscando un hueco libre para el filtro a partir del orden que pidió
-        for($max_order = 100; static::exists($place, $order) && $order < $max_order; $order++);
+        for($max_order = 100; self::exists($place, $order) && $order < $max_order; $order++);
 
         $itemid = $itemid?? $type.'_'.$order;
 
         //Lo almacemanos todo para luego poder usarlo
-        static::$items[$place][$order] =  ['item' => $item, 'type' => $type, 'id' => $itemid, 'order' => $order];
+        self::$items[$place][$order] =  ['item' => $item, 'type' => $type, 'id' => $itemid, 'order' => $order];
 
         return true;
     }
 
     public static function restore(string $place) {
-        static::$items[$place] = [];
+        self::$items[$place] = [];
     }
 
 
     public static function exists(string $place, $order = null) {
         if(isset($order) ){
-            $exists = isset(static::$items[$place][$order]);
+            $exists = isset(self::$items[$place][$order]);
         }else {
-            $exists =  isset(static::$items[$place]);
+            $exists =  isset(self::$items[$place]);
         }
 
         return $exists;
     }
 
     public static function sort(& $place) {
-        ksort(static::$items[$place]);
+        ksort(self::$items[$place]);
     }
 
     public static function getPositionById($place, $itemid) {
-        if(static::exists($place))
+        if(self::exists($place))
         {
-            return array_column(static::$items[$place], 'id', 'order');
+            return array_column(self::$items[$place], 'id', 'order');
         }
 
         return  null;
     }
 
     public static function getItems(string $place) {
-        if(!static::exists($place) ) {
+        if(!self::exists($place) ) {
             return [];
         }
 
-        static::sort($place);
+        self::sort($place);
 
-        return static::$items[$place];
+        return self::$items[$place];
     }
 
     public static function removePlace($place) {
-        if(static::exists($place)) {
-            unset(static::$items[$place]);
+        if(self::exists($place)) {
+            unset(self::$items[$place]);
             return true;
         }
         return false;
     }
 
     public static function removePosition($place, $order){
-        if(static::exists($place, $order)) {
-            unset(static::$items[$place][$order]);
-            if(empty(static::$items[$place])) {
-                static::removePlace($place);
+        if(self::exists($place, $order)) {
+            unset(self::$items[$place][$order]);
+            if(empty(self::$items[$place])) {
+                self::removePlace($place);
             }
             return true;
         }
@@ -201,10 +257,10 @@ class Place
     }
 
     public static function removeItem($place, $itemid) {
-        $items = static::getPositionById($place, $itemid);
+        $items = self::getPositionById($place, $itemid);
         if(isset($items) && is_array($items)) {
             foreach($items as $order => $item) {
-                static::removePosition($place, $order);
+                self::removePosition($place, $order);
             }
             return true;
         }
@@ -218,10 +274,10 @@ class Place
 
 
         if(isset($place)) {
-            $item = static::$items[$place];
+            $item = self::$items[$place];
             $str = $str?: $place;
         }else {
-            $item = static::$items;
+            $item = self::$items;
             $str = $str?: "places";
         }
 
