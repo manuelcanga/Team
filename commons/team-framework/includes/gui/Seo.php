@@ -29,7 +29,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 namespace team\gui;
- 
+
+/**
+ * Funciones útiles para SEO.
+ * Es necesario que aquí se guarde en Config pero se recupere como Contexto.
+ * Hay que hacerlo por Config para que distintos niveles de Gui puedan añadir elementos que se recogeran a un mismo nivel.
+ * Hay que recogerlo como Contexto porque no sólo las Gui generan tpl, también la clase Template, por ejemplo.
+ * Si tomaramos los datos desde Config obtendríamos ls mismos recursos sea la plantilla que sea y eso no es correcto.
+ *
+ * Class Seo
+ * @package team\gui
+ */
 trait Seo {
         /** -------------------- Breadscrumb --------------------  */
     public function addCrumb($name, $link, $idcrumb = null, $order = null) {
