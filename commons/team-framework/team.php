@@ -61,6 +61,9 @@ if(!defined('team\SITE_ID') ) {
 }
 
 
+if(!defined('team\_THEME_') ) {
+    define('_THEME_', _SITE_.'/commons/theme');
+}
 
 
 /**

@@ -54,6 +54,20 @@ abstract class Builder implements \ArrayAccess {
 
         \team\Context::set('CONTROLLER_BUILDER', $this);
         \team\Context::set('CONTROLLER_TYPE', $this->getTypeController() );
+
+        if(\team\Context::isMain() && "Gui" == $this->getTypeController() ){
+            $PACKAGE = \team\Context::get('PACKAGE');
+
+            if($PACKAGE ) {
+                \team\Filesystem::load("/{$PACKAGE}.php", _THEME_);
+            }
+
+            $COMPONENT = \team\Context::get('COMPONENT');
+
+            if($COMPONENT ) {
+                \team\Filesystem::load("/{$PACKAGE}/{$COMPONENT}.php", _THEME_);
+            }
+        }
     }
 
     /**

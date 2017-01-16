@@ -69,6 +69,7 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
         class_alias('Smarty_Internal_Resource_File', 'Smarty_Resource_Commons', true);
         class_alias('Smarty_Internal_Resource_File', 'Smarty_Resource_Package', true);
         class_alias('Smarty_Internal_Resource_File', 'Smarty_Resource_Root', true);
+        class_alias('Smarty_Internal_Resource_File', 'Smarty_Resource_Theme', true);
         class_alias('Smarty_Internal_Resource_File', 'Smarty_Resource_Team', true);
 
 
@@ -182,11 +183,14 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
         $template = $name;
 		$found_type = false;
         switch($type) {
-              case 'team':
-              	  $template =  _TEAM_."/views/{$name}";
-				  $found_type =  true;
-				break;
-
+            case 'team':
+              $template =  _TEAM_."/views/{$name}";
+              $found_type =  true;
+            break;
+            case 'theme':
+                $template =  _THEME_."/{$name}";
+                $found_type =  true;
+                break;
             case 'commons':
             case 'package':
  				 $found_type =  true;
