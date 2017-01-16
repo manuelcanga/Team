@@ -42,18 +42,41 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 function smarty_block_header($params, $content, Smarty_Internal_Template $template, &$repeat)
 {
 
+    $place = '';
+    if(isset($params['place'])) {
+        $place = $params['place'];
+        unset($params['place']);
+    }
+
+
 	if($repeat) { //open tag
 		$out = '<header';
+
+	        $params['class'] = $params['class']?? '';
+
+	        if(empty($place)) {
+	            $params['class'] = trim('wrapper '.   $params['class']);
+	        }
+	
+	        $params['class'] = \team\gui\Place::getClasses($place, $params['class'] );
+	
+	
+	        if(empty( $params['class'] )) {
+	            unset($params['class']);
+   		  }
 
 		foreach($params as $attr => $value) {
 				$out .= " {$attr}='{$value}'";
 		}
 		$out .= '>';
 	}else {//close tag
-		$content =  \team\Filter::apply('\team\tag\header', $content);
 
 
-		$out = trim($content).'</header>';
+	  	      $out = \team\gui\Place::getHtml($place, $content, $params, $template);
+
+
+
+		$out .= '</header>';
 	}
 
 	return $out;
