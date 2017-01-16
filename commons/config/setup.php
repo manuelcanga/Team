@@ -10,6 +10,10 @@ if(!defined('_SITE_')) die("Hello, World!");
  * Time: 15:39
  */
 
-\team\Config::set('AREAS',  ['/' =>  '/demo/welcome']);
+\team\Config::set('AREAS',  [
+    '/' =>  '/demo01/example01',
+    '/demo02/' =>  '/demo02/example01' ]
+
+);
 
 \team\Config::set('ENVIROMENT', 'local');
