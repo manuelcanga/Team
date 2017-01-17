@@ -42,8 +42,8 @@ namespace team\gui;
  */
 trait Seo {
         /** -------------------- Breadscrumb --------------------  */
-    public function addCrumb($name, $link) {
-        \team\Config::push('BREADCRUMB', ['name' => $name, 'url' => $link]);
+    public function addCrumb($name, $link, $classes = '') {
+        \team\Config::push('BREADCRUMB', ['name' => $name, 'url' => $link, 'classes' => $classes]);
     }
 
     
