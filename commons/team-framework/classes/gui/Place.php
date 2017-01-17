@@ -196,7 +196,7 @@ abstract class Place
         }
 
         //Vamos buscando un hueco libre para el filtro a partir del orden que pidió
-        for($max_order = 100; self::exists($place, $order) && $order < $max_order; $order++);
+        for($max_order = 100; self::exists($place, $order) && $order < $max_order; $order += 4 );
 
         $itemid = $itemid?? $type.'_'.$order;
 
