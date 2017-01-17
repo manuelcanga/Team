@@ -42,17 +42,8 @@ namespace team\gui;
  */
 trait Seo {
         /** -------------------- Breadscrumb --------------------  */
-    public function addCrumb($name, $link, $idcrumb = null, $order = null) {
-
-        static $position = 5;
-
-        //Dejamos huecos si no se especifico orden
-        if(!isset($order)) {
-            $position += 5;
-            $order = $position;
-        }
-
-        \team\Config::push('\team\gui\breadcrumbs', ['name' => $name, 'url' => $link]);
+    public function addCrumb($name, $link) {
+        \team\Config::push('BREADCRUMB', ['name' => $name, 'url' => $link]);
     }
 
     
@@ -61,7 +52,6 @@ trait Seo {
     $this->seo('description', 'Hola Mundo');
      */
     function seo($key, $value, $options = null) {
-
         if(isset($options) ) {
             \team\Config::add('SEO_METAS', $key, ['value'=> $options, 'options' => $options]);
         }else {
