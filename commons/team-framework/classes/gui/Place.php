@@ -31,11 +31,15 @@ abstract class Place
         return trim($content);
     }
 
-    public static function addClass($place, $class, $order = 40) {
+    public static function addClass($place, $class, $overwrite = false,  $order = 40) {
         $placeid = \team\Sanitize::identifier($place);
 
-        \team\Filter::add('\team\gui\classes\\'.$placeid, function($classes) use($class){
-            $classes[] = $class;
+        \team\Filter::add('\team\gui\classes\\'.$placeid, function($classes) use($class, $overwrite){
+            if($overwrite) {
+                $classes = [$class];
+            }else {
+                $classes[] = $class;
+            }
 
             return $classes;
         }, $order);
