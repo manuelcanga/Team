@@ -14,6 +14,7 @@ if(!defined("_SITE_") ) die("Hello,  World");
 
 		 \team\Debug::trace("Vamos a procesar la url pedida", $url );
 
+
 		//Este worker acabará la tarea de url, así que ya notificamos que no queremos que se siga propagando .
 		$this->finish();
 

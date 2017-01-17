@@ -59,7 +59,9 @@ function findCurrentArea( & $url, &$main) {
     $_area_ = '/'; //current area path
     $area_params = []; //curren area params
 
-    if(empty($areas) || isset($main) ) {
+    //Aunque haya $main hay que seguir, porque el nuevo main debe tener también area
+    //y debería de ser la equivalente a la url que hubiera sido( y sino, siempre se puede adaptar por modificadores )
+    if(empty($areas) ) {
             return [$_area_, $area_params];
     }
 
@@ -68,13 +70,16 @@ function findCurrentArea( & $url, &$main) {
         //las áreas más largas tienen prioridad a la hora de comprobación con url
     //esto es así porque una base /noticias/enlaces es mas especifica(menos matchs) que /noticias
     $areas = sortAreas($areas);
+
+
     //Nos aseguramos que las comparaciones no coja en mitad de la cadena añadiendo un / a la url y a las áreas.
     //Ej:  base: /noticias/listado  url: /noticias/listado-autores, daría un match. Sin embargo, si trimeamos y añaddimos un /
     //Ej2:   base: noticias/listado url: noticias/listado-autores/  no daría match.
     $_url =  \team\Sanitize::trim($url);
 
+    $_main = null;
     if(isset($areas['/']) ) {
-        $main = $areas['/'];
+        $_main = $areas['/'];
     }
 
     foreach($areas as $_area =>  $_params) {
@@ -82,7 +87,7 @@ function findCurrentArea( & $url, &$main) {
 
         if(!substr_compare($_area, $_url, 0, strlen($_area) ) ) {
 
-            $main = $_params;
+            $_main = $_params;
 
             //La base ya la hemos proccesado así que la quitamos de la url
             //Recuerda que substr empieza en 0, de ahí el +1
@@ -99,11 +104,12 @@ function findCurrentArea( & $url, &$main) {
     // '/panel/' => ['panel:component:response', 'param1' => 'var1', 'param2' => 'var2'];
     if(is_array($main) ) {
         $area_params  = $main;
-        $main = array_shift($area_params);
-    }else { //'/panel/' => 'panel:component:response',
-        $main = $main;
+        $_main = array_shift($area_params);
     }
 
+    if(!isset($main)) {
+        $main = $_main;
+    }
 
     return [$_area_, $area_params];
 }
