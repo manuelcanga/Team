@@ -36,13 +36,17 @@ abstract class Place
 
         \team\Filter::add('\team\gui\classes\\'.$placeid, function($classes) use($class){
             $classes[] = $class;
+
+            return $classes;
         }, $order);
     }
 
     public static function getClasses($place, $classes) {
         if(!empty($place)) {
             $placeid = \team\Sanitize::identifier($place);
+
             $classes = \team\Filter::apply('\team\gui\classes\\'.$placeid, (array)$classes, $place);
+
         }
 
         return implode(' ', (array)$classes);
