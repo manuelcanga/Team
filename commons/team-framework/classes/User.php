@@ -99,7 +99,7 @@ class User {
 
 
     public  static function mustBeLogged() {
-        if(!sself:: $current->isLogged() ){
+        if(!self:: $current->isLogged() ){
             self:: $current->notValidUser();
         }
     }
