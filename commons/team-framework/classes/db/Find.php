@@ -81,8 +81,8 @@ class Find implements \ArrayAccess{
     }
 
     /** -------------------- SETTERS / GETTERS QUERY ------------------ */
-    public function setSelect($_select = null) {
-        if($_select != null)
+    public function setSelect($_select = null, $overwrite = true) {
+        if($_select != null && !$overwrite)
             $this->select .= ", ".$_select;
         else
             $this->select = $_select;
