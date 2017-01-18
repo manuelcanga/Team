@@ -29,12 +29,12 @@ if(!defined("_SITE_") ) die("Hello,  World");
      */
     list($_area_, $area_params) = findCurrentArea( $url, $main);
 
-
-	$this->main = $main;
-	$this->area_params = $area_params;
-
-
     setConfigArea($_area_);
+
+    \Team::event('\team\areas', $_area_,  $area_params, $main);
+
+    $this->main = $main;
+    $this->area_params = $area_params;
 
 }, 45);
 
@@ -102,14 +102,15 @@ function findCurrentArea( & $url, &$main) {
 
 
     // '/panel/' => ['panel:component:response', 'param1' => 'var1', 'param2' => 'var2'];
-    if(is_array($main) ) {
-        $area_params  = $main;
+    if(is_array($_main) ) {
+        $area_params  = $_main;
         $_main = array_shift($area_params);
     }
 
     if(!isset($main)) {
         $main = $_main;
     }
+
 
     return [$_area_, $area_params];
 }
@@ -124,6 +125,9 @@ function sortAreas($areas) {
 
 
 function setConfigArea(string $_area_) {
-    \team\Config::set("AREA",  \team\Sanitize::identifier(trim($_area_, '/')) ); //Identificador area sin slash. Ej: cms
-    \team\Config::set("_AREA_", \team\Sanitize::trim($_area_, '/') ); //path a area con slash( al principio y al final. Ej: /cms/
+    $_area_ = \team\Sanitize::trim($_area_, '/');
+    $area =  \team\Sanitize::identifier($_area_);
+
+    \team\Config::set("AREA", $area); //Identificador area sin slash. Ej: cms
+    \team\Config::set("_AREA_", $_area_); //path a area con slash( al principio y al final. Ej: /cms/
 }
