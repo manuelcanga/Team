@@ -167,7 +167,7 @@ class PageIterator implements \ArrayAccess,  \Iterator, \Countable{
 	public function getClasses($extra = '') {
 		$classes = '';
 		if($this->isCurrent() ) {
-			$classes .= 'current ';
+			$classes .= 'current active ';
 		}
 		if($this->isFirst()) {
 			$classes .= 'first ';
