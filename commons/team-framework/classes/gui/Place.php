@@ -83,6 +83,18 @@ abstract class Place
         });
     }
 
+    public static function file(string $place, $file_with_content, $position = "end", $order = 40) {
+
+        return self::add($place, $order, 'content', function($content, $params, $engine) use ($file_with_content, $position) {
+            $new_content = '';
+
+            if(\team\Filesystem::exists($file_with_content) ){
+                $new_content = file_get_contents(_SITE_.$file_with_content);
+            }
+
+            return self::addContentInPosition($new_content, $position, $content);
+        });
+    }
 
 
     public function wrap(string $place, $wrapper_start, $wrapper_end, $order = 40) {
