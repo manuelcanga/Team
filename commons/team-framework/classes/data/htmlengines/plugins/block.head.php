@@ -46,15 +46,12 @@ function smarty_block_head($params, $content, Smarty_Internal_Template $template
         unset($params['place']);
     }
 	if($repeat) { //open tag
-        return '';
 
-	}else {//close tag
         $responsive = '';
         if(isset($params['responsive']) ) {
             $responsive = "<meta name='viewport' content='width=device-width, initial-scale=1.0' />";
             unset($params['responsive']);
         }
-
 
         /* ******************** HTML TAG *************** */
         $out = '<!DOCTYPE html>';
@@ -65,16 +62,20 @@ function smarty_block_head($params, $content, Smarty_Internal_Template $template
 
         $out .= '><head>'.$responsive.trim($content);
 
+        $charset = \team\Config::get('CHARSET');
+        $out .= "<meta charset='{$charset}'>";
+
+        return $out;
+
+	}else {//close tag
+
+
+        $out = $content;
 
         /* ******************** METAS *************** */
-
-
         //head tag
         $metas =  (array) \team\Context::get('SEO_METAS');
         $metas =  \team\Filter::apply('\team\tag\metas', $metas);
-
-        $charset = \team\Config::get('CHARSET');
-        $out .= "<meta charset='{$charset}'>";
 
 
         foreach($metas as $name => $content) {
@@ -94,6 +95,7 @@ function smarty_block_head($params, $content, Smarty_Internal_Template $template
                 $out .= "content='{$content}'>";
             }
         }
+
 
         $out =  trim(\team\Filter::apply('\team\tag\head', $out));
 
@@ -118,6 +120,7 @@ function smarty_block_head($params, $content, Smarty_Internal_Template $template
 
         /* ******************** /TOP CSS Y JS FILES *************** */
         $out = \team\gui\Place::getHtml($place, $out, $params, $template);
+
 
         return $out;
 	}
