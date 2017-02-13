@@ -229,13 +229,6 @@ class Sanitize {
         return $urlencode? urlencode($str) : $str;
     }
     
-    static function count($string) {
-		if (function_exists('mb_strlen') ) {
-            return mb_strlen($string,  \team\Config::get('CHARSET') );
-		}
-		
-		return strlen($string);
-	}
 
     
     /**

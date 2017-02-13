@@ -37,4 +37,13 @@ class I18N
         putenv('LANGUAGE='.$locale);
 
     }
+
+    static function length($string) {
+        if (function_exists('mb_strlen') ) {
+            return mb_strlen($string,  \team\Config::get('CHARSET') );
+        }
+
+        return strlen($string);
+    }
+
 }
