@@ -153,7 +153,7 @@ class Http
 
 
 
-    public function redirect($redirect, $code = 301, $protocol = null) {
+    public static function redirect($redirect, $code = 301, $protocol = null) {
         $redirect = \team\Sanitize::internalUrl($redirect);
 
         $domain = \team\Config::get('DOMAIN');
@@ -175,7 +175,7 @@ class Http
      * @param int $code HTTP status code.
      * @return string Empty string if not found, or description if found.
      */
-    public function getStatusHeaderDesc( $code ) {
+    public static function getStatusHeaderDesc( $code ) {
         static $code2header_desc;
 
         $code = \team\Check::id( $code, 0);
@@ -258,7 +258,7 @@ class Http
      * @param int    $code        HTTP status code.
      * @param string $description Optional. A custom description for the HTTP status.
      */
-    public function sendStatusHeader( int $code, $description = '' ) {
+    public static function sendStatusHeader( int $code, $description = '' ) {
         if ( ! $description ) {
            http_response_code($code);
             return ;
