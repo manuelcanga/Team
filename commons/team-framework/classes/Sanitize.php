@@ -49,6 +49,16 @@ class Sanitize {
         return  iconv( $fromcharset, $charset, $string);
     }
 
+    /**
+     * Esta función elimina cualquier espacio en blanco que pudiera tener una cadena independientemente del lugar
+     * dónde se sitúe
+     *
+     * @param $string cadena a limpiar
+     * @return mixed cadena sin espacio en blanco en ella
+     */
+    static function withoutWhiteSpace($string) {
+	    return preg_replace("/\s/", '', $string);
+    }
 
 	/** 
 		 normalize some characters to regular Unicode codepoints, 
@@ -165,12 +175,12 @@ class Sanitize {
 				return "";
 			}
 
-        $string = str_replace("<br>", "\n\r", $string);
+        $string = str_replace("<br>", "\n\r", $_string);
         $string = str_replace("<br />", "\n\r", $string);
 
         $string = str_replace("&nbsp;", "", $string);
 
-        return self::toHtml($_string);
+        return self::toHtml($string);
 
    }
 
