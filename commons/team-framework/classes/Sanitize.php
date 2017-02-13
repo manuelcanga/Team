@@ -320,7 +320,15 @@ class Sanitize {
 	/** 
 		Elimina etiquetas html de la cadena pasada
 	 */
-	static function toText($str) { return strip_tags($str); }
+	static function toText($str, $max_length = 0) {
+	    $str = strip_tags($str);
+
+	    if($max_length) {
+	        return substr($str, 0, $max_length);
+        }else {
+	        return $str;
+        }
+	}
 
 	/**
 		Nos aseguramos que @url sea una url interna válida
