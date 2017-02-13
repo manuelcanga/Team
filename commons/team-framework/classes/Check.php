@@ -99,7 +99,33 @@ abstract class Check
 			return (float) $number;
 		else
 			return $default;
-	}	
+	}
+
+
+    /**
+     * Comprueba un DNI español tanto de la forma: LNNNNNNNN como NNNNNNNNL
+     *
+     * @param $dni
+     *
+     */
+    static function DNI($dni, $default = null){
+
+        $letter =  substr($dni, strspn($dni, "1234567890"), 1);
+        $numbers = \team\Sanitize::natural($dni);
+
+        if( empty($letter) || I18N::length($numbers) != 8  ) {
+            return $default;
+        }
+
+        $index = $numbers%23;
+        $letters = "TRWAGMYFPDXBNJZSQVHLCKE";
+
+        if($letters[$index] === strtoupper($letter)) {
+            return $dni;
+        }
+
+        return $default;
+    }
 
 
     /**
