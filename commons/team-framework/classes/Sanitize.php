@@ -89,6 +89,23 @@ class Sanitize {
         return (int) $number;
     }
 
+    /**
+     * Se asegura de devolver un número natural
+     *
+     * @param $natural cadena a limpiar
+     * @return mixed número natural obtenido
+     */
+    static function natural($natural, $max_length = 0) {
+
+        $natural =  preg_replace("/[^0-9]/", "", $natural);
+
+        if($max_length) {
+            return (int) substr($natural, 0, $max_length);
+        }else {
+            return (int) $natural;
+        }
+    }
+
     
     /**
         Se asegura de devolver un valor float
