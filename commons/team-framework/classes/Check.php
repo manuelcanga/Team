@@ -145,6 +145,17 @@ abstract class Check
 	}
 
     /**
+     * Validamos si $text es una cadena con información relevante( nombre, apellidos, etc )
+     * Para ello tiene que ser mayor de 3 carácteres y puede tener cualquier letra( incluido acentos )
+     */
+    static public function information($text, $default = null, $others=''){
+        if(isset($text) && preg_match('/^[A-Za-z0-9À-ÿ\.\-\s'.$others.']{3,}/i', $text) )
+            return $text;
+        else
+            return $default;
+    }
+
+    /**
     Validamos si answer es una respuesta positiva o no
     @param mixed answer es la cadena  que se quiere comprobar si es positiva
     @return boolean devuelve un boolean indicando si $_answer es un respuesta positiva(true) o no(false)
