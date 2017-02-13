@@ -23,11 +23,10 @@ trait DataTools {
 		//Si no se ha pasado keys para filtrar se supondrá que
 		//queremos todos los keys que haya en datos
 		if(empty($fields) ) {
-			$fields = array_keys($data);
+            $fields = array_keys($data);
 		}
 
-		//Obtenemos los datos de los únicos valores( dado $fields ) que queremos insertar
-		$noImported = array_intersect_key($data, array_flip($fields));
+        $noImported = array_flip($fields);
 
         //Si hay datos los procesamos
         if(!empty($data) ){
@@ -37,15 +36,14 @@ trait DataTools {
     
                 $method = $prefix. str_replace('_','',$name);
 
-                if ( method_exists($object, $method)) {
-
+                if ( method_exists($object, $method) && array_key_exists($_name, $data) ) {
 					$_value = $data[$_name];
 		
 					//Mandamos el valor a la clase
                     $object->$method($_value);
 		
 					//Como se ha importado correctamente, lo eliminamos de no importados
-					unset($noImported[$name]);
+					unset($noImported[$_name]);
                 }
             }
         }
