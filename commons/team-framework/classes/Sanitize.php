@@ -100,9 +100,9 @@ class Sanitize {
         $natural =  preg_replace("/[^0-9]/", "", $natural);
 
         if($max_length) {
-            return (int) substr($natural, 0, $max_length);
+            return substr($natural, 0, $max_length);
         }else {
-            return (int) $natural;
+            return $natural;
         }
     }
 
