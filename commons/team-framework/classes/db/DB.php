@@ -287,13 +287,13 @@ class DB {
 		self::$error = $query->errorInfo();
 
         $this->rows = $query->fetchAll($this->getTypeRows());
-		//Guardamos el numero de elementos afectados3
+		//Guardamos el numero de elementos afectados
 		$this->numRows = \team\Check::id($query->rowCount(),0);
 		//Guardamos el id, por si fuera una insercion
 		$this->lastId = \team\Check::id( $conection->lastInsertId(), 0 );
 
 		$this->registerSQL($_sql, $_values);
-	
+
 		//Cerramos el cursor
 		$query->closeCursor();
 
@@ -530,7 +530,11 @@ class DB {
 
 			if($secure)  $sql .= ' LIMIT 1';
 		}
-		return $this->query($sql, $data);
+		if( $this->query($sql, $data) ) {
+		    return (boolean)$this->numRows;
+        }else {
+		    return false;
+        }
 	}
 
 
