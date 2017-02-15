@@ -101,8 +101,6 @@ class Notice {
         $e->setType("SYSTEM");
         throw $e;
 
-        return self::SYSTEM;
-
     }
 
 
@@ -158,7 +156,7 @@ class Notice {
 
     public  function getInfos() 	{ return $this->INFOS; }
     public  function getWarnings()  { return $this->WARNINGS;  }
-    public  function checkWarnings() {  return !empty($this->WARNINGS);  }
-    public  function checkInfos()   {  return !empty($this->INFOS);  }
+    public  function warnings() {  return !empty($this->WARNINGS);  }
+    public  function infos()   {  return !empty($this->INFOS);  }
 
 }
