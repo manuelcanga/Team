@@ -49,11 +49,11 @@ class Json implements \team\interfaces\data\Format  {
       }
 
 
-		$data = \team\Sanitize::toJs((string)$_data);
 		if('UTF-8' != \team\Config::get('CHARSET') ) {
-			return utf8_encode($data);
+            $data = \team\Sanitize::toJs((string)$_data);
+            return utf8_encode($data);
 		}else {
-			return $data;
+			return (string)$_data;
 		}
 
     }
