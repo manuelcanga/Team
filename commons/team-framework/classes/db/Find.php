@@ -106,8 +106,13 @@ class Find implements \ArrayAccess{
         return $this;
     }
 
-    public function setFrom($_from = null) {
-        $this->from = $_from;
+    public function setFrom($_from = null, $_full = 0) {
+
+        if($this->from && !$_full) {
+            $this->from .= ', '.$_from;
+        }else {
+            $this->from = $_from;
+        }
 
         return $this;
     }
