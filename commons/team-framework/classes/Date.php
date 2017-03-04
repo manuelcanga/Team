@@ -316,7 +316,8 @@ class Date {
 	 */
 	public static function check($date, $with_format = null, $default = false) {
 		$datetime = self::split($date,  $with_format, $with_default = false);
-		if(empty($datetime) ) {
+
+        if(empty($datetime) ) {
 			return $default;
 		}
 
@@ -340,18 +341,18 @@ class Date {
 	  	$regexp= preg_replace('@\%([\w]+)@', '(?<\1>[\d]+)', $format);
 
 
-		if(! preg_match("@^{$regexp}$@",trim($date), $matches) ) {
+		if(! preg_match("@^{$regexp}$@",trim($date), $matches, $keys_numeric = 0) ) {
 			return false;
 		}
 
-
         $defaults = [];
+        $fields = [ 'S'  /* seconds */,'M'  /* minutes */,'H'  /* hours */, 'Y'  /* year */, 'm' , /* month */ 'd' ,  /* days */];
+
         if($with_defaults) {
-            $fields = [ 'S'  /* seconds */,'M'  /* minutes */,'H'  /* hours */, 'Y'  /* year */, 'm' , /* month */ 'd' ,  /* days */];
             $defaults = array_fill_keys($fields, 0);
         }
 
-		return array_intersect_key($matches + $defaults, $defaults);
+        return array_intersect_key($matches + $defaults, array_flip($fields) );
 	}
 
 	/**
