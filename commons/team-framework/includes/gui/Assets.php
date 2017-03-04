@@ -44,14 +44,7 @@ trait Assets {
 
         $_file = str_replace('.css','',$_file);
 
-        $idfile = rtrim(\team\Context::get('PACKAGE')."-".$component,'-');
-        if('internet' == $component) {
-            $idfile .= '-'.\team\NS::basename($_file, '/');
-        }else {
-            $idfile .= "-".basename($_file);
-        }
-
-        $_file .= '.css';
+        $component = $component?? \team\Context::get('COMPONENT');
 
         if("internet" === $component)
             $file = $_file;
@@ -59,6 +52,10 @@ trait Assets {
             $file = "/".\team\FileSystem::getPath("css", $component, $package )."{$_file}";
 
         }
+
+        $idfile =    \team\Sanitize::identifier($file);
+        $file .= '.css';
+
 
         if( "internet" == $component || \team\Filesystem::exists($file) ) {
             \team\Config::add("\\team\\css\\{$position}", $idfile, $file);
@@ -82,20 +79,16 @@ trait Assets {
 
         $_file = str_replace('.js','',$_file);
 
-        $idfile = rtrim(\team\Context::get('PACKAGE')."-".$component,'-');
-
-        if('internet' == $component) {
-            $idfile .= '-'.\team\NS::basename($_file, '/');
-        }else {
-            $idfile .= "-".basename($_file);
-        }
-
-        $_file .= '.js';
+        $component = $component?? \team\Context::get('COMPONENT');
 
         if("internet" === $component)
             $file = $_file;
         else
             $file = "/".\team\FileSystem::getPath("js", $component, $package)."{$_file}";
+
+        $idfile =    \team\Sanitize::identifier($file);
+        $file .= '.js';
+
 
         if('internet' == $component || \team\Filesystem::exists($file) ) {
             \team\Config::add("\\team\\js\\{$position}", $idfile, $file);
