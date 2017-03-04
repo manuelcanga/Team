@@ -321,14 +321,16 @@ class Date {
 			return $default;
 		}
 
-		extract($datetime, EXTR_SKIP);
+
+        extract($datetime, EXTR_SKIP);
 		if(isset($Y) && isset($m) && isset($d) &&! checkdate (  $m  , $d , $Y )) return $default;
 
 		if(isset($H) && ( $H<0 || $H>23 ) ) return $default;
-		if(isset($M) && ( $M<0 || $M>59 ) ) return $default;
+		if(isset($m) && ( $m<0 || $m>59 ) ) return $default;
 		if(isset($S) && ( $S<0 || $S>59 ) ) return $default;
 
-		return $date;
+
+        return $date;
 	}
 
 	/**
