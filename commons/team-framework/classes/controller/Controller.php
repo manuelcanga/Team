@@ -220,15 +220,14 @@ abstract class Controller  implements \ArrayAccess{
      * Delegamos el tratamiento del response actual
      *
      * @param array $data datos a pasar al nuevo response si se lanza
-     * @param bool $is_child si es true, se le pasará el elemento actual como referencia, mientras que si es false,
-     * tendrá los datos como si fuera el controller actual
+     * @param bool $full si es true actuará como el response actual, si es false, se le delegará sólo la tarea
      * @return mixed devuelve la respuesta del response o un objeto de
      */
-    function delegate(array $params = [], $is_child = true) {
+    function delegate(array $params = [], $full = true) {
 
         $namefile = ucfirst(\team\Context::get('RESPONSE') );
 
-        if($is_child) {
+        if(!$full) {
             $params['ref'] = $this->params->id;
             $params['ref_item'] = $this->params->item_id;
             $params['ref_item_ext'] = $this->params->item_ext;
@@ -237,9 +236,12 @@ abstract class Controller  implements \ArrayAccess{
             if ($this->params->id && isset($this->params->filters_list[1])) {
                 $params['id'] = $this->params->filters_list[1];
             }
+
+            $response = $this->params->url_path_list[0]?? 'index';
+        }else {
+            $response = \team\Context::get('RESPONSE');
         }
 
-        $response = $this->params->url_path_list[0]?? 'index';
 
 
         return $this->newController($namefile, $response, $params, $isolate = false);
