@@ -221,7 +221,7 @@ abstract class Controller  implements \ArrayAccess{
      *
      * @param array $data datos a pasar al nuevo response si se lanza
      * @param bool $full si es true actuará como el response actual, si es false, se le delegará sólo la tarea
-     * @return mixed devuelve la respuesta del response o un objeto de
+     * @return mixed devuelve la respuesta del response
      */
     function delegate(array $params = [], $full = true) {
 
@@ -255,7 +255,7 @@ abstract class Controller  implements \ArrayAccess{
      * @param null $_response response que se lanzará en el nuevo controlador(sino se lanzará uno del mismo nombre al actual )
      * @param array $data datos a pasar al nuevo response si se lanza
      * @param bool $isolate especifica si el nuevo controlador estará aislado(sin inicialización) o no.
-     * @return mixed devuelve la respuesta del response o un objeto de
+     * @return mixed devuelve la respuesta del response
      */
     function newController($name, $_response = null, $data = [], $isolate = true, &$new_controller = null) {
         $classname = \team\Context::get('NAMESPACE').'\\'.$name;
@@ -296,7 +296,7 @@ abstract class Controller  implements \ArrayAccess{
      * @param $path la ruta en el sistema de archivos en el que se encuentra el controlador
      * @param array $data datos a pasar al nuevo response si se lanza
      * @param bool $isolate especifica si el nuevo controlador estará aislado(sin inicialización) o no.
-     * @return mixed devuelve la respuesta del response o un objeto de
+     * @return mixed devuelve el objeto del controlador
      */
     function getNewController($classname, $response,  $path, $data = [], $isolate = false) {
         $namefile = \team\NS::basename($classname);
@@ -316,6 +316,7 @@ abstract class Controller  implements \ArrayAccess{
         }
 
         if(!$isolate) {
+            $data['parent'] = $this;
             $data += $this->params->get();
         }
 
