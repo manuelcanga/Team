@@ -47,7 +47,7 @@ if(!defined("_SITE_") ) die("Hello,  World");
 					}else {
 						$new_url_path_list[] = \team\Check::key($subpath);
 					}
-				}else if(empty($filters_list) ) {
+				}else if( !$args->component || !$args->response ) {
 					if(!$args->component ) {
 						$args->component =  \team\Check::key($subpath, null);
 					}else {

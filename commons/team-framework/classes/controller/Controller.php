@@ -214,6 +214,38 @@ abstract class Controller  implements \ArrayAccess{
 	}
 
 
+
+
+    /**
+     * Delegamos el tratamiento del response actual
+     *
+     * @param array $data datos a pasar al nuevo response si se lanza
+     * @param bool $is_child si es true, se le pasará el elemento actual como referencia, mientras que si es false,
+     * tendrá los datos como si fuera el controller actual
+     * @return mixed devuelve la respuesta del response o un objeto de
+     */
+    function delegate(array $params = [], $is_child = true) {
+
+        $namefile = ucfirst(\team\Context::get('RESPONSE') );
+
+        if($is_child) {
+            $params['ref'] = $this->params->id;
+            $params['ref_item'] = $this->params->item_id;
+            $params['ref_item_ext'] = $this->params->item_ext;
+
+            $params['id'] = null;
+            if ($this->params->id && isset($this->params->filters_list[1])) {
+                $params['id'] = $this->params->filters_list[1];
+            }
+        }
+
+        $response = $this->params->url_path_list[0]?? 'index';
+
+
+        return $this->newController($namefile, $response, $params, $isolate = false);
+    }
+
+
     /**
      * Creamos un nuevo controlador de apoyo al actual response.
      *
@@ -223,22 +255,23 @@ abstract class Controller  implements \ArrayAccess{
      * @param bool $isolate especifica si el nuevo controlador estará aislado(sin inicialización) o no.
      * @return mixed devuelve la respuesta del response o un objeto de
      */
-    function newController($name, $_response = null, $data = [], $isolate = false, &$new_controller = null) {
+    function newController($name, $_response = null, $data = [], $isolate = true, &$new_controller = null) {
         $classname = \team\Context::get('NAMESPACE').'\\'.$name;
         $response = $_response?:  \team\Context::get('RESPONSE');
         $result = null;
 
         if(!class_exists($classname, false)) {
-			$pathToController = \team\Context::get('_COMPONENT_').static::DEPENDENCIES;
-			$new_controller = $thius->getNewController($name, $pathToController , $data, $isolate);
+
+            $pathToController = \team\Context::get('_COMPONENT_').static::DEPENDENCIES;
+            $new_controller = $this->getNewController($classname, $response, $pathToController , $data, $isolate);
 
 
-            if(isset($response) && method_exists($new_controller, $response) ) {
+            if($new_controller && isset($response) && method_exists($new_controller, $response) ) {
                 if ($isolate) {
                     $new_controller->___load($response, $new_controller);
                 }
 
-                    $result = $new_controller->$response($response, $this);
+                $result = $new_controller->$response($response, $this);
 
                 if ($isolate) {
                     $result = $new_controller->___unload($result, $response, $new_controller);
@@ -253,6 +286,7 @@ abstract class Controller  implements \ArrayAccess{
     }
 
 
+
     /**
      * Devolvemos un nuevo controlador de apoyo al actual response.
      *
@@ -262,33 +296,35 @@ abstract class Controller  implements \ArrayAccess{
      * @param bool $isolate especifica si el nuevo controlador estará aislado(sin inicialización) o no.
      * @return mixed devuelve la respuesta del response o un objeto de
      */
-	function getNewController($name, $path, $data = [], $isolate = false) {
-	    $fileclass =  $path.$name.'.php';
+    function getNewController($classname, $response,  $path, $data = [], $isolate = false) {
+        $namefile = \team\NS::basename($classname);
 
-	     if(file_exists($fileclass)) {
-            require($fileclass);
+        $fileclass =  $path.$namefile.'.php';
+
+        if(file_exists($fileclass)) {
+            require_once($fileclass);
+
+
             if(!class_exists($classname, false)) {
                 return false;
             }
+
         }else {
             return false;
         }
 
-        $params = $data;
         if(!$isolate) {
-            $params += $this->params;
+            $data += $this->params->get();
         }
 
-        $new_controller = new $classname($params, $response);
+        $new_controller = new $classname($data, $response);
 
         if(!$isolate) {
             $new_controller->setRef($this->data);
         }
 
-		return $new_controller;
-	}
-
-
+        return $new_controller;
+    }
 
 
 	/* ____________ METHOD HELPERS PARA TRASWEB FRAMEWORK___________ */
