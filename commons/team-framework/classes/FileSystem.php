@@ -106,18 +106,6 @@ final  class Filesystem
 		return !empty($exists); 
 	}
 
-	/*
-		Elimina una extensión de un archivo y le añade $new_extension si se le especifica
-		@param string $_file: nombre del archivo al que se le quiere quiar la extensión
-		@param string $_new_extension: nueva extensión, prefijada por punto, que se quiera añadir.
-		@example \team\FileSystem::stripExtension('mivista.tpl'); //mivista
-		@example \team\FileSystem::stripExtension('styles.min.css', '.css'); //style.css
-	*/
-	public static function stripExtension($_file, $_new_extension = '') {
-		return preg_replace('/[\.].*/','', $_file).$_new_extension;
-	}
-
-
 	/**
 		Obtiene el nombre de un archivo( sin ruta y sin extensión ).
 		@param string $_file archivo del que se extraerá el nombre
@@ -126,6 +114,25 @@ final  class Filesystem
 		return self::stripExtension(basename($_file) );
 	}
 
+
+    /*
+        Elimina una extensión de un archivo y le añade $new_extension si se le especifica
+        @param string $_file: nombre del archivo al que se le quiere quiar la extensión
+        @param string $_new_extension: nueva extensión, prefijada por punto, que se quiera añadir.
+        @example \team\FileSystem::stripExtension('mivista.tpl'); //mivista
+        @example \team\FileSystem::stripExtension('styles.min.css', '.css'); //style.css
+    */
+    public static function stripExtension($_file, $_new_extension = '') {
+        return preg_replace('/[\.].*/','', $_file).$_new_extension;
+    }
+
+    /**
+     * Devuelve la extensión del archivo $file
+     * @param $file
+     */
+	public static function getExtension($file) {
+        return pathinfo($file, PATHINFO_EXTENSION);
+    }
 
 	/**
 		Devuelve un array con los directorios que hay en una ruta dada
@@ -211,6 +218,75 @@ final  class Filesystem
 		return filesize($base.$file);
 	}
 
+    /**
+     * Sube un archivo enviado por formulario al sistema de archivo
+     * @param $identifier
+     * @param null $options
+     * @return array|bool
+     */
+	public static function upload($identifier, $options = null) {
+        if(!isset($_FILES[$identifier])) {
+            return false;
+        }
+
+        $file =& $_FILES[$identifier];
+
+
+        if($file['error'] !=  UPLOAD_ERR_OK && $file['size']) {
+            \Team::warning('Archivo no se pudo subir', 'ERROR_'.$file['error']);
+
+            return false;
+        }
+
+
+        extract($file);
+        $ext =  self::getExtension($name);
+        $name = self::stripExtension($name);
+        $type = self::ext2type($ext);
+
+
+        if(!$ext) {
+            \Team::warning('No se permiten archivos sin extension', 'ERROR_NO_EXTENSION');
+            return false;
+        }
+
+
+        if(isset($options['allow']) && !in_array($type, $options['allow'])) {
+            \Team::warning('Archivo no se encuentra entre los permitidos', 'ERROR_ALLOW_'.$type);
+
+            return false;
+        }
+
+        if(!empty($options['disallow']) && in_array($type, $options['disallow'])) {
+            \Team::warning('Archivo se encuentra entre los no permitidos', 'ERROR_DISALLOW_'.$type);
+
+            return false;
+        }
+
+        $uploads_dir = $options['dir']?? \team\Context::get('UPLOADS_DIR', \team\Date::current('uploads_dir'));
+        $uploads_path =  $options['path']?? \team\Context::get('UPLOADS_PATH', _TEMPORARY_DIRECTORY_);
+
+        self::mkdirRecursive($uploads_path.$uploads_dir);
+
+        if( isset($options['keep_name']) ) {
+            $new_name = \team\Sanitize::identifier($name).'.'.$ext;
+        }else {
+            $new_name = md5(\team\Date::current('timestamp').'_'.$tmp_name).'.'.$ext;
+        }
+
+        $file = $uploads_dir.'/'.$new_name;
+
+        if(!move_uploaded_file($tmp_name, $uploads_path.$file) ) {
+            \Team::warning('Archivo no se pudo mover al destino', 'ERROR_MOVING');
+
+            return false;
+        }
+
+
+        return ['file' => $file, 'name' => $new_name, 'size' => $size, 'ext' => $ext, 'type'=> $type, 'path' => $uploads_path, 'dir' =>$uploads_dir];
+
+
+    }
 
     /**
      * Test if a give filesystem path is absolute.
@@ -246,7 +322,7 @@ final  class Filesystem
      * @param string $path Path relative to $base.
      * @return string The path with the base or absolute path.
      */
-    function joinPath( $base, $path ) {
+    public function joinPath( $base, $path ) {
         if ( self::isAbsolutePath($path) )
             return $path;
 
@@ -259,7 +335,7 @@ final  class Filesystem
      * @param string $path Path to normalize.
      * @return string Normalized path.
      */
-    function normalizePath( $path ) {
+    public function normalizePath( $path ) {
         $path = str_replace( '\\', '/', $path );
 
         return $path;
@@ -292,7 +368,7 @@ final  class Filesystem
      * @param string $path The resource path or URL.
      * @return bool True if the path is a stream URL.
      */
-    function isStream( $path ) {
+    public static  function isStream( $path ) {
         $wrappers = stream_get_wrappers();
         $wrappers_re = '(' . join('|', $wrappers) . ')';
 
@@ -308,7 +384,7 @@ final  class Filesystem
      * @param string $target Full path to attempt to create.
      * @return bool Whether the path was created. True if path already exists.
      */
-    function mkdirRecursive( $target ) {
+    public static function mkdirRecursive( $target ) {
         $wrapper = null;
 
         // Strip the protocol.
@@ -373,7 +449,7 @@ final  class Filesystem
      * @param string $path Path to check for write-ability.
      * @return bool Whether the path is writable.
      */
-    function issWritable( $path ) {
+    public static function issWritable( $path ) {
         return @is_writable( $path );
     }
 
@@ -384,7 +460,7 @@ final  class Filesystem
      * @param string $ext The extension to search.
      * @return string|void The file type, example: audio, video, document, spreadsheet, etc.
      */
-    function ext2type( $ext ) {
+    public static function ext2type( $ext ) {
         $ext = strtolower( $ext );
 
         /**
@@ -421,7 +497,7 @@ final  class Filesystem
      *
      * @return array Array of mime types keyed by the file extension regex corresponding to those types.
      */
-    function getMimeTypes() {
+    public static function getMimeTypes() {
         return \team\Filter::apply( '\team\filesystem\mime_types', array(
             // Image formats.
             'jpg|jpeg|jpe' => 'image/jpeg',
