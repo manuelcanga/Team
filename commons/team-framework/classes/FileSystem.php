@@ -251,13 +251,13 @@ final  class Filesystem
         }
 
 
-        if(isset($options['allow']) && !in_array($type, $options['allow'])) {
+        if(isset($options['allow']) && is_array($options['allow']) && !in_array($type, $options['allow'])) {
             \Team::warning('Archivo no se encuentra entre los permitidos', 'ERROR_ALLOW_'.$type);
 
             return false;
         }
 
-        if(!empty($options['disallow']) && in_array($type, $options['disallow'])) {
+        if(isset($options['disallow']) &&  is_array($options['disallow']) && in_array($type, $options['disallow'])) {
             \Team::warning('Archivo se encuentra entre los no permitidos', 'ERROR_DISALLOW_'.$type);
 
             return false;
@@ -268,13 +268,25 @@ final  class Filesystem
 
         self::mkdirRecursive($uploads_path.$uploads_dir);
 
-        if( isset($options['keep_name']) ) {
-            $new_name = \team\Sanitize::identifier($name).'.'.$ext;
+        if( isset($options['keep_name']) && $options['keep_name']) {
+            $new_name = \team\Sanitize::identifier($name);
         }else {
-            $new_name = md5(\team\Date::current('timestamp').'_'.$tmp_name).'.'.$ext;
+            $new_name = md5(\team\Date::current('timestamp').'_'.$tmp_name);
         }
 
-        $file = $uploads_dir.'/'.$new_name;
+
+        $i = 2; //if file exists, is the second instance
+        do {
+            $file = $uploads_dir.'/'.$new_name.'.'.$ext;
+
+            $file_exists = self::exists($file, $uploads_path);
+            if($file_exists) {
+                $new_name = $name.'_'.$i;
+                $file = $uploads_dir.'/'.$new_name.'.'.$ext;
+                $i++;
+            }
+
+        }while($file_exists);
 
         if(!move_uploaded_file($tmp_name, $uploads_path.$file) ) {
             \Team::warning('Archivo no se pudo mover al destino', 'ERROR_MOVING');

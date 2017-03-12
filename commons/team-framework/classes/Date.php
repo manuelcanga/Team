@@ -470,6 +470,8 @@ class Date {
             case 'w3c':
                 return date('Y-m-d\TH:i:sP', $timestamp);
                 break;
+            case 'uploads_dir':
+                $format = '/%Y/%m';break;
             default:
                  $date_format =  \team\Filter::apply("\\team\\date_format\\{$format}", null);
                  if(isset($date_format)){
