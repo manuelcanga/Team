@@ -275,14 +275,14 @@ final  class Filesystem
         }
 
 
+        $starting_name = $new_name;
         $i = 2; //if file exists, is the second instance
         do {
             $file = $uploads_dir.'/'.$new_name.'.'.$ext;
 
             $file_exists = self::exists($file, $uploads_path);
             if($file_exists) {
-                $new_name = $name.'_'.$i;
-                $file = $uploads_dir.'/'.$new_name.'.'.$ext;
+                $new_name = $starting_name.'_'.$i;
                 $i++;
             }
 
