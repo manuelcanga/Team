@@ -297,7 +297,13 @@ final  class Filesystem
 
         return ['file' => $file, 'name' => $new_name, 'size' => $size, 'ext' => $ext, 'type'=> $type, 'path' => $uploads_path, 'dir' =>$uploads_dir];
 
+    }
 
+    public static function rmUploaded($file, $path = null) {
+       $UPLOADS_PATH = $path??  \team\Context::get('UPLOADS_PATH', _TEMPORARY_DIRECTORY_);
+
+       \Debug::out("ELIMINANDO ARCHIVO ".$UPLOADS_PATH.$file);
+        return unlink($UPLOADS_PATH.$file);
     }
 
     /**
@@ -504,52 +510,74 @@ final  class Filesystem
 
 
 
+
     /**
      * Retrieve list of mime types and file extensions.
      *
-     * @return array Array of mime types keyed by the file extension regex corresponding to those types.
+     * @return array Array of mime types keyed by the file extension
      */
     public static function getMimeTypes() {
         return \team\Filter::apply( '\team\filesystem\mime_types', array(
             // Image formats.
-            'jpg|jpeg|jpe' => 'image/jpeg',
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'jpe' => 'image/jpeg',
             'gif' => 'image/gif',
             'png' => 'image/png',
             'bmp' => 'image/bmp',
-            'tiff|tif' => 'image/tiff',
+            'tiff' => 'image/tiff',
+            'tif' => 'image/tiff',
             'ico' => 'image/x-icon',
             // Video formats.
-            'asf|asx' => 'video/x-ms-asf',
+            'asf' => 'video/x-ms-asf',
+            'asx' => 'video/x-ms-asf',
             'wmv' => 'video/x-ms-wmv',
             'wmx' => 'video/x-ms-wmx',
             'wm' => 'video/x-ms-wm',
             'avi' => 'video/avi',
             'divx' => 'video/divx',
             'flv' => 'video/x-flv',
-            'mov|qt' => 'video/quicktime',
-            'mpeg|mpg|mpe' => 'video/mpeg',
-            'mp4|m4v' => 'video/mp4',
+            'mov' => 'video/quicktime',
+            'qt' => 'video/quicktime',
+            'mpeg' => 'video/mpeg',
+            'mpg' => 'video/mpeg',
+            'mpe' => 'video/mpeg',
+            'mp4' => 'video/mp4',
+            'm4v' => 'video/mp4',
             'ogv' => 'video/ogg',
             'webm' => 'video/webm',
             'mkv' => 'video/x-matroska',
-            '3gp|3gpp' => 'video/3gpp', // Can also be audio
-            '3g2|3gp2' => 'video/3gpp2', // Can also be audio
+            '3gp' => 'video/3gpp', // Can also be audio
+            '3gpp' => 'video/3gpp', // Can also be audio
+            '3g2' => 'video/3gpp2', // Can also be audio
+            '3gp2' => 'video/3gpp2', // Can also be audio
             // Text formats.
-            'txt|asc|c|cc|h|srt' => 'text/plain',
+            'txt' => 'text/plain',
+            'asc' => 'text/plain',
+            'c' => 'text/plain',
+            'cc' => 'text/plain',
+            'h' => 'text/plain',
+            'srt' => 'text/plain',
             'csv' => 'text/csv',
             'tsv' => 'text/tab-separated-values',
             'ics' => 'text/calendar',
             'rtx' => 'text/richtext',
             'css' => 'text/css',
-            'htm|html' => 'text/html',
+            'htm' => 'text/html',
+            'html' => 'text/html',
             'vtt' => 'text/vtt',
             'dfxp' => 'application/ttaf+xml',
             // Audio formats.
-            'mp3|m4a|m4b' => 'audio/mpeg',
-            'ra|ram' => 'audio/x-realaudio',
+            'mp3' => 'audio/mpeg',
+            'm4a' => 'audio/mpeg',
+            'm4b' => 'audio/mpeg',
+            'ra' => 'audio/x-realaudio',
+            'ram' => 'audio/x-realaudio',
             'wav' => 'audio/wav',
-            'ogg|oga' => 'audio/ogg',
-            'mid|midi' => 'audio/midi',
+            'ogg' => 'audio/ogg',
+            'oga' => 'audio/ogg',
+            'mid' => 'audio/midi',
+            'midi' => 'audio/midi',
             'wma' => 'audio/x-ms-wma',
             'wax' => 'audio/x-ms-wax',
             'mka' => 'audio/x-matroska',
@@ -561,7 +589,8 @@ final  class Filesystem
             'class' => 'application/java',
             'tar' => 'application/x-tar',
             'zip' => 'application/zip',
-            'gz|gzip' => 'application/x-gzip',
+            'gz' => 'application/x-gzip',
+            'gzip' => 'application/x-gzip',
             'rar' => 'application/rar',
             '7z' => 'application/x-7z-compressed',
             'exe' => 'application/x-msdownload',
@@ -569,9 +598,14 @@ final  class Filesystem
             'xcf' => 'application/octet-stream',
             // MS Office formats.
             'doc' => 'application/msword',
-            'pot|pps|ppt' => 'application/vnd.ms-powerpoint',
+            'pot' => 'application/vnd.ms-powerpoint',
+            'pps' => 'application/vnd.ms-powerpoint',
+            'ppt' => 'application/vnd.ms-powerpoint',
             'wri' => 'application/vnd.ms-write',
-            'xla|xls|xlt|xlw' => 'application/vnd.ms-excel',
+            'xla' => 'application/vnd.ms-excel',
+            'xls' => 'application/vnd.ms-excel',
+            'xlt' => 'application/vnd.ms-excel',
+            'xlw' => 'application/vnd.ms-excel',
             'mdb' => 'application/vnd.ms-access',
             'mpp' => 'application/vnd.ms-project',
             'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -593,7 +627,10 @@ final  class Filesystem
             'ppam' => 'application/vnd.ms-powerpoint.addin.macroEnabled.12',
             'sldx' => 'application/vnd.openxmlformats-officedocument.presentationml.slide',
             'sldm' => 'application/vnd.ms-powerpoint.slide.macroEnabled.12',
-            'onetoc|onetoc2|onetmp|onepkg' => 'application/onenote',
+            'onetoc' => 'application/onenote',
+            'onetoc2' => 'application/onenote',
+            'onetmp' => 'application/onenote',
+            'onepkg' => 'application/onenote',
             'oxps' => 'application/oxps',
             'xps' => 'application/vnd.ms-xpsdocument',
             // OpenOffice formats.
@@ -605,11 +642,152 @@ final  class Filesystem
             'odb' => 'application/vnd.oasis.opendocument.database',
             'odf' => 'application/vnd.oasis.opendocument.formula',
             // WordPerfect formats.
-            'wp|wpd' => 'application/wordperfect',
+            'wp' => 'application/wordperfect',
+            'wpd' => 'application/wordperfect',
             // iWork formats.
             'key' => 'application/vnd.apple.keynote',
             'numbers' => 'application/vnd.apple.numbers',
             'pages' => 'application/vnd.apple.pages',
+        ) );
+    }
+
+    /**
+     * Retrieve list of fa icons and file extensions.
+     *
+     * @return array Array of icons keyed by the file extension
+     */
+    public static function getIcons() {
+        return  \team\Filter::apply( '\team\filesystem\icons', array(
+            // Image formats.
+            'jpg' => 'fa-file-image-o',
+            'jpeg' => 'fa-file-image-o',
+            'jpe' => 'fa-file-image-o',
+            'gif' => 'fa-file-image-o',
+            'png' => 'fa-file-image-o',
+            'bmp' => 'fa-file-image-o',
+            'tiff' => 'fa-file-image-o',
+            'tif' => 'fa-file-image-o',
+            'ico' => 'fa-file-image-o',
+            // Video formats.
+            'asf' => 'fa-file-video-o',
+            'asx' => 'fa-file-video-o',
+            'wmv' => 'fa-file-video-o',
+            'wmx' => 'fa-file-video-o',
+            'wm' => 'fa-file-video-o',
+            'avi' => 'fa-file-video-o',
+            'divx' => 'fa-file-video-o',
+            'flv' => 'fa-file-video-o',
+            'mov' => 'fa-file-video-o',
+            'qt' => 'fa-file-video-o',
+            'mpeg' => 'fa-file-video-o',
+            'mpg' => 'fa-file-video-o',
+            'mpe' => 'fa-file-video-o',
+            'mp4' => 'fa-file-video-o',
+            'm4v' => 'fa-file-video-o',
+            'ogv' => 'fa-file-video-o',
+            'webm' => 'fa-file-video-o',
+            'mkv' => 'fa-file-video-o',
+            '3gp' => 'fa-file-video-o', // Can also be audio
+            '3gpp' => 'fa-file-video-o', // Can also be audio
+            '3g2' => 'fa-file-video-o', // Can also be audio
+            '3gp2' => 'fa-file-video-o', // Can also be audio
+            // Text formats.
+            'txt' => 'fa-file-text-o',
+            'asc' => 'fa-file-text-o',
+            'c' => 'fa-file-text-o',
+            'cc' => 'fa-file-text-o',
+            'h' => 'fa-file-text-o',
+            'srt' => 'fa-file-text-o',
+            'csv' => 'fa-file-text-o',
+            'tsv' => 'fa-file-text-o',
+            'ics' => 'fa-file-text-o',
+            'rtx' => 'fa-file-text-o',
+            'css' => 'fa-file-code-o',
+            'htm' => 'fa-file-text-o',
+            'html' => 'fa-file-text-o',
+            'vtt' => 'fa-file-text-o',
+            'dfxp' => 'fa-file-text-o',
+            // Audio formats.
+            'mp3' => 'fa-file-audio-o',
+            'm4a' => 'fa-file-audio-o',
+            'm4b' => 'fa-file-audio-o',
+            'ra' => 'fa-file-audio-o',
+            'ram' => 'fa-file-audio-o',
+            'wav' => 'fa-file-audio-o',
+            'ogg' => 'fa-file-audio-o',
+            'oga' => 'fa-file-audio-o',
+            'mid' => 'fa-file-audio-o',
+            'midi' => 'fa-file-audio-o',
+            'wma' => 'fa-file-audio-o',
+            'wax' => 'fa-file-audio-o',
+            'mka' => 'fa-file-audio-o',
+            // Misc application formats.
+            'rtf' => 'fa-file-text-o',
+            'js' => 'fa-file-code-o',
+            'pdf' => 'fa-file-pdf-o',
+            'swf' => 'fa-file-code-o',
+            'class' => 'application/java',
+            'tar' => 'fa-file-archive-o',
+            'zip' => 'afa-file-archive-o',
+            'gz' => 'afa-file-archive-o',
+            'gzip' => 'fa-file-archive-o',
+            'rar' => 'fa-file-archive-o',
+            '7z' => 'fa-file-archive-o',
+            'exe' => 'fa-file',
+            'psd' => 'fa-file-image-o',
+            'xcf' => 'fa-file-image-o',
+            // MS Office formats.
+            'doc' => 'fa-file-word-o',
+            'pot' => 'fa-file-powerpoint-o',
+            'pps' => 'fa-file-powerpoint-o',
+            'ppt' => 'fa-file-powerpoint-o',
+            'wri' => 'fa-file-word-o',
+            'xla' => 'fa-file-excel-o',
+            'xls' => 'fa-file-excel-o',
+            'xlt' => 'fa-file-excel-o',
+            'xlw' => 'fa-file-excel-o',
+            'mdb' => 'fa-stack-exchange',
+            'mpp' => 'file',
+            'docx' => 'fa-file-word-o',
+            'docm' => 'fa-file-word-o',
+            'dotx' => 'fa-file-word-o',
+            'dotm' => 'fa-file-word-o',
+            'xlsx' => 'fa-file-excel-o',
+            'xlsm' => 'fa-file-excel-o',
+            'xlsb' => 'fa-file-excel-o',
+            'xltx' => 'fa-file-excel-o',
+            'xltm' => 'fa-file-excel-o',
+            'xlam' => 'fa-file-excel-o',
+            'pptx' => 'fa-file-powerpoint-o',
+            'pptm' => 'fa-file-powerpoint-o',
+            'ppsx' => 'fa-file-powerpoint-o',
+            'ppsm' => 'fa-file-powerpoint-o',
+            'potx' => 'fa-file-powerpoint-o',
+            'potm' => 'fa-file-excel-o',
+            'ppam' => 'fa-file-excel-o',
+            'sldx' => 'fa-file-powerpoint-o',
+            'sldm' => 'fa-file-excel-o',
+            'onetoc' => 'fa-sticky-note-o',
+            'onetoc2' => 'fa-sticky-note-o',
+            'onetmp' => 'fa-sticky-note-o',
+            'onepkg' => 'fa-sticky-note-o',
+            'oxps' => 'fa-sticky-note-o',
+            'xps' => 'fa-sticky-note-o',
+            // OpenOffice formats.
+            'odt' => 'fa-file-word-o',
+            'odp' => 'fa-file-powerpoint-o',
+            'ods' => 'fa-file-excel-o',
+            'odg' => 'fa-file-image-o',
+            'odc' => 'fa-file-excel-o',
+            'odb' => 'fa-stack-exchange',
+            'odf' => 'file',
+            // WordPerfect formats.
+            'wp' => 'fa-file-word-o',
+            'wpd' => 'fa-file-word-o',
+            // iWork formats.
+            'key' => 'fa-file',
+            'numbers' => 'fa-file',
+            'pages' => 'fa-file',
         ) );
     }
 }
