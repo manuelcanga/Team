@@ -225,12 +225,11 @@ final  class Filesystem
      * @return array|bool
      */
 	public static function upload($identifier, $options = null) {
-        if(!isset($_FILES[$identifier])) {
+        if(!isset($_FILES[$identifier]) || empty($_FILES[$identifier]['name'])) {
             return false;
         }
 
         $file =& $_FILES[$identifier];
-
 
         if($file['error'] !=  UPLOAD_ERR_OK && $file['size']) {
             \Team::warning('Archivo no se pudo subir', 'ERROR_'.$file['error']);
@@ -302,8 +301,36 @@ final  class Filesystem
     public static function rmUploaded($file, $path = null) {
        $UPLOADS_PATH = $path??  \team\Context::get('UPLOADS_PATH', _TEMPORARY_DIRECTORY_);
 
-       \Debug::out("ELIMINANDO ARCHIVO ".$UPLOADS_PATH.$file);
         return unlink($UPLOADS_PATH.$file);
+    }
+
+    public static function download($file, $name = null, $isUploaded = true) {
+
+	    if($isUploaded) {
+            $path = \team\Context::get('UPLOADS_PATH', _TEMPORARY_DIRECTORY_);
+            $file = $path.$file;
+        }
+
+        if(!file_exists($file)) {
+            \Team::warning("File not found");
+            return false;
+        }
+
+        $filename = $name?: basename($file);
+	    $extension = self::getExtension($filename);
+
+	    $mimes = self::getMimeTypes();
+
+        $content_type = $mimes[$extension]?? 'application/octet-stream';
+
+
+        ob_clean();
+        header('Content-Type:'.$content_type);
+        header("Content-Transfer-Encoding: Binary");
+        header("Content-disposition: attachment; filename=\"" . $filename . "\"");
+        readfile($file);
+
+        die();
     }
 
     /**
@@ -726,7 +753,7 @@ final  class Filesystem
             'js' => 'fa-file-code-o',
             'pdf' => 'fa-file-pdf-o',
             'swf' => 'fa-file-code-o',
-            'class' => 'application/java',
+            'class' => 'fa-file-code-o',
             'tar' => 'fa-file-archive-o',
             'zip' => 'afa-file-archive-o',
             'gz' => 'afa-file-archive-o',
