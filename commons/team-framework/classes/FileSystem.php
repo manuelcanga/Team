@@ -268,7 +268,7 @@ final  class Filesystem
         self::mkdirRecursive($uploads_path.$uploads_dir);
 
         if( isset($options['keep_name']) && $options['keep_name']) {
-            $new_name = \team\Sanitize::identifier($name);
+            $new_name = \team\Sanitize::identifier(\team\Sanitize::chars($name) );
         }else {
             $new_name = md5(\team\Date::current('timestamp').'_'.$tmp_name);
         }
