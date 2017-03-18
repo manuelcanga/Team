@@ -185,7 +185,7 @@ class Team
 		    foreach(self::$listeners[$namespace] as $listener) {
 
 		        //Si el listener es una ruta a un archivo, entonces se carga ese archivo si existe
-		        if(!\team\Filesystem::load($listener) && is_callable($listener,  $syntax_only = true)) {
+		        if(( '/' != $listener[0] ||  !\team\Filesystem::load($listener) ) && is_callable($listener,  $syntax_only = true)) {
                     //mandamos el trabajo al listener
                     $result = $listener(...$data);
                     if ($result) return $result;
