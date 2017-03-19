@@ -31,28 +31,35 @@ if(!defined("_SITE_") ) die("Hello,  World");
 			por lo que se vuelve a poner y se sale.
 		*/
 		$filters_list = [];
+        $numeric_filters_list = [];
+        $char_filters_list = [];
 		$new_url_path_list = [];
 		while(!empty($url_path_list) ) {
 			$subpath = array_shift($url_path_list);
 			if(is_numeric($subpath) ) {
-				if(!isset($args->id) ) {
-					$args->id = \team\Check::id($subpath, 0);
+                $subpath = \team\Check::id($subpath, 0);
+
+                if(!isset($args->id) ) {
+					$args->id = $subpath;
                     $new_url_path_list[] = $subpath;
                 }else {
-				    $filters_list[] = \team\Check::id($subpath);
+				    $filters_list[] = $subpath;
+                    $numeric_filters_list[] = $subpath;
                 }
 			}else {
 			    $subpath = \team\Check::key($subpath, null);
 
-				if( !$args->component || !$args->response ) {
+				if( strlen($subpath) >= 3 && ( !$args->component || !$args->response ) ) {
 					if(!$args->component ) {
 						$args->component =  $subpath;
 					}else {
 						$args->response =  $subpath;
 					}
-				}else if( strlen($subpath) < 3 ) {
+				}else  {
                       $filters_list[] = $subpath;
-                      continue;
+                       $char_filters_list[] = $subpath;
+
+                    continue;
                 }
 
                 $new_url_path_list[] = $subpath;
@@ -67,6 +74,9 @@ if(!defined("_SITE_") ) die("Hello,  World");
 
 		$args->id = \team\Check::id($args->id);
         $args->filters_list =$filters_list;
+        $args->numerics_filters_list = $numeric_filters_list;
+        $args->char_filters_list = $char_filters_list;
+
         $args->_self_ = \team\Sanitize::trim( implode('/', $new_url_path_list), '/');
     }else {
         $args->filters_list = [];
