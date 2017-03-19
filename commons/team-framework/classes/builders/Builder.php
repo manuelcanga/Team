@@ -84,6 +84,7 @@ abstract class Builder implements \ArrayAccess {
         $this->setContext('PACKAGE', $package);
         $this->setContext('_PACKAGE_', _SITE_.'/'.$package);
         $this->setContext('BASE','/'.$package);
+
         $this->package = $package;
 
 
@@ -129,6 +130,8 @@ abstract class Builder implements \ArrayAccess {
         $this->setContext('COMPONENT', $component);
         $this->setContext('_COMPONENT_', _SITE_.$this->path);
         $this->setContext('BASE', '/'.$this->package.'/'.$component);
+        $this->setContext('BASE_URL',  \team\Context::get('_AREA_').$component.'/');
+
         $this->component = $component;
     }
 
@@ -145,6 +148,14 @@ abstract class Builder implements \ArrayAccess {
 
         //Tendriamos que comprobar que existe el directorio o la clase de la acción
         \team\Context::set("RESPONSE", $response);
+        \team\Context::set('RESPONSE_URL', \team\Context::get('BASE_URL').$response.'/');
+        if($this->id){
+            //Se diferencia de _SELF_ en que self es la url que se especifico en main, mientras que self es dependiente del contexto
+            //No lleva '/' final
+            \team\Context::set('SELF', \team\Context::get('RESPONSE_URL').$this->id);
+        }
+
+
         $this->response = $response;
     }
 

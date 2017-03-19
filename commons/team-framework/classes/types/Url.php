@@ -85,6 +85,7 @@ class Url extends Type
 
         if(isset($url["path"])) {
             $args['url_path_list'] = explode('/', trim($url["path"], '/'));
+
             //Quitamos todo lo que no sea adecuado
             $args['url_path_list'] = array_filter($args['url_path_list'], ['\team\Sanitize', 'key']);
 

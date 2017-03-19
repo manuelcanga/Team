@@ -184,9 +184,9 @@ class Team
 
 		    foreach(self::$listeners[$namespace] as $listener) {
 
-		        $not_file = !is_string($listener) || '/' != $listener[0] ||  !\team\Filesystem::load($listener);
+                //Si el listener es una ruta a un archivo, entonces se carga ese archivo si existe
+                $not_file = !is_string($listener) || '/' != $listener[0] ||  !\team\Filesystem::load($listener);
 
-		        //Si el listener es una ruta a un archivo, entonces se carga ese archivo si existe
 		        if( $not_file  && is_callable($listener,  $syntax_only = true)) {
                     //mandamos el trabajo al listener
                     $result = $listener(...$data);
