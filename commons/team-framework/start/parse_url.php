@@ -74,7 +74,7 @@ if(!defined("_SITE_") ) die("Hello,  World");
 
 		$args->id = \team\Check::id($args->id);
         $args->filters_list =$filters_list;
-        $args->numerics_filters_list = $numeric_filters_list;
+        $args->numeric_filters_list = $numeric_filters_list;
         $args->char_filters_list = $char_filters_list;
 
         $args->_self_ = \team\Sanitize::trim( implode('/', $new_url_path_list), '/');
