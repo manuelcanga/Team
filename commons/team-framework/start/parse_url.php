@@ -15,8 +15,9 @@ if(!defined("_SITE_") ) die("Hello,  World");
     $args->response = \team\Check::key($args->response, null);
 
 
-
     $new_url_path_list = $args->url_path_list;
+
+
     //Si no hay url que proccesar, obvio que nos saltamos el proceso de parseo,
     if(!empty($args->url_path_list) ) {
         $url_path_list = $args->url_path_list;
@@ -36,26 +37,25 @@ if(!defined("_SITE_") ) die("Hello,  World");
 			if(is_numeric($subpath) ) {
 				if(!isset($args->id) ) {
 					$args->id = \team\Check::id($subpath, 0);
-				}
-				$filters_list[] = \team\Check::id($subpath);
-
+                    $new_url_path_list[] = $subpath;
+                }else {
+				    $filters_list[] = \team\Check::id($subpath);
+                }
 			}else {
-				if( ( $args->component && $args->response )  ) {
+			    $subpath = \team\Check::key($subpath, null);
 
-					if( strlen($subpath) < 3 ) {
-						$filters_list[] = \team\Check::key($subpath);
-					}else {
-						$new_url_path_list[] = \team\Check::key($subpath);
-					}
-				}else if( !$args->component || !$args->response ) {
+				if( !$args->component || !$args->response ) {
 					if(!$args->component ) {
-						$args->component =  \team\Check::key($subpath, null);
+						$args->component =  $subpath;
 					}else {
-						$args->response =  \team\Check::key($subpath, null);
+						$args->response =  $subpath;
 					}
-				}
+				}else if( strlen($subpath) < 3 ) {
+                      $filters_list[] = $subpath;
+                      continue;
+                }
 
-			
+                $new_url_path_list[] = $subpath;
 			}
 		}
 
@@ -63,6 +63,7 @@ if(!defined("_SITE_") ) die("Hello,  World");
 		if(!$args->id && !empty($args->item_id) ) {
 			$args->id = $args->item_id;
 		}
+
 
 		$args->id = \team\Check::id($args->id);
         $args->filters_list =$filters_list;

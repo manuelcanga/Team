@@ -95,11 +95,15 @@ if(!defined("_SITE_") ) die("Hello,  World");
 		$_GET = $_POST = array();
 
 
-        //_SELF_  debe empezar y terminar  / y terminar con  /
+        //_SELF_  debe empezar y terminar  /, especifica como hemos llegado hasta dónde estamos sin filtros
         $_SELF_ =  \team\Sanitize::trim( \team\Config::get("_AREA_").ltrim( $args->_self_, '/'), '/');
 
+        //BASE_URL corresponde a la ruta hasta el componente( No es como base, porque base incluye este ultimo paquete y BASE_URL el area y el componente ) añadiendo el area actual
+        $BASE_URL =  \team\Sanitize::trim( \team\Config::get("_AREA_").ltrim( $args->component, '/'), '/');
+
         \team\Config::set('_SELF_', $_SELF_);
-        \team\Config::set('URL',  $url);
+        \team\Config::set('BASE_URL', $BASE_URL);
+         \team\Config::set('URL',  $url);
         \team\Config::set('ARGS',  $args);
 
 
