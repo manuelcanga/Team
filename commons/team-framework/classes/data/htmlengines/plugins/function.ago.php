@@ -62,12 +62,17 @@ function smarty_function_ago($params, &$smarty)
 	//procesamos la salida
 	$out = ($diff['diff'] > 0)? $in :  $ago;
 
+
 	foreach($diff['units'] as $label => $count) {
 	
 		$out .= " {$count} {$label}";
 		$depth--;		
 		if($depth <= 0) break;
-		$out .= ($depth == 1)? ' '.$and : ', ';
+
+		//Si sólo hay una unidad no tiene sentido que se añada una conjunción
+		if(count($diff['units']) > 1) {
+		    $out .= ($depth == 1 )? ' '.$and : ', ';
+        }
 	}
 
 
