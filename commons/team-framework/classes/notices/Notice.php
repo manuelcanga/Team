@@ -111,10 +111,10 @@ class Notice {
      */
     private function addNotice($result, $type, $data, $code, $msg, $details) {
 
+        //Avisamos del error
+        $canceled = null;
 
         if($code) {
-            //Avisamos del error
-            $canceled = null;
             if(isset($code)) {
                 $canceled = \Team::event($code, $type, $data, $msg);
             }
