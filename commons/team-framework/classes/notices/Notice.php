@@ -111,17 +111,17 @@ class Notice {
      */
     private function addNotice($result, $type, $data, $code, $msg, $details) {
 
+
         if($code) {
             //Avisamos del error
             $canceled = null;
             if(isset($code)) {
                 $canceled = \Team::event($code, $type, $data, $msg);
             }
-
-            $canceled = ($canceled)?: \Team::event('\team\\'.strtolower($type), $code, $data, $msg);
-            if($canceled) return $canceled;
         }
 
+        $canceled = ($canceled)?: \Team::event('\team\\'.strtolower($type), $code, $data, $msg);
+        if($canceled) return $canceled;
 
         $this->result = $result;
         $this->type   = $type;
