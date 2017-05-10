@@ -71,6 +71,10 @@ abstract class ActiveRecord extends \team\db\Model{
 		return  $this->safeId;
 	}
 
+	function setSafeId($newId) {
+	    $this->safeId = $this->checkId($newId, 0);
+    }
+
 	public function getGeneratedUrl($data = null, &$matches = null) {
 		if(!isset($data) ) $data = $this->data;
 
@@ -212,7 +216,7 @@ abstract class ActiveRecord extends \team\db\Model{
     /* ----------------- EVENTS ----------------- */
 
 	protected function onInitialize($id) {
-        $this->safeId = $this->checkId($id);
+        $this->setSafeId($id);
 
 		if( $this->safeId) {
 			$this->initializeIt($this->safeId);
