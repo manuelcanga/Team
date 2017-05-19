@@ -52,7 +52,9 @@ class Notice {
     Se acabó el proceso todo OK
      */
     public function success($msg, $code = null,$data = null)	{
-        return $this->addNotice(self::SUCCESS, 'SUCCESS',$data, $code, $msg,  $this->INFOS);
+       $this->addNotice(self::SUCCESS, 'SUCCESS',$data, $code, $msg,  $this->INFOS);
+
+        return  true;
     }
 
     /**
