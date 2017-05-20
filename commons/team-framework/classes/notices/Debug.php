@@ -114,6 +114,20 @@ final  class Debug
 		echo self::get($var, $label, $file, $line);
 	}
 
+    public static  function stop( $var = 'bye, World', $label = false, $file = null, $line = null) {
+
+	    $level = 1;
+        if(is_numeric($label)) {
+            $level = intval($label);
+            $label = null;
+        }
+
+        self::getFileLine($file, $line, $level);
+        self::out($var, $label, $file, $line);
+
+        die();
+    }
+
 	static function  get( $var = 'Hello, World', $label = false, $file = null, $line = null) {
 
 		self::getFileLine($file, $line);
