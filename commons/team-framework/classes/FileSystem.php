@@ -123,7 +123,10 @@ final  class Filesystem
         @example \team\FileSystem::stripExtension('styles.min.css', '.css'); //style.css
     */
     public static function stripExtension($_file, $_new_extension = '') {
-        return preg_replace('/[\.].*/','', $_file).$_new_extension;
+
+        //Usar dirname y basename evita que se borre a partir de directorios con punto. Ejemplo: /misitio.net/prueba.php
+        //resultado /misitio.net/prueba  sin usar dirname y basename querdía como /misitio
+        return dirname($_file)."/".preg_replace('/[\.].*/','', basename($_file)).$_new_extension;
     }
 
     /**
