@@ -354,7 +354,7 @@ class Sanitize {
 		Nos aseguramos que @url sea una url interna válida
 	*/
 	static function internalUrl($url) {
-		$url = self::urlFriendly($url, '\/');
+		$url = self::urlFriendly($url, '\/', $urlencode = false);
 
 		$parsed_url = parse_url($url);
 		$url = $parsed_url["path"];
