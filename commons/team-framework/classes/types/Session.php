@@ -126,9 +126,17 @@ class Session  extends Base
     public function close() {
         session_commit();
         $this->data = array();
+        if(isset($_SESSION[self::ID_COOKIE])) {
+            unset($_SESSION[self::ID_COOKIE]);
+        }
+
         static::$active = false;
-        session_unset();
-        return session_destroy();
+        if(!empty($_SESSION)) {
+
+            return session_destroy();
+        }else {
+            return true;
+        }
     }
 
 
