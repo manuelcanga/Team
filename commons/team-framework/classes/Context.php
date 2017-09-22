@@ -103,7 +103,9 @@ abstract class Context  {
     }
 
 	/* ------------------- GETTERS  ---------------------- */
-    public static function get($var, $default = null){ return self::$vars[$var]??  \team\Config::get($var, $default); }
+    public static function get($var, $default = null, $place = null){
+        return self::$vars[$var]??  \team\Config::get($var, $default, $place);
+    }
     public static function getLevel() { return self::$vars['LEVEL']; }
     public static function getIndex() { return self::getLevel(); }
     public static function & getContext() { return self::$vars; }
