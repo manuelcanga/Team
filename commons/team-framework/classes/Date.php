@@ -210,7 +210,7 @@ class Date {
 		$weekday = date( 'w', $day );
 
 		if ( !is_numeric($start_of_week) )
-			$start_of_week = \team\Config::get( 'START_OF_WEEK', 0, '\team\Date' );
+			$start_of_week = \team\Context::get( 'START_OF_WEEK', 0, '\team\Date' );
 
 		if ( $weekday < $start_of_week )
 			$weekday += 7;
@@ -384,14 +384,14 @@ class Date {
 	*/
 	public static function getWithRealFormat($format = null, $timestamp = null) {
 		if(empty($format) ) {
-			$format = \team\Config::get('DATE_FORMAT',  'i18n', '\team\Date');
+			$format = \team\Context::get('DATE_FORMAT',  'i18n', '\team\Date');
 		}
 
 		switch($format) {
 			case 'i18n':
-				$format = self::getWithRealFormat(\team\Config::get('DATE_I18N',  'date', '\team\Date'), $timestamp);break;
+				$format = self::getWithRealFormat(\team\Context::get('DATE_I18N',  'date', '\team\Date'), $timestamp);break;
 			case 'long-i18n':
-				$format = self::getWithRealFormat(\team\Config::get('LONG_DATE_I18N',  'datetime', '\team\Date'), $timestamp );break;
+				$format = self::getWithRealFormat(\team\Context::get('LONG_DATE_I18N',  'datetime', '\team\Date'), $timestamp );break;
 			case 'timestamp':
 					$format = '%s';break;
 			case 'tiempo':
@@ -473,7 +473,7 @@ class Date {
             case 'uploads_dir':
                 $format = '/%Y/%m';break;
             default:
-                 $date_format =  \team\Filter::apply("\\team\\date_format\\{$format}", null);
+                 $date_format =  \team\Context::get("\\team\\date_format\\{$format}", null, '\team\Date');
                  if(isset($date_format)){
                      $format = self::getWithRealFormat($date_format);
                  }else {
