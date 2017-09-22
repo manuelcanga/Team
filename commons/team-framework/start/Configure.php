@@ -44,6 +44,7 @@ class Configure
             $cli_mode = false;
         }
 
+        \team\Debug::trace('¿Cli mode activo?', $cli_mode);
         \team\Config::set('CLI_MODE',   $cli_mode );
     }
 
@@ -108,7 +109,7 @@ class Configure
 
 
     function system() {
-        \team\Config::setUpAll();
+        \team\Config::setUp();
         \team\I18N::setUp();
 
         //Sistema de errores
