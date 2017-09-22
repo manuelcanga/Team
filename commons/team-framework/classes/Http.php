@@ -9,7 +9,7 @@
 namespace team;
 
 
-class Http
+abstract class Http
 {
 
     /**
@@ -105,6 +105,7 @@ class Http
         $mobile = false;
         $computer = false;
         $tablet = false;
+        $bot = false;
         $device = 'computer';
         $navigator = 'explorer';
 
@@ -113,14 +114,18 @@ class Http
             $is_android = strpos($http_user_agent, 'Android') !== false;
 
             //¿is tablet?
-            if ( stripos($http_user_agent, 'Tablet') !== false || ($is_android && !$is_mobile)
-                || strpos($http_user_agent, 'Kindle') !== false ) {
+            if ( stripos($http_user_agent, 'Tablet') !== false
+                || ($is_android && !$is_mobile)
+                || strpos($http_user_agent, 'Kindle') !== false
+                || strpos($http_user_agent, 'iPad') !== false
+                ) {
                 $tablet =  true;
                 $device = $navigator = "tablet";
             }
 
             //¿is mobile?
-            if(!$tablet && ($is_mobile || strpos($http_user_agent, 'Silk/') !== false
+            if(!$tablet && ($is_mobile
+                    || strpos($http_user_agent, 'Silk/') !== false
                     || strpos($http_user_agent, 'BlackBerry') !== false
                     || strpos($http_user_agent, 'Opera Mini') !== false
                     || strpos($http_user_agent, 'Opera Mobi') !== false ) ) {
@@ -138,12 +143,15 @@ class Http
                 }else {
                     $navigator = "explorer";
                 }
+
+                $bot =  strpos($http_user_agent, 'bot') !== false;
             }
+
 
         }
 
 
-        $user_agent = ['navigator' => $navigator, 'device' => $device, 'computer' => $computer, 'mobile' => $mobile,'tablet' => $tablet, 'desktop' => ($computer || $tablet) ];
+        $user_agent = ['navigator' => $navigator, 'device' => $device, 'bot' => $bot,  'computer' => $computer, 'mobile' => $mobile,'tablet' => $tablet, 'desktop' => ($computer || $tablet) ];
 
         $user_agent = \team\Filter::apply('\team\user_agent', $user_agent);
 
