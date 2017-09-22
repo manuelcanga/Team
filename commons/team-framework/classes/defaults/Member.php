@@ -71,7 +71,9 @@ class Member implements \ArrayAccess {
 
 
     public function level() {
-        if($this->isAdmin() ) {
+        if($this->isRoot() ) {
+            return \team\User::ROOT;
+        }else if($this->isAdmin() ) {
 			return \team\User::ADMIN;
 		}else if($this->isLogged() ) {
 			return \team\User::USER;
@@ -92,6 +94,10 @@ class Member implements \ArrayAccess {
     public function isAdmin() {
 		 return $this->isLogged() && $this->get('admin', false);
 	}
+
+    public function isRoot() {
+        return $this->isLogged() && $this->hasRole('root');
+    }
 
     public function isLogged() {
         return $this->get('active', false);

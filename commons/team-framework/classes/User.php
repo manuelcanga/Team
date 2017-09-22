@@ -35,7 +35,9 @@ namespace team;
 \team\Classes::load('\team\defaults\Member', '/classes/defaults/Member.php', _TEAM_);
 class User {
     /** Definimos la visibilidad */
-    const ADMIN = 2 /** Access to private area and admin area. This also is logged */, 
+    const
+          ROOT = 3  /** Access to private area and admin area with restricted access */,
+          ADMIN = 2 /** Access to private area and admin area. This also is logged */,
           USER = 1  /** Access to private area. Meaning the same: active but not admin.  */,
 		  GUEST = 0 /* Only access to public area.  This cannot logged */;
 
@@ -55,7 +57,7 @@ class User {
     public static function __initialize() {
 		if(isset(self::$current) ) return  ;
 
-      $user_class =\team\Config::get('\team\User', '\team\defaults\Member');
+      $user_class =\team\Context::get('\team\User', '\team\defaults\Member');
 
 	  if(isset($user_class) && class_exists($user_class )  ) {
 		 self::$current  = new  $user_class();
@@ -91,6 +93,12 @@ class User {
 
 
     /** *************** Comprobaciones de seguridad  *************** */
+    public static function mustBeRoot() {
+        if(!self:: $current->isRoot() ){
+            self:: $current->notValidUser();
+        }
+    }
+
     public static function mustBeAdmin() {
         if(!self:: $current->isAdmin() ){
             self:: $current->notValidUser();
@@ -146,7 +154,7 @@ class User {
      *
      * @return bool Whether the device is able to upload files.
      */
-    public function canUpload() {
+    public static function canUpload() {
         if ( \team\Http::checkUserAgent('desktop') )
             return true;
 
