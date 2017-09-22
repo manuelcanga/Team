@@ -31,7 +31,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace team;
 
 
-//Clase para gestionar variables de configuracion
+/**
+ * Clase para gestionar variables de configuracion
+ *
+ */
 abstract class Config{
     use \team\data\Vars;
 
@@ -42,16 +45,9 @@ abstract class Config{
         \Team::event('\team\setup', self::$vars);
     }
 
-
     public static function get(string $var_name, $default = null, $place = null) {
         return self::applyModifiers($var_name, self::$vars[$var_name]?? $default, $place );
     }
-
-    public static function getKey(string $key, string $var_name, $default = null, $place = null) {
-        $var =  self::get($var_name, $default, $place);
-        return $var[$key]?? $default;
-    }
-
 
     public static function addModifier($config_var, $function, int $order = 50){
 
