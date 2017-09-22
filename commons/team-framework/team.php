@@ -154,6 +154,8 @@ try {
     $configure->cachingSystem();
     $configure->system();
 
+    //El sistema se inicia externamente llamando a la función \team\up() definida abajo
+
 
 //Evitamos a toda costa que se quede congelado el sistema
 }catch(\Throwable $e) { 
