@@ -108,7 +108,7 @@ class Configure
 
 
     function system() {
-        \team\Config::setUp();
+        \team\Config::setUpAll();
         \team\I18N::setUp();
 
         //Sistema de errores

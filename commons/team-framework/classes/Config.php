@@ -41,12 +41,18 @@ abstract class Config{
     protected static $vars = [];
     protected static $modifiers = [];
 
-    public static function setUp() {
+    public static function setUpAll() {
         \Team::event('\team\setup', self::$vars);
     }
 
     public static function get(string $var_name, $default = null, $place = null) {
         return self::applyModifiers($var_name, self::$vars[$var_name]?? $default, $place );
+    }
+
+    public static function setup(string $config_var, $value = null, $place = null) {
+        self::$vars[$var_name] = self::applyModifiers($var_name, $value?? self::$vars[$var_name], $place, $setuping = true );
+
+        return self::$vars[$var_name];
     }
 
     public static function addModifier($config_var, $function, int $order = 50){
@@ -62,7 +68,7 @@ abstract class Config{
         return false;
     }
 
-    protected static function applyModifiers($config_var, $value, $place) {
+    protected static function applyModifiers($config_var, $value, $place, $setuping = false) {
         if(!isset(self::$modifiers[$config_var])  ) return $value;
 
         $modifiers =& self::$modifiers[$config_var];
@@ -74,7 +80,7 @@ abstract class Config{
                 \team\Debug::me('You are adding a modifier to ' . $config_var . ' which isn\'t a callback');
                 return false;
             }else {
-                $value = $modifier($value, $place);
+                $value = $modifier($value, $place, $setuping);
             }
         }
         return $value;
