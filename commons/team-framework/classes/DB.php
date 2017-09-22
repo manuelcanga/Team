@@ -28,13 +28,13 @@ class DB
 
         $DB_class = \team\Config::get('\team\DB', '\team\db\DB',  $new_conection_name);
 
-        /** Las clases de base de datos también gestionan las conexiones. Así para  */
         return new $DB_class($new_conection_name);
     }
 
     public static function add($databaseid, array $options = null) {
-        //using first args as options
-        if(is_array($databaseid)) {
+        $databaseid_as_options = is_array($databaseid);
+
+        if($databaseid_as_options) {
             $options = $databaseid;
             $databaseid = null;
         }
