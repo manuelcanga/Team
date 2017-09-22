@@ -12,7 +12,7 @@ namespace team;
  * Class DB
  * @package team
  */
-class DB
+abstract class DB
 {
     protected static $databases = [];
 
