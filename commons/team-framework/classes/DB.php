@@ -16,29 +16,31 @@ class DB
 {
     protected static $databases = [];
 
-    protected static $main = 'main';
-
-
     public static function getConnection($conname =  null, $place = null) {
-        return \team\Filter::apply('\team\db\conname', $conname?? self::$main, $place );
+        $conname = $conname?? \team\Config::get('DEFAULT_CONNAME', 'main');
+
+        return \team\Filter::apply('\team\db\conname', $conname , $place );
 
     }
 
     public static function get($new_conection_name = null, $place = null){
         $new_conection_name = self::getConnection($new_conection_name, $place);
 
-        $DB_class = \team\Filter::apply('\team\DB', '\team\db\DB',  $new_conection_name);
+        $DB_class = \team\Config::get('\team\DB', '\team\db\DB',  $new_conection_name);
 
         /** Las clases de base de datos también gestionan las conexiones. Así para  */
         return new $DB_class($new_conection_name);
     }
 
+    public static function add($databaseid, array $options = null) {
+        //using first args as options
+        if(is_array($databaseid)) {
+            $options = $databaseid;
+            $databaseid = null;
+        }
 
-    public static function set(array $options) {
-        self::add(self::getConnection(), $options);
-    }
+        $databaseid = self::getConnection($databaseid, 'adding');
 
-    public static function add($databaseid, array $options) {
         $defaults = [
             'user'      => 'my_user',
             'password'  => 'my_password',
