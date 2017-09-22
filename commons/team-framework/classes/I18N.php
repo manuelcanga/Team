@@ -8,29 +8,28 @@
 namespace team;
 
 
-class I18N
+abstract class I18N
 {
-    public static function setUp() {
-        \team\I18N::setTimezone();
-        \team\I18N::setLocale();
-    }
-
-    public static function setTimezone() {
-        $timezone = \team\Config::get('TIMEZONE');
-
-        \Team::event('\team\settimezone', $timezone);
+    public static function setTimezone($timezone = null) {
+        $timezone = \team\Context::get('TIMEZONE', $timezone, '\team\I18N');
 
         date_default_timezone_set($timezone);
         ini_set('date.timezone', $timezone);
     }
 
-    public static function setLocale() {
-        $lang =  \team\Config::get('LANG');
-        $charset = \team\Config::get('CHARSET');
+    public static function setLocale($locale = null) {
+
+        $lang = null;
+        $charset = null;
+
+        if(isset($locale)) {
+            list($lang, $charset) = explode('.', $locale);
+        }
+
+        $lang =  \team\Context::get('LANG', $lang, '\team\I18N');
+        $charset = \team\Context::get('CHARSET', $charset, '\team\I18N');
 
         $locale = $lang.'.'.$charset;
-
-        \Team::event('\team\setlocale', $locale, $lang, $charset);
 
         setlocale(LC_ALL,$locale );
         putenv('LANG='.$locale);

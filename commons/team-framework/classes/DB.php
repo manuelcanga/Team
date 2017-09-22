@@ -17,16 +17,13 @@ abstract class DB
     protected static $databases = [];
 
     public static function getConnection($conname =  null, $place = null) {
-        $conname = $conname?? \team\Config::get('DEFAULT_CONNAME', 'main');
-
-        return \team\Filter::apply('\team\db\conname', $conname , $place );
-
+        return  \team\Context::get('CONNAME', $conname?? 'main',   $place);
     }
 
     public static function get($new_conection_name = null, $place = null){
         $new_conection_name = self::getConnection($new_conection_name, $place);
 
-        $DB_class = \team\Config::get('\team\DB', '\team\db\DB',  $new_conection_name);
+        $DB_class = \team\Context::get('\team\DB', '\team\db\DB',  $new_conection_name);
 
         return new $DB_class($new_conection_name);
     }
@@ -52,6 +49,7 @@ abstract class DB
             'type'      => 'mysql',
             'options'   =>  [],
         ];
+
 
 
         self::$databases[$databaseid] = $options + $defaults;
