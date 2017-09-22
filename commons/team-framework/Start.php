@@ -1,29 +1,15 @@
 <?php if(!defined("_SITE_") ) die("Hello,  World");
 
-include(__DIR__ . '/start/configure.php');
 
 
-\Team::addListener('\team\setup', function(& $vars) {
-    include(__DIR__ . '/start/setup.php');
-});
 
 /*
   En el event start, añadimos los hooks necesarios para parsear los datos de entrada y devolverlos para poder ser usado para lanzar la acción main( ver abajo )
 */
 \Team::addListener('\team\start', function() {
-    global $argv, $argc;
 
-	//Es posible lanzar TEAM framework desde terminal
-	//Así que comprobamos si se está haciendo
-	$cli_mode = true;
-	if('cli' != php_sapi_name() || empty($argv) || 0 == $argc  ) {
-		$cli_mode = false;
-	}
 
-	\team\Debug::trace('¿Cli mode activo?', $cli_mode);
-	\team\Context::set('CLI_MODE',   $cli_mode );
-
-	if($cli_mode) {
+	if(\team\Config::get('CLI_MODE')) {
 	  return include(__DIR__ . '/start/cli.php');
 	}
     

@@ -141,49 +141,19 @@ require(\_TEAM_.'/classes/Http.php');
 require(\_TEAM_.'/classes/DB.php');
 
 
-//Añadimos la clase que gestiona los datos de session
-\team\Classes::add('\team\User', '/classes/User.php', _TEAM_);
-//Cargamos la clase Log para todo ayudar al programador/maquetador en su tarea.
-\team\Classes::add('\team\Log', '/classes/notices/Log.php', _TEAM_);
+
 
 try {
+    //Clase que configura el sistema
+    require(\_TEAM_.'/start/Configure.php');
 
-    /**
-     * 1. Llamamos a los scripts de comienzos.
-     * Estos scripts deberían de asignar filtros, eventos y tareas deseados
-     */
+    $configure = new \team\start\Configure;
+    $configure->preconfigure();
+    $configure->launchConfigScripts();
+    $configure->registerAutoload();
+    $configure->cachingSystem();
+    $configure->system();
 
-    \team\FileSystem::load('/Start.php', _TEAM_);
-    \team\FileSystem::load('/commons/config/setup.php');
-    \team\FileSystem::load('/commons/config/'. \team\Config::get('ENVIROMENT').'/setup.php');
-
-
-    /**
-     * 2. Definimos un autoload de clases
-     *
-     *  Por cada clase desconocida que se instancie o se utilice sin haberse procesado, php llamara a Classes.
-     *  Este método define un autoloader por defecto llamado Casses y avisa a php para que lo utilice
-     */
-
-    spl_autoload_register(\team\Config::get('\team\autoload', ['\team\Classes', 'factory'] ));
-
-
-    /**
-     * 3. Inicializamos el sistema de caché
-     */
-    \team\Cache::__initialize();
-
-    /**
-     * 4. Inicializamos el sistema de configuración
-     */
-    \team\Config::setUp();
-    \team\I18N::setUp();
-
-
-    /**
-     * 5. Se inicia el proceso de gestión de errores
-     */
-    \Team::__initialize();
 
 //Evitamos a toda costa que se quede congelado el sistema
 }catch(\Throwable $e) { 
@@ -194,6 +164,7 @@ try {
 
 function up() {
 
+   \team\Debug::trace();
     try {
 
         \team\Debug::trace("Se inicializo el contexto. Ya podemos empezar a inicializar todo el framwork");

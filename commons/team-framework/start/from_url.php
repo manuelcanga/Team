@@ -14,11 +14,11 @@ if(!defined("_SITE_") ) die("Hello,  World");
 
 		 \team\Debug::trace("Vamos a procesar la url pedida", $url );
 
-    //Este worker acabará la tarea de url, así que ya notificamos que no queremos que se siga propagando .
+
+		//Este worker acabará la tarea de url, así que ya notificamos que no queremos que se siga propagando .
 		$this->finish();
 
         $defaults = [];
-        $default_response = \team\Filter::apply('\team\default_response', 'index');
 
         list($package, $defaults['component'], $defaults['response'], $defaults['out']) = array_pad(explode('/',trim($this->main,'/') ), 4, null);
 
@@ -29,7 +29,7 @@ if(!defined("_SITE_") ) die("Hello,  World");
         $_POST = \team\Filter::apply('\team\parse_post', $_POST);
 
         //Parseamos la url en busca de los parámetros de la web, los argumentos base serán los de post
-		$args = new \team\types\Url($url, [], $_POST +((array)$this->area_params) + ['component' => $defaults['component'] ]);
+		$args = new \team\types\Url($url, [], $_POST +((array)$this->area_params) + $defaults);
         $url = $args->base_url;
 
         //*** Evitamos que desde el exterior se creen parámetros propios del framework y que no se deberían de modificar directamente ***
@@ -58,7 +58,7 @@ if(!defined("_SITE_") ) die("Hello,  World");
 		//por ejepmlo, podríamos crear un archivo /rss.php que tenga un define('MAIN', '/tools/rss');
 		//Así al cargarse ese archivo automaticamente se iría a rss( paquete tools )
 		if(\team\Config::get('MAIN') ) {
-            $args->component = $defaults['component'];
+			$args->component = $defaults['component'];
 			$args->response = $defaults['response'];
 			$args->out =  $defaults['out'];
             $args->filters_list = [];
@@ -77,6 +77,7 @@ if(!defined("_SITE_") ) die("Hello,  World");
         }
 
 
+        $default_response = \team\Filter::apply('\team\default_response', 'index');
         //Si no se especificó un default response se coge el del sistema( index  );
         $defaults['response'] = $defaults['response']?: $default_response;
         //Si se especifico un default component para el area, debemos de coger también el default response que se escogiera
@@ -84,9 +85,8 @@ if(!defined("_SITE_") ) die("Hello,  World");
             $args->component = $args->component?: $defaults['component'];
             $args->response = $args->response?: $defaults['response'];
         }else {
-            $args->response = $args->response?: $default_response;
+            $args->response = $args->response?: $defaults['response'];
         }
-
 
 
         $args = \team\Filter::apply('\team\url\args', $args);
@@ -95,17 +95,12 @@ if(!defined("_SITE_") ) die("Hello,  World");
 		$_GET = $_POST = array();
 
 
-        //_SELF_  debe empezar y terminar  /, especifica como hemos llegado hasta dónde estamos sin filtros
+        //_SELF_  debe empezar y terminar  / y terminar con  /
         $_SELF_ =  \team\Sanitize::trim( \team\Config::get("_AREA_").ltrim( $args->_self_, '/'), '/');
 
-        //BASE_URL corresponde a la ruta hasta el componente( No es como base, porque base incluye el paquete y BASE_URL el area actual y  el componente )
-        $BASE_URL =  \team\Sanitize::trim( \team\Config::get("_AREA_").ltrim( $args->component, '/'), '/');
-
         \team\Config::set('_SELF_', $_SELF_);
-        \team\Config::set('BASE_URL', $BASE_URL);
-         \team\Config::set('URL',  $url);
+        \team\Config::set('URL',  $url);
         \team\Config::set('ARGS',  $args);
-
 
 
         unset($args->_self_); //ya no lo necesitamos, está en context
