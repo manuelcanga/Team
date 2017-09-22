@@ -62,7 +62,7 @@ abstract class Config{
         return false;
     }
 
-    protected static function applyModifiers($config_var, $value, $place, $setuping = null) {
+    protected static function applyModifiers($config_var, $value, $place) {
         if(!isset(self::$modifiers[$config_var])  ) return $value;
 
         $modifiers =& self::$modifiers[$config_var];
@@ -74,7 +74,7 @@ abstract class Config{
                 \team\Debug::me('You are adding a modifier to ' . $config_var . ' which isn\'t a callback');
                 return false;
             }else {
-                $value = $modifier($value, $place, $setuping);
+                $value = $modifier($value, $place);
             }
         }
         return $value;
