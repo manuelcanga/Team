@@ -48,11 +48,8 @@ class Component   implements \ArrayAccess{
         //A partir del nombre tenemos que obtener el paquete y el componente al que pertenece el widget
         $namespace =  \team\NS::explode($widget_name);
 
-        if(array_key_exists('name',$namespace ) ) {
-            if(isset($namespace['name'])) {
-                $namespace['response'] = $namespace['name'];
-            }
-
+        if(isset($namespace['name'])) {
+            $namespace['response'] = $namespace['name'];
             unset($namespace['name']);
         }
 
@@ -60,7 +57,8 @@ class Component   implements \ArrayAccess{
 
 
         //No se ha pasado un componente correcto
-        if(!\team\FileSystem::exists("/".$params['package'].'/'.$params['component']) ) {
+        $base_component = "/".$params['package'].'/'.$params['component'];
+        if(!\team\FileSystem::exists($base_component) ) {
             \Team::warning("$widget_name not found. Review widget name or change \" to \' in your widget name param, please", 'WIDGET_NAME');
             return '';
         }
