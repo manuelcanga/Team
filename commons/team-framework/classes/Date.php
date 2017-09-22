@@ -210,7 +210,7 @@ class Date {
 		$weekday = date( 'w', $day );
 
 		if ( !is_numeric($start_of_week) )
-			$start_of_week = \team\Context::getOption( 'start_of_week', 0 );
+			$start_of_week = \team\Config::get( 'START_OF_WEEK', 0, '\team\Date' );
 
 		if ( $weekday < $start_of_week )
 			$weekday += 7;
@@ -384,14 +384,14 @@ class Date {
 	*/
 	public static function getWithRealFormat($format = null, $timestamp = null) {
 		if(empty($format) ) {
-			$format = \team\Context::getOption('date_format',  'i18n');
+			$format = \team\Config::get('DATE_FORMAT',  'i18n', '\team\Date');
 		}
 
 		switch($format) {
 			case 'i18n':
-				$format = self::getWithRealFormat(\team\Context::getOption('date_i18n',  'date'), $timestamp);break;
+				$format = self::getWithRealFormat(\team\Config::get('DATE_I18N',  'date', '\team\Date'), $timestamp);break;
 			case 'long-i18n':
-				$format = self::getWithRealFormat(\team\Context::getOption('long_date_i18n',  'datetime'), $timestamp );break;
+				$format = self::getWithRealFormat(\team\Config::get('LONG_DATE_I18N',  'datetime', '\team\Date'), $timestamp );break;
 			case 'timestamp':
 					$format = '%s';break;
 			case 'tiempo':
