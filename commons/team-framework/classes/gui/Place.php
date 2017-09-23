@@ -59,7 +59,7 @@ abstract class Place
 
     public static function void(string $place) {
 
-        return self::add($place, $order, 'void', function($content, $params, $engine) {
+        return self::add($place, $order = 0, 'void', function($content, $params, $engine) {
             return '';
         });
     }
