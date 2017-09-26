@@ -62,7 +62,7 @@ function smarty_block_head($params, $content, Smarty_Internal_Template $template
 
         $out .= '><head>'.$responsive.trim($content);
 
-        $charset = \team\Config::get('CHARSET');
+        $charset = \team\Context::get('CHARSET');
         $out .= "<meta charset='{$charset}'>";
 
         return $out;
@@ -121,6 +121,7 @@ function smarty_block_head($params, $content, Smarty_Internal_Template $template
         /* ******************** /TOP CSS Y JS FILES *************** */
         $out = \team\gui\Place::getHtml($place, $out, $params, $template);
 
+        $out .= '</head>';
 
         return $out;
 	}
