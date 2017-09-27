@@ -114,6 +114,15 @@ final  class Filesystem
 		return self::stripExtension(basename($_file) );
 	}
 
+    /**
+        Obtiene el nombre o ruta del archivo sin rutas relativas al principio
+        @param string $_file archivo o ruta del que se quitará la ruta relativa del principio
+        @example  ./noticias/prueba.tpl => noticias/prueba.tpl
+     */
+    public static function stripRelativePath($_file) {
+        return ltrim($_file, './\\');
+    }
+
 
     /*
         Elimina una extensión de un archivo y le añade $new_extension si se le especifica
@@ -124,9 +133,10 @@ final  class Filesystem
     */
     public static function stripExtension($_file, $_new_extension = '') {
 
-        //Usar dirname y basename evita que se borre a partir de directorios con punto. Ejemplo: /misitio.net/prueba.php
-        //resultado /misitio.net/prueba  sin usar dirname y basename querdía como /misitio
-        return dirname($_file)."/".preg_replace('/[\.].*/','', basename($_file)).$_new_extension;
+        //Usanso ?! se evita que se borre a partir de directorios con punto. Ejemplo: /misitio.net/prueba.php
+        //Pues se toma la última ocurrencia
+        //resultado /misitio.net/prueba  sin usarlo quedaría como /misitio
+        return  preg_replace('/[\.].*(?!.*[\.].*)/','', $_file).$_new_extension;
     }
 
     /**
