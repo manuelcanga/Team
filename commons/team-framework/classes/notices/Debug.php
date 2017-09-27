@@ -329,8 +329,8 @@ de $jumps saltos hacia atrás  */
 
 			if('all' != $jumps) {
 				$me = $backtrace[ $jumps ];
-				$file = $me["file"];
-				$line = $me["line"];
+				$file = $me["file"]?? '';
+				$line = $me["line"]?? '';
 
 				//adding to label function name
 				$label = $_label;
