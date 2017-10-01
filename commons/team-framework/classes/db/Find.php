@@ -77,6 +77,15 @@ class Find implements \ArrayAccess{
     public function setModel( $model = null) {
         $this->model = is_object($model)? get_class($model) : $model;
 
+        if(!$this->from && ($this->model)::TABLE) {
+            $this->from = ($this->model)::TABLE;
+        }
+
+        if(!$this->orderBy && ($this->model)::ID) {
+            $this->orderBy = ($this->model)::ID;
+        }
+
+
         return $this;
     }
 
