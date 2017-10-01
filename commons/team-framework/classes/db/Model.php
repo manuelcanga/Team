@@ -53,7 +53,7 @@ abstract class Model implements \ArrayAccess{
 		@param array $data : data for initializing
 	*/
     function __construct($id = 0,  array $data = null) {
-        $this->onInitialize($id);
+        $this->onInitialize($id, $data);
 
 
         if(isset($data)) {
