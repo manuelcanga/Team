@@ -233,11 +233,14 @@ abstract class Controller  implements \ArrayAccess{
             $params['ref_item_ext'] = $this->params->item_ext;
 
             $params['id'] = null;
-            if (isset($this->params->numeric_filters_list[0])) {
-                $params['id'] = $this->params->numeric_filters_list[0];
+            if(isset($this->params->filters_list[0])) {
+                array_shift($this->params->filters_list);
+            }
+            if (isset($this->params->filters_list[0])) {
+                $params['id'] = $this->params->filters_list[0];
             }
 
-            $response = $this->params->char_filters_list[0]?? 'index';
+            $response = $this->params->url_path_list[0]?? 'index';
         }else {
             $response = \team\Context::get('RESPONSE');
         }
