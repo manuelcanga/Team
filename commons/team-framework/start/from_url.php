@@ -64,10 +64,12 @@ if(!defined("_SITE_") ) die("Hello,  World");
             $args->filters_list = [];
             $args->_self_ = \team\Sanitize::trim( implode('/', $args->url_path_list), '/');
 
+
         }else {
             //Le damos la opción al programador de que implemente su propio sistema de parseo de urls
 		  $args = \team\Task('\team\parse_url', $args)->with($args, $url, $package );
 		}
+
 
 
         //Creamos el path de sólo los filtros
@@ -85,7 +87,8 @@ if(!defined("_SITE_") ) die("Hello,  World");
             $args->component = $args->component?: $defaults['component'];
             $args->response = $args->response?: $defaults['response'];
         }else {
-            $args->response = $args->response?: $defaults['response'];
+             $args->raw_response = $args->response;
+             $args->response = $args->response?: $defaults['response'];
         }
 
 
