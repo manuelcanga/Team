@@ -111,6 +111,7 @@ function findCurrentArea( & $url, &$main) {
         $main = $_main;
     }
 
+    $area =  \team\Filter::apply('\team\area', $_area_, $area_params );
 
     return [$_area_, $area_params];
 }
@@ -126,6 +127,9 @@ function sortAreas($areas) {
 
 function setConfigArea(string $_area_) {
     $_area_ = trim($_area_, '/');
+
+    $_area_ =  \team\Filter::apply('\team\area', $_area_ );
+
     $area =  \team\Sanitize::identifier($_area_);
 
     \team\Config::set("AREA", $area); //Identificador area sin slash. Ej: cms
