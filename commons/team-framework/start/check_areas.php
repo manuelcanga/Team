@@ -125,9 +125,11 @@ function sortAreas($areas) {
 
 
 function setConfigArea(string $_area_) {
-    $_area_ = \team\Sanitize::trim($_area_, '/');
+    $_area_ = trim($_area_, '/');
     $area =  \team\Sanitize::identifier($_area_);
 
     \team\Config::set("AREA", $area); //Identificador area sin slash. Ej: cms
-    \team\Config::set("_AREA_", $_area_); //path a area con slash( al principio y al final. Ej: /cms/
+    \team\Config::set("_AREA_", rtrim('/'.$_area_,'/') ); //path a area con slash( al principio y no al final. Ej: /cms
+
+
 }

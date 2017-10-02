@@ -78,7 +78,7 @@ abstract class Builder implements \ArrayAccess {
             \Team::system("Package '{$package}' not found", '\team\responses\Response_Not_Found');
         }
 
-        \team\Context::setNamespace('\\'.$package);
+        \team\Context::set('NAMESPACE', '\\'.$package);
         $this->namespace = '\\';
 
         $this->setContext('PACKAGE', $package);
@@ -122,7 +122,7 @@ abstract class Builder implements \ArrayAccess {
 
 
         //Tendriamos que comprobar que existe el directorio del componente
-        \team\Context::setNamespace($this->namespace);
+        \team\Context::set('NAMESPACE', $this->namespace);
 
         //Guardamos los datos de componente
         $this->setContext('PACKAGE', $this->package);
@@ -130,7 +130,9 @@ abstract class Builder implements \ArrayAccess {
         $this->setContext('COMPONENT', $component);
         $this->setContext('_COMPONENT_', _SITE_.$this->path);
         $this->setContext('BASE', '/'.$this->package.'/'.$component);
-        $this->setContext('BASE_URL',  \team\Context::get('_AREA_').$component.'/');
+        $this->setContext('BASE_URL',  \team\Context::get('_AREA_').'/'.$component.'/');
+
+
 
         $this->component = $component;
     }

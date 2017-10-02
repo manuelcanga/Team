@@ -96,7 +96,7 @@ if(!defined("_SITE_") ) die("Hello,  World");
 
 
         //_SELF_  debe empezar y terminar  / y terminar con  /
-        $_SELF_ =  \team\Sanitize::trim( \team\Config::get("_AREA_").ltrim( $args->_self_, '/'), '/');
+        $_SELF_ =  \team\Sanitize::trim( \team\Config::get("_AREA_").'/'.trim( $args->_self_, '/'), '/');
 
         \team\Config::set('_SELF_', $_SELF_);
         \team\Config::set('URL',  $url);
