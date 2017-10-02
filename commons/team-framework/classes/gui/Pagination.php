@@ -74,9 +74,10 @@ class Pagination extends \team\db\Find{
          $this->setCurrentPage($current_page);
 
 		$base_url = \team\Context::get('_SELF_');
-		if(!empty($url))  {
+		if(!empty($base_url))  {
 			$this->setBaseUrl($base_url.':page');
 		}
+
 
          $current_url = \team\Context::get('URL');
          if(!empty($current_url)){
@@ -237,6 +238,15 @@ class Pagination extends \team\db\Find{
 
 
 	/** -------------------- SETTERS / GETTERS PAGES ------------------ */
+
+	public function setModel($model = null) {
+        parent::setModel($model);
+
+        if($model && is_object($model) )  {
+            $this->baseUrl = $model->getListUrl();
+        }
+
+    }
 
 	public function putPage($_currentPage) {
 		$this->setCurrentPage($_currentPage);

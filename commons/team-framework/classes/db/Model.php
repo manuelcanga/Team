@@ -44,7 +44,7 @@ abstract class Model implements \ArrayAccess{
 
     const ID = '';
     const TABLE = '';
-	protected $listUrl = null;
+	protected  $listUrl = null;
 
 
 	/**
@@ -72,7 +72,7 @@ abstract class Model implements \ArrayAccess{
         $pagination->setModel($this);
 
 		if(isset($this->listUrl) )
-			$pagination->setBaseUrl($model->getListUrl());
+			$pagination->setBaseUrl($this->getListUrl());
 
 		$pagination->setFrom(static::TABLE)
   		    	   ->setOrderBy(static::ID);
