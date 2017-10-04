@@ -7,7 +7,7 @@
         <meta content="1" property="position">
     </li>
     {$i=1}
-    {foreach $breadcrumbs as $_crumb}
+    {foreach #BREADCRUMB# as $_crumb}
         {$i=$i+1}
         <li typeof="ListItem" property="itemListElement">
            {$breadcrumbs_separator|default:'/'}
