@@ -417,7 +417,12 @@ class Date {
 	 **/
 	public static function transform($date, $format_start, $format_end = null) {
 		$timestamp = self::toTime($date,  $format_start);
-		return self::convert($timestamp, $format_end);
+
+		if($timestamp) {
+		    return self::convert($timestamp, $format_end);
+        }else {
+		    return false;
+        }
 	}
 
 	/**
