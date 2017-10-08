@@ -103,7 +103,15 @@ class Date {
 	*/
 	public static function diff($date, $from_format  = null, $with_units = true) {
 		$diff = [];
+
+        $diff['isPast'] = $diff['isFuture'] = $diff['isToday'] = $diff['isNull'] =false;
+
 		$date_in_seconds = self::toTime($date, $from_format);
+
+		if(0 === $date_in_seconds) {
+            $diff['isNull'] = true;
+        }
+
 		$now = time();		
 
 		$diff['diff'] = $date_in_seconds - $now;
@@ -112,8 +120,6 @@ class Date {
 
 		//comparando la fecha con respecto al día de hoy.
 		$today = self::dayStartEnd( );
-
-		$diff['isPast'] = $diff['isFuture'] = $diff['isToday'] = false;
 
 		//¿ Es la fecha pasada anterior al día de hoy ?
 		if($seconds < $today['start']) {
@@ -294,14 +300,21 @@ class Date {
 
 	/**
 	 * Retrieve time from $date with format $from_format
-	 *
+	 * Si es null devuelve 0
+     * Si es erronea devuelve false
 	 **/
 	public static function toTime( $date, $from_format  = null) {
 		$datetime = self::split($date, $from_format );
 
-		if(empty($datetime) ) {
-			return false;
-		}
+        if(self::checkIsNull($datetime)) {
+            return 0;
+        }
+
+        if(empty($datetime) ) {
+            return false;
+        }
+
+
 
 		extract($datetime, EXTR_SKIP);
 
@@ -312,12 +325,17 @@ class Date {
 
 	/**
 	 * Comprueba si la fecha $date con formato $with_format está correcta.
-	 * Si lo es se devuelve $date sino se devuelve $default
+	 * Si lo es se devuelve $date sino se devuelve $default. Si es null devuelve 0
 	 */
 	public static function check($date, $with_format = null, $default = false) {
 		$datetime = self::split($date,  $with_format, $with_default = false);
 
-        if(empty($datetime) ) {
+
+		if(self::checkIsNull($datetime) ) {
+		    return $default;
+        }
+
+        if(!$datetime) {
 			return $default;
 		}
 
@@ -356,6 +374,30 @@ class Date {
 
         return array_intersect_key($matches + $defaults, array_flip($fields) );
 	}
+
+	/**
+     * Check if date is all zeros. Example: 0000-00-00
+     */
+	private static function checkIsNull($datetime) {
+	    if(!isset($datetime)) {
+	        return true;
+        }
+
+        /** Removing zeros in dates. If $date_without_zero hasn't got element then time is zero.
+         *  Examples with empty $date_without_zero: 0000-00-00 or 0000-00-00 00:00:00
+         */
+        $date_without_zero = array_filter ( $datetime, function($val) {
+            if(!trim($val, '0')) {
+                return false;
+            }
+            return true;
+        });
+
+        if($date_without_zero) {
+            return false;
+        }
+        return true;
+    }
 
 	/**
 	 * Retrieve a date convert to format from timestamp $timestamp
