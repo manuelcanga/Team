@@ -274,7 +274,7 @@ class Date {
 	}
 
 	/**
- 	 * Parses English $time( from $timestamp ) and converts to $to_format
+ 	 * Parses English $change( from $timestamp ) and converts to $to_format
 	 * e.g. \ team\Date::get('+2 days', 'day'); //result 'wednesday' if today is 'monday'
      * e.g2:  \team\Date::get('-1 Week')
      **/
@@ -286,10 +286,14 @@ class Date {
 	}
 
     /**
-     * Parses English $time( from $date )
+     * Parses English $change( from $date with $format ) and converts to $format_out
      **/
     public static function change($change, $date, $format = null, $format_out = null) {
         $timestamp = self::toTime($date, $format);
+
+        if(!$timestamp) {
+            $timestamp = time();
+        }
 
         if(!isset($format_out)) {
             $format_out = $format;
