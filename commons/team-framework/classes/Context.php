@@ -98,6 +98,13 @@ abstract class Context  {
         return self::$vars;
 	}
 
+	/**
+	 * Para dejar todo como al principio
+	 */
+	public static function reset() {
+        self::$vars = ['LEVEL'  => 0, 'NAMESPACE' => '\\', 'BEFORE' => [], 'LAST'=> []];
+    }
+
 	public static function isMain() {
         return 1 === self::getLevel();
     }
