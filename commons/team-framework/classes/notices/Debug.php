@@ -87,7 +87,7 @@ final  class Debug
 
 		if(\team\Context::get('CLI_MODE') ) {
 			self::output($var, $label, $file, $line);
-		}else if(false === \team\Config::get('SHOW_IN_NAVIGATOR', false)  || ( \team\Context::main("out") != 'html' && \team\Context::main("out") != 'array') ) {
+		}else if(false === \team\Config::get('SHOW_IN_NAVIGATOR', false)  ||  \team\Context::main("AJAX")  ) {
 			self::log($var, $label, $file, $line);
 		}else {
             self::log($var, $label, $file, $line);

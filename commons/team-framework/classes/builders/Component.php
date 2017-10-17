@@ -213,6 +213,7 @@ class Component   implements \ArrayAccess{
 		//Cogemos dependiendo del tipo de salida. Sino el predeterminado será el de acciones
 		$class = isset($builders[$params->out])?  $builders[$params->out] : $builders['action'];
 		\team\Context::set("out", $params->out);
+        \team\Context::set("AJAX",  $params->out != 'html' && $params->out != 'array');
 
 		if(class_exists($class) ) {
 			\team\Debug::trace("Se usará el siguiente builder para crear una respuesta con salida {$params->out} ", $class);
