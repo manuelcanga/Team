@@ -144,7 +144,7 @@ abstract class Context  {
             return self::$vars['LAST']?? [];
         }
 
-		if(isset(self::$vars['LAST'][$name]) &&  array_key_exists($name, self::$vars['LAST'])  ) {
+		if(isset(self::$vars['LAST'][$name]) ||  array_key_exists($name, self::$vars['LAST'])  ) {
 			return self::$vars['LAST'][$name];
 		}
 		return $default;
@@ -156,20 +156,16 @@ abstract class Context  {
 		@param mixed $default valor a devolver en caso de no existir la variable de $name 
 	*/
 	public static function main($name = null, $default = null) {
-        $main_level = 1;
-
         if(!isset($name)){
-	        return self::$vars[$main_level]?? [];
+            return self::$vars?? [];
         }
 
-
-		if(!empty(self::$vars[$main_level]) && array_key_exists($name, self::$vars[$main_level]) ) {
-			return self::$vars[$main_level][$name];
+		if(isset(self::$vars[$name]) || array_key_exists($name, self::$vars[$name]) ) {
+			return self::$vars[$name];
 		}
+
 		return $default;
 	}
-
-
 
 
 }
