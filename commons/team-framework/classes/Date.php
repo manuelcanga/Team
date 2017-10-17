@@ -383,7 +383,7 @@ class Date {
      * Check if date is all zeros. Example: 0000-00-00
      */
 	private static function checkIsNull($datetime) {
-	    if(!isset($datetime)) {
+	    if(empty($datetime) || !is_string($datetime)) {
 	        return true;
         }
 
@@ -422,10 +422,11 @@ class Date {
 	public static function transform($date, $format_start, $format_end = null) {
 		$timestamp = self::toTime($date,  $format_start);
 
+
 		if($timestamp) {
 		    return self::convert($timestamp, $format_end);
         }else {
-		    return false;
+            return false;
         }
 	}
 
