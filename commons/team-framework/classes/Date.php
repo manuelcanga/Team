@@ -383,7 +383,7 @@ class Date {
      * Check if date is all zeros. Example: 0000-00-00
      */
 	private static function checkIsNull($datetime) {
-	    if(empty($datetime) || !is_string($datetime)) {
+	    if(empty($datetime) || !is_array($datetime)) {
 	        return true;
         }
 
