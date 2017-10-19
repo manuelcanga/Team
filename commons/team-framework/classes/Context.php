@@ -160,7 +160,7 @@ abstract class Context  {
             return self::$vars?? [];
         }
 
-		if(isset(self::$vars[$name]) || array_key_exists($name, self::$vars[$name]) ) {
+		if(isset(self::$vars[$name]) || array_key_exists($name, self::$vars) ) {
 			return self::$vars[$name];
 		}
 
