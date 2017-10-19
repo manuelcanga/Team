@@ -31,6 +31,7 @@ if(!defined("_SITE_") ) die("Hello,  World");
 		*/
 		$filters_list = [];
 		$new_url_path_list = [];
+		$others_characters = \team\Context::get('URL_EXTRA_CHARS', '');
 		while(!empty($url_path_list) ) {
 			$subpath = array_shift($url_path_list);
 			if(is_numeric($subpath) ) {
@@ -43,15 +44,15 @@ if(!defined("_SITE_") ) die("Hello,  World");
 				if( ( $args->component && $args->response )  ) {
 
 					if( strlen($subpath) < 3 ) {
-						$filters_list[] = \team\Check::key($subpath);
+						$filters_list[] = \team\Check::key($subpath, null, $others_characters);
 					}else {
-						$new_url_path_list[] = \team\Check::key($subpath);
+						$new_url_path_list[] = \team\Check::key($subpath, null, $others_characters);
 					}
 				}else if(empty($filters_list) ) {
 					if(!$args->component ) {
-						$args->component =  \team\Check::key($subpath, null);
+                        $args->component =  \team\Check::key($subpath, null, $others_characters);
 					}else {
-						$args->response =  \team\Check::key($subpath, null);
+						$args->response =  \team\Check::key($subpath, null, $others_characters);
 					}
 				}
 
@@ -66,7 +67,9 @@ if(!defined("_SITE_") ) die("Hello,  World");
 
 		$args->id = \team\Check::id($args->id);
         $args->filters_list =$filters_list;
+
         $args->_self_ = \team\Sanitize::trim( implode('/', $new_url_path_list), '/');
+
     }else {
         $args->filters_list = [];
         $args->_self_ = '/';
