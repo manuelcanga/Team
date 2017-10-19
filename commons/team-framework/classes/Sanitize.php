@@ -254,12 +254,13 @@ class Sanitize {
         
         if (function_exists('mb_strlen') ) {
             if (mb_strlen($string, $charset) > $length) {
+
                 $length -= min($length, mb_strlen($etc, $charset));
 
                 if (!$break_words) {
-                    $string = preg_replace('/\s+?(\S+)?$/u', '', mb_substr($string, 0, $length + 1, $charset));
+                    $unicode = ('UTF-8' == $charset || 'UTF8' == $charset)? 'u' : '';
+                    $string = preg_replace('/\s+?(\S+)?$/'.$unicode, '', mb_substr($string, 0, $length + 1, $charset));
                 }
-          
                 return mb_substr($string, 0, $length, $charset) . $etc;
             }
 
