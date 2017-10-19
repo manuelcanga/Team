@@ -175,10 +175,11 @@ final  class Debug
 	*/
 	private static function normalizeScalar($var, $out = 'html') {
 			 if(is_string($var) ){
-				if('html' == $out)
-					return htmlentities($var);
-				else
+				if('html' == $out) {
+                    return htmlentities($var, ENT_NOQUOTES | ENT_HTML5, \team\Context::get('CHARSET'));
+                }else {
 					return $var;
+                }
 			}else {
 				return var_export($var, true);
 			}
@@ -191,7 +192,7 @@ final  class Debug
 	*/
 	private static function formatDisplay( $var, $label, $file, $line) {
 	
-        if(class_exists('\team\Data', false) ) {
+        if("string" != \team\Context::get('ERRORS')  && class_exists('\team\Data', false) ) {
             return self::withData( $var, $label, $file, $line);
         }else {
             return self::withString( $var, $label, $file, $line);
@@ -226,11 +227,11 @@ final  class Debug
 		
 			$data->vars = self::normalizeCompound($var);
         }else {
-
                 $data->setContext('VIEW',  \team\Config::get('\team\debug\scalar_template', 'team:framework/debug/scalar') );
 
                 $data->msg = self::normalizeScalar($var);
-		}
+
+        }
 
 
 		return  $data->out('html');
@@ -240,7 +241,7 @@ final  class Debug
     private static function withString($var, $label, $file, $line) {
 
 		$out = '<div style="border: 2px solid #008000; background-color: #FAFFF6; color: black; padding: 15px; margin: 7px; border-radius: 7px; font-family: Verdana; font-size: 14px; ">';
-		
+
 		if($label)
 			$out .= "<p><strong>$label</strong>:</p>";
 
@@ -255,6 +256,7 @@ final  class Debug
             $out .=  "<p>".print_r($var, true)."</p>";
             $out .=  '</pre>';
         }else {
+
             $out .=  "<p>".var_export($var, true)."</p>";
 		}
 
