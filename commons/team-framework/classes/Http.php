@@ -164,14 +164,22 @@ abstract class Http
     public static function redirect($redirect, $code = 301, $protocol = null) {
         $redirect = \team\Sanitize::internalUrl($redirect);
 
-        $domain = \team\Config::get('DOMAIN');
-        $protocol = $protocol?? \team\Config::get('PROTOCOL');
+        $domain = \team\Context::get('DOMAIN');
+
+        $port = \team\Context::get('PORT');
+        $with_port = '';
+        if('80' != $port) {
+            $with_port = ":{$port}";
+        }
+
+        $protocol = $protocol?? \team\Context::get('PROTOCOL');
 
         $domain = str_replace($protocol, '',$domain);
-
         $domain = rtrim($domain, '/');
 
-        header("Location: {$protocol}{$domain}{$redirect}", true, $code);
+        $new_location = "{$protocol}{$domain}{$with_port}{$redirect}";
+
+        header("Location: {$new_location}", true, $code);
         exit();
     }
 
@@ -272,7 +280,7 @@ abstract class Http
             return ;
         }
 
-        $protocol = \team\Config::get('PROTOCOL');
+        $protocol = \team\Context::get('PROTOCOL');
         $status_header = "$protocol $code $description";
 
         $status_header = \team\Filter::apply('\team\http\status_header', $status_header, $code, $description, $protocol);
