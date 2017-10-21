@@ -65,16 +65,19 @@ class Configure
         $method  = $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']?? $_POST['_method']?? $_SERVER["REQUEST_METHOD"];
         \team\Config::set('REQUEST_METHOD', strtoupper($method));
 
+        $port = $_SERVER['SERVER_PORT']?? 80;
+
         $is_ssl = false;
         if ( isset($_SERVER['HTTPS']) &&  \team\Check::choice($_SERVER['HTTPS']) ) {
             $is_ssl = true;
-        } elseif ( isset($_SERVER['SERVER_PORT']) && ( '443' == $_SERVER['SERVER_PORT'] ) ) {
+        } elseif (  '443' == $port  ) {
             $is_ssl = true;
         }
 
         \team\Config::set('IS_SSL', $is_ssl );
         \team\Config::set('PROTOCOL', $is_ssl? 'https://' : 'http://' );
         \team\Config::set('DOMAIN',  trim($_SERVER["SERVER_NAME"], '/') );
+        \team\Config::set('PORT', $port);
     }
 
 
