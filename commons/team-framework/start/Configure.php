@@ -80,6 +80,8 @@ class Configure
         \team\Config::set('PORT', $port);
 
         \team\Config::addModifier('WEB', function($url){
+            if(isset($url)) return $url;
+
             $domain = \team\Context::get('DOMAIN');
 
             $port = \team\Context::get('PORT');
