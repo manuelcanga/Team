@@ -78,6 +78,23 @@ class Configure
         \team\Config::set('PROTOCOL', $is_ssl? 'https://' : 'http://' );
         \team\Config::set('DOMAIN',  trim($_SERVER["SERVER_NAME"], '/') );
         \team\Config::set('PORT', $port);
+
+        \team\Config::addModifier('WEB', function($url){
+            $domain = \team\Context::get('DOMAIN');
+
+            $port = \team\Context::get('PORT');
+            $with_port = '';
+            if('80' != $port && '443' != $port) {
+                $with_port = ":{$port}";
+            }
+
+            $protocol =  \team\Context::get('PROTOCOL');
+            $domain = rtrim($domain, '/');
+
+            return $url = "{$protocol}{$domain}{$with_port}";
+        });
+
+
     }
 
 

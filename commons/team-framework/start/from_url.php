@@ -23,13 +23,13 @@ if(!defined("_SITE_") ) die("Hello,  World");
         list($package, $defaults['component'], $defaults['response'], $defaults['out']) = array_pad(explode('/',trim($this->main,'/') ), 4, null);
 
         $package = setUpPackage($package, $url);
-        setUpWebUrl($url);
 
         $url = \team\Filter::apply('\team\url', $url);
         $_POST = \team\Filter::apply('\team\parse_post', $_POST);
 
         //Parseamos la url en busca de los parámetros de la web, los argumentos base serán los de post
 		$args = new \team\types\Url($url, [], $_POST +((array)$this->area_params) + $defaults);
+
         $url = $args->base_url;
 
         //*** Evitamos que desde el exterior se creen parámetros propios del framework y que no se deberían de modificar directamente ***
@@ -117,12 +117,6 @@ if(!defined("_SITE_") ) die("Hello,  World");
 	}
 );
 
-
-
-function setUpWebUrl() {
-    $web = \team\Config::get('PROTOCOL').\team\Config::get('DOMAIN');
-    \team\Config::set('WEB', $web);
-}
 
 
 function setUpPackage($package, $url) {
