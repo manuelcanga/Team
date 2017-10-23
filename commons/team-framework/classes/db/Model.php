@@ -166,8 +166,6 @@ abstract class Model implements \ArrayAccess{
 	//This function from Collection for everytime a newRecord is created
 	function onNewRecord(array $data = []){
 		$this->loadData($data);
-
-        $this->commons($data);
     }
 
 }
