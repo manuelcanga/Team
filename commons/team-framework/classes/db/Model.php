@@ -119,7 +119,7 @@ abstract class Model implements \ArrayAccess{
 
         $records = $query->getAll(static::TABLE);
 
-        if(is_array($result_type) && "array" == $result_type) {
+        if(is_string($result_type) && "array" == $result_type) {
             return $records;
         }
 
