@@ -47,27 +47,6 @@ abstract class Model implements \ArrayAccess{
 	protected  $listUrl = null;
 
 
-	/**
-		Construct a Model
-		@param mixed $id :  primary key or key used in order to initialize
-		@param array $data : data for initializing
-	*/
-    function __construct($id = 0,  array $data = null) {
-        $this->setSafeId($id);
-
-        if( $this->safeId) {
-            $this->initializeIt($this->safeId);
-        }
-
-        $this->onInitialize($id, $data);
-
-        if(isset($data)) {
-            $this->import($data);
-        }
-
-    }
-
-
 
 	/* ----------------- Results----------------- */
 	public function pagination(int $_elements_for_page = 10, $current_page = 1 ,string $pagination='\team\gui\Pagination') {
@@ -123,7 +102,7 @@ abstract class Model implements \ArrayAccess{
 		@param array $sentences list of params to query. Excepcionally, you can pass a 'order' params(ASC or DESC)
 		@param array $data   list of data to query
 	*/
-    public function findAll( array $sentences = [], array $data = [], $result_type = 'collection') {
+    public function findAll( array $sentences = [], array $data = [], $result_type = null) {
 		$sentences = $sentences?? [];
 
 		$order = 'DESC';
@@ -136,31 +115,23 @@ abstract class Model implements \ArrayAccess{
 
 		$sentences = $sentences + $default;
 
-        $query =  $this->newQuery($data + $this->data, $sentences );
+        $query =  $this->newQuery($data, $sentences );
 
         $records = $query->getAll(static::TABLE);
 
-        if('collection' == $result_type) {
-            return $this->newCollection($records);
-        }else {
+        if(is_array($result_type) && "array" == $result_type) {
             return $records;
         }
+
+        if(!isset($result_type)) {
+            $result_type = get_class($this);
+        }
+
+        return new \team\db\Collection($records , $result_type);
     }
 
 
 	/* ----------------- EVENTS ----------------- */
-
-    //Before initializing and importing data
-    protected function commons() {}
-
-    //After updating, creating or removing  register
-    protected function custom($operation){}
-
-
-    /**
-		Initialize by default
-	*/
-    protected function onInitialize($id, & $data){}
 
 
 	//This function from Collection for everytime a newRecord is created

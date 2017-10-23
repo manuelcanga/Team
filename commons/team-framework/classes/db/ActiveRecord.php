@@ -38,7 +38,28 @@ abstract class ActiveRecord extends \team\db\Model{
 
     protected $safeId = 0;
 
-	/* ----------------- Checks----------------- */
+    /**
+    Construct a ActiveRecord
+    @param mixed $id :  primary key or key used in order to initialize
+    @param array $data : data for initializing
+     */
+    function __construct($id = 0,  array $data = null) {
+        $this->setSafeId($id);
+
+        if( $this->safeId) {
+            $this->initializeIt($this->safeId);
+        }
+
+        $this->onInitialize($id, $data);
+
+        if(isset($data)) {
+            $this->import($data);
+        }
+
+    }
+
+
+    /* ----------------- Checks----------------- */
 
 	/**
 		Validamos el campo clave ID del activerecord
@@ -51,7 +72,6 @@ abstract class ActiveRecord extends \team\db\Model{
 	function isSafe() {
 		return (bool) $this->safeId;
 	}
-
 
 
 	public function exists($name = null) {
@@ -210,5 +230,20 @@ abstract class ActiveRecord extends \team\db\Model{
 
         return $query_result;
     }
+
+    /* ----------------- EVENTS ----------------- */
+
+    //Before initializing and importing data
+    protected function commons() {}
+
+    //After updating, creating or removing  register
+    protected function custom($operation){}
+
+
+    /**
+    Initialize by default
+     */
+    protected function onInitialize($id, & $data){}
+
 
 } 
