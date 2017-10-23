@@ -122,7 +122,7 @@ abstract class ActiveRecord extends \team\db\Model{
 
         $this->data[static::ID] = $this->safeId;
 
-        $this->custom('update');
+        $this->custom();
 
         $query = $this->newQuery($this->data);
 		$query->where[] = [ static::ID  =>  ':'.static::ID  ];
@@ -143,8 +143,7 @@ abstract class ActiveRecord extends \team\db\Model{
             $this[static::ID] = null;
         }
 
-
-        $this->custom('insert');
+        $this->custom();
 
         $query = $this->newQuery($this->data );
 		$id =  $query->add(static::TABLE);
@@ -162,8 +161,6 @@ abstract class ActiveRecord extends \team\db\Model{
 	*/
 	public function removeIt($secure = true) {
 		if(!$this->safeId ) return false;
-
-        $this->custom('remove');
 
         $query = $this->newQuery([static::ID => $this->safeId] );
 
