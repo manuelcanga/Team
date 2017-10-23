@@ -111,29 +111,31 @@ abstract class ActiveRecord extends \team\db\Model{
 
 
 	public function save( ) {
-		if($this->safeId ) {
-			return $this->updateIt($secure = true);
+        $this->commons();
+
+        if($this->safeId ) {
+            $result =  $this->updateIt($secure = true);
 		}else {
-			return $this->insertIt();
-		}
+            $result = $this->insertIt();
+        }
+
+        return $result;
 	}
 
 	public function updateIt($secure = true) {
 
         $this->data[static::ID] = $this->safeId;
 
-        $this->custom();
-
         $query = $this->newQuery($this->data);
 		$query->where[] = [ static::ID  =>  ':'.static::ID  ];
-		$result = $query->update(static::TABLE, $secure);
 
-		if($result) {
-			$this->onInitialize($this[static::ID]);
-		}
+		$result =  $query->update(static::TABLE, $secure);
 
+        if($result) {
+            $this->custom("update");
+        }
 
-		return $result;
+        return $result;
 	}
 
 
@@ -143,17 +145,17 @@ abstract class ActiveRecord extends \team\db\Model{
             $this[static::ID] = null;
         }
 
-        $this->custom();
-
         $query = $this->newQuery($this->data );
-		$id =  $query->add(static::TABLE);
+        $newId = $query->add(static::TABLE);
 
-		if(!empty($id) ) {
-            $this->onInitialize($id);
-		}
+		 if($newId) {
+            $this->setSafeId($newId);
 
-		return $id;
-	}
+            $this->custom('insert');
+         }
+
+         return $newId;
+    }
 
 	/**
 		Realiza el borrado en la base de datos.
@@ -166,7 +168,13 @@ abstract class ActiveRecord extends \team\db\Model{
 
 		$query->where[] = [ static::ID  =>  ':'.static::ID  ];
 
-		return $query->delete(static::TABLE, $secure);
+		$result =  $query->delete(static::TABLE, $secure);
+
+		if($result){
+            $this->custom('remove');
+        }
+
+        return $result;
 	}
 
     /**
@@ -202,17 +210,5 @@ abstract class ActiveRecord extends \team\db\Model{
 
         return $query_result;
     }
-
-
-
-    /* ----------------- EVENTS ----------------- */
-
-	protected function onInitialize($id) {
-        $this->setSafeId($id);
-
-		if( $this->safeId) {
-			$this->initializeIt($this->safeId);
-		}
-	}
 
 } 

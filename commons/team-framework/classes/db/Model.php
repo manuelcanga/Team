@@ -53,14 +53,18 @@ abstract class Model implements \ArrayAccess{
 		@param array $data : data for initializing
 	*/
     function __construct($id = 0,  array $data = null) {
-        $this->onInitialize($id, $data);
+        $this->setSafeId($id);
 
+        if( $this->safeId) {
+            $this->initializeIt($this->safeId);
+        }
+
+        $this->onInitialize($id, $data);
 
         if(isset($data)) {
             $this->import($data);
         }
 
-        $this->commons($data, $id);
     }
 
 
@@ -146,17 +150,17 @@ abstract class Model implements \ArrayAccess{
 
 	/* ----------------- EVENTS ----------------- */
 
-    //After initializing and importing data
-    protected function commons(/* $data = [], $id = null */){}
+    //Before initializing and importing data
+    protected function commons() {}
 
-    //Before updating, creating or deleting register
-    protected function custom(){}
+    //After updating, creating or removing  register
+    protected function custom($operation){}
 
 
     /**
 		Initialize by default
 	*/
-    protected function onInitialize($id){}
+    protected function onInitialize($id, & $data){}
 
 
 	//This function from Collection for everytime a newRecord is created
