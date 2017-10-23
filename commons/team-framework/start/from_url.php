@@ -30,7 +30,6 @@ if(!defined("_SITE_") ) die("Hello,  World");
         //Parseamos la url en busca de los parámetros de la web, los argumentos base serán los de post
 		$args = new \team\types\Url($url, [], $_POST +((array)$this->area_params) + $defaults);
 
-        $url = $args->base_url;
 
         //*** Evitamos que desde el exterior se creen parámetros propios del framework y que no se deberían de modificar directamente ***
         //El package ya se determinó
@@ -84,15 +83,14 @@ if(!defined("_SITE_") ) die("Hello,  World");
         }
 
 
+        $args->base_url = $args->location; //retrocompatibilidad. @deprecated
         $args = \team\Filter::apply('\team\url\args', $args);
 
         //Reseteamos las variables superglobales porque ya la hemos procesado
 		$_GET = $_POST = array();
 
-
-        \team\Config::set('URL',  $url);
-        \team\Config::set('_SELF_',  \team\Context::get('_AREA_').$url);
-        \team\Config::set('ARGS',  $args);
+        \team\Config::set('_SELF_',  \team\Context::get('_AREA_').$args->location);
+        \team\Config::set('URL',  $args);
 
         \team\Debug::trace("Acabado el proceso de analisis de url", $args);
 

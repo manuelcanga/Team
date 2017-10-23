@@ -49,12 +49,12 @@ class Url extends Type
 
         //initial arguments
         $main_data =  [
-                                 'raw_url' => $_url, //url tal y como llega al sistema
-                                 'base_url' => $_url, //url después de validar raw_url
+                                 'raw' => $_url, //url tal y como llega al sistema
+                                 'location' => $_url, //url después de validar raw
                                  'url_path_list' => [], //elementos de url desglosado en elementos de un array
                                  'anchor' => '', //ancla si la tuviera
                                  'item_name' => '', //la url de antes de una extension(ej: html) y desde el ultimo / que la contiene
-                                 'item_id' => 0,  
+                                 'item_id' => 0,
 								 'item_ext' => null
                             ];
 
@@ -67,7 +67,7 @@ class Url extends Type
 		}
 
         //Extraemos toda la informacion de la url
-        $url = parse_url($args["raw_url"]);
+        $url = parse_url($args["raw"]);
 
         //Asignamos los parámetros get por si no los ha cogido bien por la configuracion de apache
         if (isset($url['query'])) {
@@ -79,7 +79,7 @@ class Url extends Type
                 $args["anchor"] = \team\Check::key($url["fragment"]);
             }
         }
-        
+
         //Assign defaults params
         $args = $args + $this->data;
 
@@ -132,16 +132,16 @@ class Url extends Type
 
 			}
 
-            $args['base_url'] = '/'.implode('/', (array)$args["url_path_list"]);
+            $args['location'] = '/'.implode('/', (array)$args["url_path_list"]);
 
             if (!empty($args['item_name'])) {
-               $args['base_url'] .= '/'.$args['item_name'];
+               $args['location'] .= '/'.$args['item_name'];
 
 		   		if (!empty($args['item_id']))
-		           $args['base_url'] .= '-'.$args['item_id'];
+		           $args['location'] .= '-'.$args['item_id'];
 
 		   		if (!empty($args['item_ext']))
-		           $args['base_url'] .= '.'.$args['item_ext'];
+		           $args['location'] .= '.'.$args['item_ext'];
 			}
         }
 
@@ -153,12 +153,12 @@ class Url extends Type
 
 
 	public function check($pattern, &$new_args = [], $defaults = []) {
-		return \team\Url::match($this->data['raw_url'], $pattern, $new_args, $defaults);
+		return \team\Url::match($this->data['raw'], $pattern, $new_args, $defaults);
 	}
 
 	/**
-		Añade valores acorde a un patrón que se lanzará contra la url de raw_url
-		@param string $pattern es el patrón que se usará contra raw_url y por el que se obstendrá nuevos valores
+		Añade valores acorde a un patrón que se lanzará contra la url de raw
+		@param string $pattern es el patrón que se usará contra raw y por el que se obstendrá nuevos valores
 		@params array $others son otros valores que se usaran por defecto,tenga o no, éxito.
 		@param callable $callback es una función que se podrá usar para validar los valores de data si hace match el patrón. 
 	*/

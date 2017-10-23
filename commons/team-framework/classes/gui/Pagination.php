@@ -79,10 +79,8 @@ class Pagination extends \team\db\Find{
 		}
 
 
-         $current_url = \team\Context::get('URL');
-         if(!empty($current_url)){
-             $this->setUrlToCheck($current_url);
-         }
+		$current_url = \team\Context::get('URL');
+        $this->setUrlToCheck($current_url['location']);
 
 		$this->onInitialize($data);
 	}

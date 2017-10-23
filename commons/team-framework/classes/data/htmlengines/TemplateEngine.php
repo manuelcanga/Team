@@ -251,7 +251,7 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 
 		 $_engine->compile_check = !$view_cache;
 		 $_engine->caching = $view_cache;
-		 $compile_id = md5($package.$component.$response.$_template.\team\Config::get('URL').\team\Context::get('COMPILE_ID'));
+		 $compile_id = md5(\team\Config::get('SELF').$_template.\team\Config::get('_SELF_').\team\Context::get('COMPILE_ID'));
 		 $_engine->compile_id =  \team\Filter::apply('\team\smarty\compile_id',$compile_id );
 
 		
