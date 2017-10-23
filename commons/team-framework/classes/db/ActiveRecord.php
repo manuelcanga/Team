@@ -95,9 +95,9 @@ abstract class ActiveRecord extends \team\db\Model{
 	/**
 		Initialize by default
 	*/
-    protected function initializeIt($id, $sentences = [], $data = []) {
+    protected function initializeIt($id) {
 
-	    $query = $this->newQuery([static::ID =>  $id] + $data,  $sentences);
+	    $query = $this->newQuery([static::ID =>  $id]);
 	    $query->where[] = [ static::ID  =>  ':'.static::ID  ];	
 		$record = $query->getRow(static::TABLE);
 
@@ -110,24 +110,21 @@ abstract class ActiveRecord extends \team\db\Model{
 	}
 
 
-	/**
-		En modo seguro sólo se actualizará un registro
-	*/
-	public function save($sentences = [], $secure = true) {
+	public function save( ) {
 		if($this->safeId ) {
-			return $this->updateIt($sentences, $secure);
+			return $this->updateIt($secure = true);
 		}else {
-			return $this->insertIt($sentences);
+			return $this->insertIt();
 		}
 	}
 
-	public function UpdateIt($sentences = [], $secure = true) {
+	public function updateIt($secure = true) {
 
         $this->data[static::ID] = $this->safeId;
 
         $this->custom('update');
 
-        $query = $this->newQuery($this->data, $sentences );
+        $query = $this->newQuery($this->data);
 		$query->where[] = [ static::ID  =>  ':'.static::ID  ];
 		$result = $query->update(static::TABLE, $secure);
 
@@ -140,7 +137,7 @@ abstract class ActiveRecord extends \team\db\Model{
 	}
 
 
-	public function insertIt($sentences = []) {
+	public function insertIt() {
 
         if(!isset($this[static::ID]) ) {
             $this[static::ID] = null;
@@ -149,9 +146,9 @@ abstract class ActiveRecord extends \team\db\Model{
 
         $this->custom('insert');
 
-        $query = $this->newQuery($this->data, $sentences );
-
+        $query = $this->newQuery($this->data );
 		$id =  $query->add(static::TABLE);
+
 		if(!empty($id) ) {
             $this->onInitialize($id);
 		}
@@ -163,14 +160,12 @@ abstract class ActiveRecord extends \team\db\Model{
 		Realiza el borrado en la base de datos.
 		Si $secure es true, no se podrá hacer un delete sin where y los delete con where estarán limitados a un elemento.
 	*/
-	public function removeIt($sentences = [], $secure = true) {
+	public function removeIt($secure = true) {
 		if(!$this->safeId ) return false;
-
-        $this->data[static::ID] = $this->safeId;
 
         $this->custom('remove');
 
-        $query = $this->newQuery($this->data, $sentences );
+        $query = $this->newQuery([static::ID => $this->safeId] );
 
 		$query->where[] = [ static::ID  =>  ':'.static::ID  ];
 
