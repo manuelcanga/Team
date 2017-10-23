@@ -150,12 +150,14 @@ abstract class Builder implements \ArrayAccess {
 
         //Tendriamos que comprobar que existe el directorio o la clase de la acción
         \team\Context::set("RESPONSE", $response);
-        \team\Context::set('RESPONSE_URL', \team\Context::get('BASE_URL').$response.'/');
+        $self = \team\Context::get('BASE_URL').$response.'/';
+
         if($this->id){
-            //Se diferencia de _SELF_ en que self es la url que se especifico en main, mientras que self es dependiente del contexto
-            //No lleva '/' final
-            \team\Context::set('SELF', \team\Context::get('RESPONSE_URL').$this->id);
+            $self .= $this->id.'/';
         }
+
+        //Se diferencia de _SELF_ en que que SELF es es dependiente del contexto y _SELF_ es la que se llamó por el usuario
+        \team\Context::set('SELF', $self);
 
 
         $this->response = $response;

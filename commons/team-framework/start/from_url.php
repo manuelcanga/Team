@@ -36,10 +36,7 @@ if(!defined("_SITE_") ) die("Hello,  World");
         //El package ya se determinó
         $args->package = $package;
         $args->component = null;
-        //_self_ determina la ruta url que se utilizó para llegar al response actual ( normalmente url_path_list en forma de path pero sin filtros )
-        //por tanto es muy útil para que un response se refiera así mismo.
-        //por ejemplo, como  en formulario
-        $args->_self_= null;
+
 
         //Si se especifico una url con extension( ej: /peliculas/mi-pelicula-10.html ) y no hubo un tipo de salida explicito, se toma la extension como salida
         if(!$args->out && $args->item_ext) {
@@ -62,15 +59,10 @@ if(!defined("_SITE_") ) die("Hello,  World");
 			$args->response = $defaults['response'];
 			$args->out =  $defaults['out'];
             $args->filters_list = [];
-            $args->_self_ = \team\Sanitize::trim( implode('/', $args->url_path_list), '/');
-
-
         }else {
             //Le damos la opción al programador de que implemente su propio sistema de parseo de urls
 		  $args = \team\Task('\team\parse_url', $args)->with($args, $url, $package );
 		}
-
-
 
         //Creamos el path de sólo los filtros
         $args->filters_path = '';
@@ -98,15 +90,9 @@ if(!defined("_SITE_") ) die("Hello,  World");
 		$_GET = $_POST = array();
 
 
-        //_SELF_  debe empezar y terminar  / y terminar con  /
-        $_SELF_ =  \team\Sanitize::trim( \team\Config::get("_AREA_").'/'.trim( $args->_self_, '/'), '/');
-
-        \team\Config::set('_SELF_', $_SELF_);
         \team\Config::set('URL',  $url);
+        \team\Config::set('_SELF_',  \team\Context::get('_AREA_').$url);
         \team\Config::set('ARGS',  $args);
-
-
-        unset($args->_self_); //ya no lo necesitamos, está en context
 
         \team\Debug::trace("Acabado el proceso de analisis de url", $args);
 

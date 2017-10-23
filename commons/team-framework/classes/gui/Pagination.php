@@ -73,7 +73,7 @@ class Pagination extends \team\db\Find{
          $this->setElementsForPage($_elements_for_page);
          $this->setCurrentPage($current_page);
 
-		$base_url = \team\Context::get('_SELF_');
+		$base_url = \team\Context::get('SELF');
 		if(!empty($base_url))  {
 			$this->setBaseUrl($base_url.':page');
 		}
