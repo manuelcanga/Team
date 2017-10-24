@@ -115,7 +115,7 @@ class Find implements \ArrayAccess{
         return $this;
     }
 
-    public function setFrom($_from = null, $_full = 0) {
+    public function setFrom($_from = null, $_full = false) {
 
         if($this->from && !$_full) {
             $this->from .= ', '.$_from;
@@ -126,14 +126,12 @@ class Find implements \ArrayAccess{
         return $this;
     }
 
-    public function setWhere($_where = null, $_full = 0) {
+    public function setWhere($_where = null, $_full = false) {
 
-        if($this->where != NULL && $_where != null && !$_full )
-            $this->where .= " AND ( $_where ) ";
-        else if($_where != NULL )
-            $this->where = "( $_where ) ";
-        else {
-            $this->where = '';
+        if($_full) {
+            $this->where[] = ['0' => $_where];
+        }else {
+            $this->where[] = $_where;
         }
 
         return $this;
