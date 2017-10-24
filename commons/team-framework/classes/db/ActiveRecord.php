@@ -51,11 +51,6 @@ abstract class ActiveRecord extends \team\db\Model{
         }
 
         $this->onInitialize($id, $data);
-
-        if(isset($data)) {
-            $this->import($data);
-        }
-
     }
 
 
@@ -233,7 +228,7 @@ abstract class ActiveRecord extends \team\db\Model{
 
     /* ----------------- EVENTS ----------------- */
 
-    //Before initializing and importing data
+    //Before updating, creating or removing  register
     protected function commons() {}
 
     //After updating, creating or removing  register
@@ -243,7 +238,11 @@ abstract class ActiveRecord extends \team\db\Model{
     /**
     Initialize by default
      */
-    protected function onInitialize($id, & $data){}
+    protected function onInitialize($id, & $data){
+        if(isset($data)) {
+            $this->import($data);
+        }
+    }
 
 
 } 
