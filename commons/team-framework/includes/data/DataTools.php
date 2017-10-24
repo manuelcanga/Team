@@ -26,7 +26,7 @@ trait DataTools {
             $fields = array_keys($data);
 		}
 
-        $noImported = array_flip($fields);
+        $noImported = array_intersect_key($data, array_flip($fields));
 
         //Si hay datos los procesamos
         if(!empty($data) ){
