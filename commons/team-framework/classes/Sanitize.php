@@ -187,6 +187,11 @@ class Sanitize {
       return preg_replace("/[^a-zA-Z0-9\-\_\.\ {$others_allowed}]+/", $replace, $str);
 	}
 
+	static function information($str, $others_allowed = '', $replace = '') {
+        $str = strip_tags($str);
+        return preg_replace('/[^\p{Latin}\d\.\-\s'.$others_allowed.']+/iu', $replace, $str);
+    }
+
 	static function html($_string) {
 			if("<br>" == $_string || "<br />" == $_string) {
 				return "";
