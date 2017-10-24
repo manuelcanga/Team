@@ -240,7 +240,7 @@ abstract class ActiveRecord extends \team\db\Model{
      */
     protected function onInitialize($id, & $data){
         if(isset($data)) {
-            $this->import($data);
+            return $this->import($data);
         }
     }
 
