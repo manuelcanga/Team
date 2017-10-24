@@ -189,7 +189,8 @@ abstract class Check
     static public function choice($_answer) {
         $answer = strtolower($_answer);
 
-        if( '1' === $answer || 1 === $answer || 'on' == $answer || 'y' == $_answer ) {
+
+        if( '1' === $answer || 1 === $answer || 'on' === $answer || 'y' === $_answer ) {
             return true;
         }
 
