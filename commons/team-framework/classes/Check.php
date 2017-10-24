@@ -175,7 +175,7 @@ abstract class Check
      * Para ello tiene que ser mayor de 3 carácteres y puede tener cualquier letra( incluido acentos )
      */
     static public function information($text, $default = null, $others=''){
-        if(isset($text) && preg_match('/^[\p{Latin}\d\.\-\s'.$others.']{3,}/iu', $text) )
+        if(isset($text) && preg_match('/^[A-Za-z0-9À-ÿ\.\-\s'.$others.']{3,}/i', $text) )
             return $text;
         else
             return $default;
