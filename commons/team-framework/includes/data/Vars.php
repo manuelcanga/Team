@@ -18,11 +18,17 @@ trait Vars
     }
 
     public static function set($var, $value = null) {
+        $old_value = null;
+
         if(is_array($var)) {
             self::$vars =  $var + self::$vars;
         }else if(is_string($var)){
+            $old_value = self::$vars[$var]?? $old_value;
+
             self::$vars[$var] = $value;
         }
+
+        return $old_value;
     }
 
     public static function push($var, $value = null) {
