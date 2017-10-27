@@ -185,11 +185,11 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
               $template =  _TEAM_."/views/{$name}";
               $found_type =  true;
             break;
-            case 'custom':
+            case 'theme':
                 $template =  _THEME_."/{$name}";
                 $found_type =  true;
                 break;
-            case 'theme':
+            case 'custom':
                 $template =  _THEME_."/{$package}/{$component}/views/{$name}";
                 $found_type =  true;
                 break;
