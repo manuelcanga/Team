@@ -64,6 +64,7 @@ class  Classes{
     private static $registers = array();
 
 
+
     /**
 		Añade un loader asociado
 		@param callable $func es la función que queremos que nos ayude en la carga de clases 
@@ -78,28 +79,37 @@ class  Classes{
 		@param String $class: Nombre de la clase con namespace completo
 		@param $path: Path relativo desde el raiz del framework del archivo donde se encuentra la clase.
 	*/
-	public static function add($alias, $path, $base = _SITE_) {
-        $name = $alias;
+	public static function add($class, $path = null, $base = _SITE_) {
 
-        if(is_array($alias)) {
-            list($alias, $name) = each($alias);
-        }
 
-        $alias = ltrim($alias, '\\');;
-		if(!isset(self::$registers[$alias]) ) {
-			self::$registers[$alias] = ['path' => $path, 'base' => $base, 'name'=> $name, 'initialized' => false ];
+        $class = ltrim($class, '\\');;
+		if(!isset(self::$registers[$class]) ) {
+
+            if(!isset($path)) {
+                $name = \team\NS::basename($class);
+                $path = \team\Context::get('_COMPONENT_').'/classes/'.$name.'.php';
+            }
+
+			self::$registers[$class] = ['path' => $path, 'base' => $base, 'name'=> $class, 'initialized' => false ];
 			if(\team\Config::get("TRACE_AUTOLOAD_CLASS", false) ) {
-				\team\Debug::me("Registrada clase '$_class' con path '$path' y base '$base'");
+				\team\Debug::me("Registrada clase '$class' con path '$path' y base '$base'");
 			}
 			return true;
 		}
 		return false;
 	}
 
-	public function get($class_name_full) {
-	    return self::factory($class_name_full, $instance = true);
+	public static function get($class_name_full) {
+	    return self::factory($class_name_full, $instance = true, $with_alias = true);
     }
 
+    public static function alias($_alias, $class, $path = null, $base = _SITE_) {
+        $_alias = ltrim($_alias,'\\');
+        $class = ltrim($class,'\\');
+
+        \team\Context::add('classs_alias', $_alias, $class);
+        return self::add($class, $path, $base);
+    }
 
     /**
 		Metodo que se encarga de buscar clases para autocargarlas. 
@@ -108,9 +118,19 @@ class  Classes{
 
 		@param String $class_name_full nombre de la clase, con namespace, a buscar
 		@param boolean $instance decidimos que después de encontrar la clase nos devuelva una instancia.
-	*/
-	public static function factory($class_name_full, $instance = false) {
+        @param boolean $with_alias se permite alias de clases o no
+
+     */
+	public static function factory($class_name_full, $instance = false, $with_alias = false) {
         $class_name_full = ltrim($class_name_full,'\\');
+
+        if($with_alias) {
+            $class = \team\Context::getKey($class_name_full, 'classs_alias');
+
+            if(isset($class)) {
+                $class_name_full = $class;
+            }
+        }
 
         /**
         Comprobamos si es una clase registrada
@@ -132,6 +152,7 @@ class  Classes{
 
             $class_name_full = $class['name'];
         }
+
 
         //if class was instance already then return this
         if($instance  && class_exists($class_name_full, false) ) {
