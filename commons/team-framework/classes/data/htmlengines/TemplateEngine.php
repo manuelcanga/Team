@@ -70,6 +70,7 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
         class_alias('Smarty_Internal_Resource_File', 'Smarty_Resource_Package', true);
         class_alias('Smarty_Internal_Resource_File', 'Smarty_Resource_Root', true);
         class_alias('Smarty_Internal_Resource_File', 'Smarty_Resource_Theme', true);
+        class_alias('Smarty_Internal_Resource_File', 'Smarty_Resource_Custom', true);
         class_alias('Smarty_Internal_Resource_File', 'Smarty_Resource_Team', true);
 
 
@@ -101,16 +102,14 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
         //Lanzamos un evento de inicio de transformacion de plantilla
 		//	$event = \Event('Transform', '\team\view')->ocurred($data);
 
-			if(isset($_data['layout']) ) {
-				$_data['layout'] = \team\FileSystem::stripExtension($_data['layout']);
-			}
+            $_data = \team\Filter::apply('\team\template\data', $_data);
 
-			$engine = new \Smarty();
+            $engine = new \Smarty();
 
-			//Obtenemos la plantilla que vamos a procesar
+            //Obtenemos la plantilla que vamos a procesar
 			$template= $this->getView($_data );
 
-			$this->initializeEngine($engine, $_data, $template);
+            $this->initializeEngine($engine, $_data, $template);
 
 			//\team\Debug::out($_data);
 			//Transformamos los datos que tenemos a datos utilizables por smarty
@@ -179,7 +178,6 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
   	   $component = \team\Context::get('COMPONENT');
        $package = '/'.\team\Context::get('PACKAGE');
 
-
         $template = $name;
 		$found_type = false;
         switch($type) {
@@ -187,14 +185,18 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
               $template =  _TEAM_."/views/{$name}";
               $found_type =  true;
             break;
-            case 'theme':
+            case 'custom':
                 $template =  _THEME_."/{$name}";
+                $found_type =  true;
+                break;
+            case 'theme':
+                $template =  _THEME_."/{$package}/{$component}/views/{$name}";
                 $found_type =  true;
                 break;
             case 'commons':
             case 'package':
  				 $found_type =  true;
-              	  $template =  _SITE_."{$package}/commons/views/{$name}";
+              	  $template =  _SITE_."/{$package}/commons/views/{$name}";
 				break;
             case 'root':
   				 $found_type =  true;
@@ -202,7 +204,7 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
                 break;
          	case 'component':
   				  $found_type =  true;
-	               $template =  _SITE_."{$package}/{$component}/views/{$name}";	
+	               $template =  _SITE_."/{$package}/{$component}/views/{$name}";
             break;
 
         }
@@ -286,9 +288,12 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 	    $layout = \team\Context::get('LAYOUT');
         $view = \team\Context::get('VIEW');
 
-
         if(isset($view) ) {
             $view = \team\FileSystem::stripExtension($view);
+        }
+
+        if(isset($layout) ) {
+            $layout = \team\FileSystem::stripExtension($layout);
         }
 
         $is_string = "string" === $layout;

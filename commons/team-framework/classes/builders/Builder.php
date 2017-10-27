@@ -194,6 +194,7 @@ abstract class Builder implements \ArrayAccess {
 
         //Ej de nombre de clase de tipo gui:  /web/news/Gui
         $this->controller = $this->getController($this->response);
+        $this->controller = \team\Filter::apply('\team\builder\controller', $this->controller);
 
         $class_exists = class_exists($this->controller, false);
 
