@@ -78,10 +78,16 @@ class  Classes{
 		@param String $class: Nombre de la clase con namespace completo
 		@param $path: Path relativo desde el raiz del framework del archivo donde se encuentra la clase.
 	*/
-	public static function add($_class, $path, $base = _SITE_) {
-		$class = ltrim($_class, '\\');
-		if(!isset(self::$registers[$class]) ) {
-			self::$registers[$class] = ['path' => $path, 'base' => $base ];
+	public static function add($alias, $path, $base = _SITE_) {
+        $name = $alias;
+
+        if(is_array($alias)) {
+            list($alias, $name) = each($alias);
+        }
+
+        $alias = ltrim($alias, '\\');;
+		if(!isset(self::$registers[$alias]) ) {
+			self::$registers[$alias] = ['path' => $path, 'base' => $base, 'name'=> $name, 'initialized' => false ];
 			if(\team\Config::get("TRACE_AUTOLOAD_CLASS", false) ) {
 				\team\Debug::me("Registrada clase '$_class' con path '$path' y base '$base'");
 			}
@@ -90,13 +96,12 @@ class  Classes{
 		return false;
 	}
 
-	public static function set($class, $path, $base = _SITE_) {
-		$class = ltrim($class, '\\');;
-		self::$registers[$class] = ['path' => $path, 'base' => $base ];
-	}
+	public function get($class_name_full) {
+	    return self::factory($class_name_full, $instance = true);
+    }
 
 
-	/**
+    /**
 		Metodo que se encarga de buscar clases para autocargarlas. 
 		Normalmente será el autoloader del sistema ( en ese caso $_intance será false ), 
 		pero podemos llamarlo nosotros mismos( en ese caso es conveniente pasar true para $instance )
@@ -105,34 +110,36 @@ class  Classes{
 		@param boolean $instance decidimos que después de encontrar la clase nos devuelva una instancia.
 	*/
 	public static function factory($class_name_full, $instance = false) {
+        $class_name_full = ltrim($class_name_full,'\\');
 
-		//if class was instance already then return this
-		if($instance  && class_exists($class_name_full, false) ) {
-		 	return new $class_name_full();	
-		}
+        /**
+        Comprobamos si es una clase registrada
+        Las clases registradas agilizan la carga y por tanto hacen el framework o la web más rápida
+        Todo porque ya sabemos donde hay que buscar la clase
+         */
+        if(isset(self::$registers[$class_name_full]) ) {
+            //Recuperamos el fichero donde está la clase
+            $class =& self::$registers[$class_name_full];
+
+            //Comprobamos si de verdad existe
+            if($class['path'] && self::classExists($class['path'], $class['base'])) {
+
+                if(!$class['initialized']) {
+                    $class['initialized'] = true;
+                    return self::newClass($class['name'], $instance);
+                }
+            }
+
+            $class_name_full = $class['name'];
+        }
+
+        //if class was instance already then return this
+        if($instance  && class_exists($class_name_full, false) ) {
+            return new $class_name_full();
+        }
 
 
-		$class_name_full = ltrim($class_name_full,'\\');
-
-
-		/** 
-			Comprobamos si es una clase registrada
-			Las clases registradas agilizan la carga y por tanto hacen el framework o la web más rápida 
-			Todo porque ya sabemos donde hay que buscar la clase
-		*/
-		if(isset(self::$registers[$class_name_full]) ) {
-			//Recuperamos el fichero donde está la clase
-			$class = self::$registers[$class_name_full];
-
-			//Comprobamos si de verdad existe
-			if(self::classExists($class['path'], $class['base'])) {
-				//Cargamos la clase
-				return self::newClass($class_name_full, $instance);
-			}
-		}
-
-
-		$namespace = explode('\\', $class_name_full);
+        $namespace = explode('\\', $class_name_full);
 		$name = array_pop($namespace);
 
         //Optimización: es una clase smarty salimos
