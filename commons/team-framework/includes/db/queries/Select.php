@@ -45,7 +45,8 @@ trait Select {
         $result = $query->getAll("@Access");
 
         Ejemplo 3:
-        $query = new \team\db\Query(['idmenor' => 3, 'idmayor'=>5]);
+        $query = new \team\db\Query(['idmenor' => 3);
+        $query->idmayor(5); //2º forma de pasar datos
         $query->where = " idAccess > :idmenor && idAccess < :idmayor ";
         $result = $query->getAll("@Access");
 
@@ -61,6 +62,7 @@ trait Select {
         $query->select = " name ";
         $query->from = "@Access"
         $result = $query->getAll();
+
 
      */
     public function getAll($from = NULL, $select = [], $limit = -1) {
