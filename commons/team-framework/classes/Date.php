@@ -195,7 +195,7 @@ class Date {
 	*/
 	public static function getMonths() {
 		$months = [ 1 =>'Enero', 'Febrero', 'Marzo', 'Abril','Mayo','Junio','Julio',
-				'Agosto','Sepiembre', 'Octubre','Noviembre','Diciembre'];
+				'Agosto','Septiembre', 'Octubre','Noviembre','Diciembre'];
 
 		return  \team\Filter::apply('\team\months', $months  );
 	}
