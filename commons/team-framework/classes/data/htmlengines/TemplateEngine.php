@@ -122,7 +122,7 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 			$result =  $engine->fetch($template, $engine_data);
 
 
-   		    if(!$this->gui || \team\Config::get("SHOW_VIEWS", true) ) {
+   		    if(!$this->gui || \team\Context::get("SHOW_VIEWS", true) ) {
 				return $result;
 			}else {
 				return "";
@@ -210,7 +210,7 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
         }
 
 	if($found_type && !file_exists($template) ) {
-		if(\team\Config::get('SHOW_RESOURCES_WARNINGS', false) ) {
+		if(\team\Context::get('SHOW_RESOURCES_WARNINGS', false) ) {
 			\Debug::me("Not found view {$template} of type {$type} and name {$name}");
 		}
 
@@ -249,11 +249,11 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 		$functions = get_defined_functions();
 		 self::$functions_user_cache = $functions["user"];
 
-		 $view_cache =  \team\Config::get('VIEW_CACHE', false);
+		 $view_cache =  \team\Context::get('VIEW_CACHE', false);
 
 		 $_engine->compile_check = !$view_cache;
 		 $_engine->caching = $view_cache;
-		 $compile_id = md5(\team\Config::get('SELF').$_template.\team\Config::get('_SELF_').\team\Context::get('COMPILE_ID'));
+		 $compile_id = $package.\team\Context::get('AREA').\team\Context::get('LAYOUT');
 		 $_engine->compile_id =  \team\Filter::apply('\team\smarty\compile_id',$compile_id );
 
 		
@@ -263,7 +263,7 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 		$_engine->setCacheDir(_TEMPORARY_DIRECTORY_."/smarty/cache");
 
 			/** Usamos un filtro para que no haya espacio en blanco  */
-        if((bool)\team\Config::get('MINIMIZE_VIEW', true)) {
+        if((bool)\team\Context::get('MINIMIZE_VIEW', true)) {
  		  $_engine->loadFilter('output', 'trimwhitespace');
 		}
 
@@ -347,7 +347,7 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 		$data = new \Smarty_Data();
 		//Añadimos a la plantilla todas las constantes de configuracion
 		$data->config_vars = new Config();
-		if(\team\Config::get("TRACE_CONFIG") ) {
+		if(\team\Context::get("TRACE_CONFIG") ) {
 			\team\Debug::me($data->config_vars, "Variables de configuracion smarty");
 		}
 
