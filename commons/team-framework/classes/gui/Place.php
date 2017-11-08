@@ -218,6 +218,11 @@ abstract class Place
         return true;
     }
 
+    public static function reset() {
+        self::$items = [];
+    }
+
+
     public static function restore(string $place) {
         self::$items[$place] = [];
     }
