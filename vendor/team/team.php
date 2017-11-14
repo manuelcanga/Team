@@ -93,11 +93,15 @@ if(!defined('team\\CONFIG_PATH') ) {
    @since 0.1
 */
 if(!defined('_TEMPORARY_DIRECTORY_') ) {
-	define('_TEMPORARY_DIRECTORY_', \_TEAM_.'/data/'.SCRIPT_ID);
+	define('_TEMPORARY_DIRECTORY_', _SERVER_.'/tmp/'.SCRIPT_ID);
 
-	if(!file_exists(_TEMPORARY_DIRECTORY_) ) {
-        mkdir(_TEMPORARY_DIRECTORY_, 0777, true);
+    if(!file_exists(_SERVER_.'/tmp/') ) {
+        mkdir(_SERVER_.'/tmp/', 0777, true);
     }
+}
+
+if(!file_exists(_TEMPORARY_DIRECTORY_) ) {
+    mkdir(_TEMPORARY_DIRECTORY_, 0777, true);
 }
 
 

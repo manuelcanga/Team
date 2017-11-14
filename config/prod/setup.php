@@ -16,3 +16,5 @@ if(!defined('_SCRIPT_')) die("Hello, World!");
 );
 
 
+\team\Config::set('SHOW_ERRORS', true);
+\team\Config::set('SHOW_IN_NAVIGATOR', false);
