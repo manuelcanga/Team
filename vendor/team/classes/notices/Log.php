@@ -84,8 +84,8 @@ class Log {
     static function _option_object() { return self::$_backtrace[1]['object']; }
     static function _option_type() { return self::$_backtrace[1]['type']; }
     static function _option_args() { return self::$_backtrace[1]['args']; }
-    static function _option_date($_format="Y-m-d") { return @date($_format); }
-    static function _option_time($_format="H:i:s") { return @date($_format); }
+    static function _option_date($_format="Y-m-d") { return date($_format); }
+    static function _option_time($_format="H:i:s") { return date($_format); }
     static function _option_get() { return  print_r($_GET, true); }
     static function _option_post() { return  print_r($_POST, true); }
     static function _option_files() { return  print_r($_FILES, true); }
@@ -105,25 +105,18 @@ class Log {
 		@param String $_line linea donde ocurrio el incidente
 	*/
 	public static function insertLog($_file_log, $_var,  $_label, $_file, $_line) {
-		if(!\team\Config::get("LOGS_WRITE", true) ) return ;
-
 		self::$_backtrace = debug_backtrace();
 		$label = "";
 		if(!empty($_label) ) {
 			$label = $_label. " ==> ";
 		}
 
-		$var = self::valuate($_var);
-		$msg = "";
-		if(!\team\Config::get("SYSTEM_LOG", true) ) {
-			$msg = "<reset>[<date>|<time>]: <green> {$label} <reset>";
-			$msg .= " {$var} <reset>on <{$_file}>:<{$_line}> <break>";
-		
-			$msg =  self::replaceTags($msg);
 
-		}else {
-			$msg .= "{$label} {$var} on {$_file}:{$_line}\n\r";
-		}
+		$var = self::valuate($_var);
+        $msg = "<reset>[<date>|<time>]: <green> {$label} <reset>";
+        $msg .= " {$var} <reset>on <{$_file}>:<{$_line}> <break>";
+
+        $msg =  self::replaceTags($msg);
 
 		
 		self::saveLog($_file_log, $msg);
@@ -173,23 +166,25 @@ class Log {
 		@param String $_msg  Mensaje que vamos a parsear(y que se insertara en el log)
 	*/
    public static function replaceTags($_msg) {
-   
+
 		return preg_replace_callback(
 			"/<((\w+?)(\ [\"\'](.+?)[\"\'])?)>/",
-			create_function('$tag',
-				'
+			function($tag) {
+
+
 			$attr = (count($tag)>4)? $tag[4] : null;
 			$func = "_option_".$tag[2];
-				if(isset(\team\Log::$_colors[$tag[2]]) ) {
-					return \team\Log::$_colors[$tag[2]];
-				
-				}elseif( method_exists("\team\Log",$func) && null != $attr )
-					return call_user_func("\team\Log::".$func, $attr );
-				else if ( method_exists("\team\Log",$func)  )
-					return call_user_func("\team\Log::".$func );
+
+
+				if(isset(self::$_colors[$tag[2]]) ) {
+					return self::$_colors[$tag[2]];
+				}elseif( method_exists(self::CLASS,  $func) && null != $attr )
+                   return self::$func( $attr );
+				else if ( method_exists(self::CLASS, $func)  )
+                    return self::$func(  );
 				else
-					return "";
-			'),
+                    return $tag[1];
+			},
 			$_msg
 		);
    
@@ -212,15 +207,17 @@ class Log {
 	*/
    public static function saveLog($_file, $msg) {
 
-		if( $_file != "apache" || \team\Context::get("ERROR_LOG") ) {
+		if( "apache" == $_file || \team\Context::get("ERROR_LOG") ) {
 			error_log($msg);
 		}else {
-			if(!file_exists(_TEMPORARY_DIRECTORY_."/logs") ) 
-				@mkdir(_TEMPORARY_DIRECTORY_."logs");
+
+			if(!file_exists(_TEMPORARY_DIRECTORY_."/logs") ) {
+				mkdir(_TEMPORARY_DIRECTORY_."/logs");
+            }
 
 			$file = _TEMPORARY_DIRECTORY_."/logs/{$_file}.log";
-			if(_TEMPORARY_DIRECTORY_."/logs" ) 
-				file_put_contents($file, $msg, FILE_APPEND | LOCK_EX);
+
+            file_put_contents($file, $msg, FILE_APPEND | LOCK_EX);
 		}
    }
    
