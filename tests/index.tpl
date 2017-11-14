@@ -1,6 +1,8 @@
 {html}
     {head}
 {body}
+
+
 {highlight}
 
     /** Podemos obtener la fecha actual en distintos formatos
