@@ -32,7 +32,7 @@ namespace team;
 
 
 
-\team\Classes::load('\team\defaults\Member', '/classes/defaults/Member.php', _TEAM_);
+\team\loaders\Classes::load('\team\defaults\Member', '/classes/defaults/Member.php', _TEAM_);
 class User {
     /** Definimos la visibilidad */
     const

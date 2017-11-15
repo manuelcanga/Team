@@ -34,12 +34,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace team\data\formats;
 
-\team\Classes::add('team\data\HtmlEngine', "/includes/interfaces/data/HtmlEngine.interface.php", _TEAM_);
+\team\loaders\Classes::add('team\data\HtmlEngine', "/includes/interfaces/data/HtmlEngine.interface.php", _TEAM_);
 
-\team\Classes::add('team\data\htmlengines\TemplateEngine', "/classes/data/htmlengines/TemplateEngine.php", _TEAM_);
-\team\Classes::add('team\data\htmlengines\HtmlEngine', "/classes/data/htmlengines/HtmlEngine.php", _TEAM_);
-\team\Classes::add('team\data\htmlengines\PhpEngine', "/classes/data/htmlengines/PhpEngine.php", _TEAM_);
-\team\Classes::add('team\data\htmlengines\XmlEngine', "/classes/data/htmlengines/XmlEngine.php", _TEAM_);
+\team\loaders\Classes::add('team\data\htmlengines\TemplateEngine', "/classes/data/htmlengines/TemplateEngine.php", _TEAM_);
+\team\loaders\Classes::add('team\data\htmlengines\HtmlEngine', "/classes/data/htmlengines/HtmlEngine.php", _TEAM_);
+\team\loaders\Classes::add('team\data\htmlengines\PhpEngine', "/classes/data/htmlengines/PhpEngine.php", _TEAM_);
+\team\loaders\Classes::add('team\data\htmlengines\XmlEngine', "/classes/data/htmlengines/XmlEngine.php", _TEAM_);
 
 
 final class Html implements \team\interfaces\data\Format  {
@@ -63,7 +63,7 @@ final class Html implements \team\interfaces\data\Format  {
 	
 		$class = \team\Filter::apply('\team\htmlengines\\'.$type_engine, '\team\data\htmlengines\\'.$type_engine);
 
-		return  \team\Classes::factory($class, true);
+		return  \team\loaders\Classes::factory($class, true);
 	}
 
 

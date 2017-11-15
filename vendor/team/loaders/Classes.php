@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-namespace team;
+namespace team\loaders;
 
 /**
 	Gestiona de la autocarga de clases.
@@ -51,7 +51,7 @@ class  Classes{
     esto he ideado un registro de clases, de tal manera que se especifica una clase y un path hacia su ruta. Si la clase
     al final se carga, el autoloader ya tendría un registro de ella y podrá cargar el archivo requerido en poco tiempo.
     @example: Cargamos en la cabecera de uno de nuestros archivos:
-    \team\Classes::add("\mipackage\micomponente\MiClase", "/mipackage/micomponente/directorioOdirectorios/MiClase");
+    \team\loaders\Classes::add("\mipackage\micomponente\MiClase", "/mipackage/micomponente/directorioOdirectorios/MiClase");
     Cuando se haga un uso de la clase "\mipackage\micomponente\MiClase" en el ejemplo, el autoloader ya sabrá dónde se encuentra y la podrá
     cargar sin problema. Además de mejorar la eficiencia, esto permite carga de clases un poco enrevesadas o también externas
     que no calcen con la reglas de Team Framework.
