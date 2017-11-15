@@ -2,7 +2,7 @@
 
 namespace team;
 
-if(!defined('_SCRIPT_')) die("Hello, World!");
+if(!defined('_TEAM_')) die("Hello, World!");
 
 /**
  * Developed by Manuel Canga ( dev@trasweb.net )
