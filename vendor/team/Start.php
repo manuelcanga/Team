@@ -1,4 +1,4 @@
-<?php if(!defined("_SCRIPT_") ) die("Hello,  World");
+<?php if(!defined('_TEAM_') ) die("Hello,  World");
 
 
 

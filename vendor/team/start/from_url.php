@@ -2,7 +2,7 @@
 
 namespace team\start\url;
 
-if(!defined("_SCRIPT_") ) die("Hello,  World");
+if(!defined('_TEAM_') ) die("Hello,  World");
 
 
 
