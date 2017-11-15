@@ -26,6 +26,7 @@ class Configure
         \team\Classes::add('\team\Log', '/classes/notices/Log.php', _TEAM_);
 
         \team\Config::set('TRASWEB', 'dev');
+        \team\Config::set('_THEME_', \_SCRIPT_.'/themes/default');
 
         \team\Config::set('LANG', 'es_ES');
         \team\Config::set('CHARSET', 'UTF-8');

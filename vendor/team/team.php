@@ -70,15 +70,6 @@ if(!defined('team\SCRIPT_ID') ) {
 	define('team\SCRIPT_ID', basename(_SERVER_) );
 }
 
-
-
-if(!defined('team\_THEME_') ) {
-    define('team\_THEME_', \_SCRIPT_.'/themes/default');
-}
-
-
-
-
 /**
   TEAM looking for config from CONFIG_PATH 
   You can change it in order to improve your system security

@@ -186,11 +186,11 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
               $found_type =  true;
             break;
             case 'theme':
-                $template =  \team\_THEME_."/{$name}";
+                $template =  \team\Context::get('_THEME_')."/{$name}";
                 $found_type =  true;
                 break;
             case 'custom':
-                $template =  \team\_THEME_."/{$package}/{$component}/views/{$name}";
+                $template =  \team\Context::get('_THEME_')."/{$package}/{$component}/views/{$name}";
                 $found_type =  true;
                 break;
             case 'commons':
