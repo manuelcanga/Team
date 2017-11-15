@@ -25,8 +25,7 @@ class Configure
         //Cargamos la clase Log para todo ayudar al programador/maquetador en su tarea.
         \team\Classes::add('\team\Log', '/classes/notices/Log.php', _TEAM_);
 
-
-        \team\Config::set('ENVIROMENT', 'local');
+        \team\Config::set('TRASWEB', 'dev');
 
         \team\Config::set('LANG', 'es_ES');
         \team\Config::set('CHARSET', 'UTF-8');
@@ -112,7 +111,7 @@ class Configure
     function launchConfigScripts() {
         \team\FileSystem::load('/Start.php', _TEAM_);
         \team\FileSystem::load('/config/setup.php', \team\_SERVER_);
-        \team\FileSystem::load('/config/'. \team\Config::get('ENVIROMENT').'/setup.php', \team\_SERVER_);
+        \team\FileSystem::load('/config/'. \team\Config::get('TRASWEB').'/setup.php', \team\_SERVER_);
     }
 
 

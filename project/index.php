@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 /** Ruta absoluta de ssoo al directorio de la web. */
 define('_SCRIPT_', 			__DIR__);
-define('ENVIROMENT', 			'dev');
+define('TRASWEB', 			'dev');
 
 include('../vendor/team/team.php');
 
