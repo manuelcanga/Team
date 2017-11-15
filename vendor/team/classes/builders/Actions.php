@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace team\classes\builders;
 
 
-require_once(_TEAM_.'/classes/controller/Actions.php');
+require_once(_TEAM_.'/controller/Actions.php');
 
 
 class Actions extends Builder {
@@ -40,7 +40,7 @@ class Actions extends Builder {
 
 	
 	public function checkParent($class) {
-		return is_subclass_of($this->controller, '\team\Actions');
+		return is_subclass_of($this->controller, '\team\controller\Actions');
 	}
 
 

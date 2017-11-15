@@ -30,13 +30,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace team\classes\builders;
 
-require_once(_TEAM_.'/classes/controller/Gui.php');
+require_once(_TEAM_.'/controller/Gui.php');
 
 class Gui extends Builder {
 
 
 	public function checkParent($class) {
-		return is_subclass_of($this->controller, '\team\Gui');
+		return is_subclass_of($this->controller, '\team\controller\Gui');
 	}
 
 

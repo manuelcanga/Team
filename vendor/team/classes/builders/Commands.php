@@ -31,14 +31,14 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace team\classes\builders;
 
-require_once(_TEAM_.'/classes/controller/Commands.php');
+require_once(_TEAM_.'/controller/Commands.php');
 
 class Commands extends Builder 
 {
 
 
 	public function checkParent($class) {
-		return is_subclass_of($this->controller, '\team\Commands');
+		return is_subclass_of($this->controller, '\team\controller\Commands');
 	}
 
 

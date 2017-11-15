@@ -206,7 +206,7 @@ abstract class Builder implements \ArrayAccess {
             }
         }
 
-        $is_a_controller = is_subclass_of($this->controller, '\team\Controller');
+        $is_a_controller = is_subclass_of($this->controller, '\team\controller\Controller');
 
         if(!$this->checkParent($this->controller)) {
             return \Team::system("Controller class {$this->controller} hasn't got a good parent. Check it", '\team\responses\Response_Not_Found');

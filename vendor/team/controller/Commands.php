@@ -28,18 +28,41 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-namespace team;
+namespace team\controller;
 
 
 /**
-	Son los controladores con response que devuelven un formato distinto de html
+		@TODO:
+		Añadir soporte para colores como tiene los logs. Quizás usando:
+		$cli->put("lo que sea", "red" -color de texto-, "white" -color de fondo-);
+		o mejor aún
+		$cli->put("<red>Lo que sea</red>"); y hacerlo válido también para los Logs
+		Para ello es obvio que tendremos que separar de Log todo esto y hacer algo que funcione para los dos
+		También podría hacerse como un sistema de plantilas smarty tal que así:
+		{red}Bienvenido a TEAM{/red}
 */
-abstract class Actions extends Controller
-{
-    const DEPENDENCIES = '/actions/';
+class Commands extends Controller {
+
+    const DEPENDENCIES = '/commands/';
 
 
-    public function __toString() { return $this->data->out("json");}
+    /*
+        Obtenemos una línea input desde el terminal
+        Muy útil para requerir datos
+    */
+    function getLine() {
+		return trim(fgets(STDIN)); 
+	}
 
+	/**
+		Visualizamos una línea por la salida estandar.
+		¿ De verdad que se usará este método ?
+	*/
+    function putLine($out) {
+		echo $out."\n\r";
+	}
+
+
+    public function __toString() { return $this->data->out("terminal");}
 
 }
