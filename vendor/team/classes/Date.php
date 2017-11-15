@@ -537,7 +537,7 @@ class Date {
             case 'w3c':
                 return date('Y-m-d\TH:i:sP', $timestamp);
                 break;
-            case 'uploads_dir':
+            case 'base_upload':
                 $format = '/%Y/%m';break;
             default:
                 $date_format =  \team\Context::get("\\team\\date_format\\{$format}", null, '\team\Date');

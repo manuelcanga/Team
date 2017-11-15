@@ -275,10 +275,10 @@ final  class Filesystem
             return false;
         }
 
-        $uploads_dir = $options['dir']?? \team\Context::get('UPLOADS_DIR', \team\Date::current('uploads_dir'));
-        $uploads_path =  $options['path']?? \team\Context::get('UPLOADS_PATH', _TEMPORARY_);
+        $base_upload = $options['dir']?? \team\Context::get('BASE_UPLOAD', \team\Date::current('base_upload'));
+        $uploads_path =  $options['path']?? \team\Context::get('_UPLOADS_', _TEMPORARY_);
 
-        self::mkdirRecursive($uploads_path.$uploads_dir);
+        self::mkdirRecursive($uploads_path.$base_upload);
 
         if( isset($options['keep_name']) && $options['keep_name']) {
             $new_name = \team\Sanitize::identifier(\team\Sanitize::chars($name) );
@@ -290,7 +290,7 @@ final  class Filesystem
         $starting_name = $new_name;
         $i = 2; //if file exists, is the second instance
         do {
-            $file = $uploads_dir.'/'.$new_name.'.'.$ext;
+            $file = $base_upload.'/'.$new_name.'.'.$ext;
 
             $file_exists = self::exists($file, $uploads_path);
             if($file_exists) {
@@ -307,20 +307,20 @@ final  class Filesystem
         }
 
 
-        return ['file' => $file, 'name' => $new_name, 'size' => $size, 'ext' => $ext, 'type'=> $type, 'path' => $uploads_path, 'dir' =>$uploads_dir];
+        return ['file' => $file, 'name' => $new_name, 'size' => $size, 'ext' => $ext, 'type'=> $type, 'path' => $uploads_path, 'dir' =>$base_upload];
 
     }
 
     public static function rmUploaded($file, $path = null) {
-       $UPLOADS_PATH = $path??  \team\Context::get('UPLOADS_PATH', _TEMPORARY_);
+       $_UPLOADS_ = $path??  \team\Context::get('_UPLOADS_', _TEMPORARY_);
 
-        return unlink($UPLOADS_PATH.$file);
+        return unlink($_UPLOADS_.$file);
     }
 
     public static function download($file, $name = null, $isUploaded = true) {
 
 	    if($isUploaded) {
-            $path = \team\Context::get('UPLOADS_PATH', _TEMPORARY_);
+            $path = \team\Context::get('_UPLOADS_', _TEMPORARY_);
             $file = $path.$file;
         }
 
