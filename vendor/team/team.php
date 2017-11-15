@@ -73,8 +73,9 @@ if(!defined('team\SCRIPT_ID') ) {
 
 
 if(!defined('team\_THEME_') ) {
-    define('_THEME_', \_SCRIPT_.'/theme');
+    define('team\_THEME_', \_SCRIPT_.'/themes/default');
 }
+
 
 
 

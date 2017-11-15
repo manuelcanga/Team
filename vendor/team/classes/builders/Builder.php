@@ -59,13 +59,13 @@ abstract class Builder implements \ArrayAccess {
             $PACKAGE = \team\Context::get('PACKAGE');
 
             if($PACKAGE ) {
-                \team\Filesystem::load("/{$PACKAGE}/commons.php", _THEME_);
+                \team\Filesystem::load("/{$PACKAGE}/commons.php", \team\_THEME_);
             }
 
             $COMPONENT = \team\Context::get('COMPONENT');
 
             if($COMPONENT ) {
-                \team\Filesystem::load("/{$PACKAGE}/{$COMPONENT}.php", _THEME_);
+                \team\Filesystem::load("/{$PACKAGE}/{$COMPONENT}.php", \team\_THEME_);
             }
         }
     }
