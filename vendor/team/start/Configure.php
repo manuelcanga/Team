@@ -112,7 +112,7 @@ class Configure
     function launchConfigScripts() {
         \team\FileSystem::load('/Start.php', _TEAM_);
         \team\FileSystem::load('/config/setup.php', \team\_SERVER_);
-        \team\FileSystem::load('/config/'. \team\Config::get('TRASWEB').'/setup.php', \team\_SERVER_);
+        \team\FileSystem::load('/'. \team\Config::get('TRASWEB').'/setup.php', \team\_CONFIG_);
     }
 
 

@@ -71,12 +71,12 @@ if(!defined('team\SCRIPT_ID') ) {
 }
 
 /**
-  TEAM looking for config from CONFIG_PATH 
+  TEAM looking for config for path to enviroments
   You can change it in order to improve your system security
   @since 0.1
 */
-if(!defined('team\\CONFIG_PATH') ) {
-	define('team\\CONFIG_PATH', \_SCRIPT_);
+if(!defined('team\_CONFIG_') ) {
+	define('team\_CONFIG_', _SERVER_.'/config');
 }
 
 
