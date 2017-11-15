@@ -75,13 +75,13 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 
 
         //Creamos un directorio temporal que evite las posibles colisiones de temporales smarty entre sitios
-        if(!file_exists(_TEMPORARY_DIRECTORY_."/smarty/compile") ) {
-            mkdir(_TEMPORARY_DIRECTORY_."/smarty/compile", 0777, true);
+        if(!file_exists(_TEMPORARY_."/smarty/compile") ) {
+            mkdir(_TEMPORARY_."/smarty/compile", 0777, true);
         }
 
         //Si no existe, habra que crearlo
-        if(!file_exists(_TEMPORARY_DIRECTORY_."/smarty/cache") ) {
-            mkdir(_TEMPORARY_DIRECTORY_."/smarty/cache", 0777, true);
+        if(!file_exists(_TEMPORARY_."/smarty/cache") ) {
+            mkdir(_TEMPORARY_."/smarty/cache", 0777, true);
         }
 
     }
@@ -259,8 +259,8 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 		
 		//Un componente sólo vería sus cosas, aún así puede usar root: package: etc
 		$_engine->template_dir = _SCRIPT_.'/';
-		$_engine->setCompileDir(_TEMPORARY_DIRECTORY_."/smarty/compile");
-		$_engine->setCacheDir(_TEMPORARY_DIRECTORY_."/smarty/cache");
+		$_engine->setCompileDir(_TEMPORARY_."/smarty/compile");
+		$_engine->setCacheDir(_TEMPORARY_."/smarty/cache");
 
 			/** Usamos un filtro para que no haya espacio en blanco  */
         if((bool)\team\Context::get('MINIMIZE_VIEW', true)) {

@@ -84,16 +84,16 @@ if(!defined('team\_CONFIG_') ) {
   Directory used to save temporary files: logs, caches, etc
    @since 0.1
 */
-if(!defined('_TEMPORARY_DIRECTORY_') ) {
-	define('_TEMPORARY_DIRECTORY_', _SERVER_.'/tmp/'.SCRIPT_ID);
+if(!defined('_TEMPORARY_') ) {
+	define('_TEMPORARY_', _SERVER_.'/tmp/'.SCRIPT_ID);
 
     if(!file_exists(_SERVER_.'/tmp/') ) {
         mkdir(_SERVER_.'/tmp/', 0777, true);
     }
 }
 
-if(!file_exists(_TEMPORARY_DIRECTORY_) ) {
-    mkdir(_TEMPORARY_DIRECTORY_, 0777, true);
+if(!file_exists(_TEMPORARY_) ) {
+    mkdir(_TEMPORARY_, 0777, true);
 }
 
 

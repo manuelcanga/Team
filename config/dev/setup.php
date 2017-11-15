@@ -18,6 +18,7 @@ if(!defined('_TEAM_')) die("Hello, World!");
 
 \team\Config::set('SHOW_ERRORS', true);
 \team\Config::set('SHOW_IN_NAVIGATOR', true);
+
 \team\Config::get('VIEW_CACHE', false);
 
 

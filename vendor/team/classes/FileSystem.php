@@ -276,7 +276,7 @@ final  class Filesystem
         }
 
         $uploads_dir = $options['dir']?? \team\Context::get('UPLOADS_DIR', \team\Date::current('uploads_dir'));
-        $uploads_path =  $options['path']?? \team\Context::get('UPLOADS_PATH', _TEMPORARY_DIRECTORY_);
+        $uploads_path =  $options['path']?? \team\Context::get('UPLOADS_PATH', _TEMPORARY_);
 
         self::mkdirRecursive($uploads_path.$uploads_dir);
 
@@ -312,7 +312,7 @@ final  class Filesystem
     }
 
     public static function rmUploaded($file, $path = null) {
-       $UPLOADS_PATH = $path??  \team\Context::get('UPLOADS_PATH', _TEMPORARY_DIRECTORY_);
+       $UPLOADS_PATH = $path??  \team\Context::get('UPLOADS_PATH', _TEMPORARY_);
 
         return unlink($UPLOADS_PATH.$file);
     }
@@ -320,7 +320,7 @@ final  class Filesystem
     public static function download($file, $name = null, $isUploaded = true) {
 
 	    if($isUploaded) {
-            $path = \team\Context::get('UPLOADS_PATH', _TEMPORARY_DIRECTORY_);
+            $path = \team\Context::get('UPLOADS_PATH', _TEMPORARY_);
             $file = $path.$file;
         }
 

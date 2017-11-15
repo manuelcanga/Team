@@ -211,11 +211,11 @@ class Log {
 			error_log($msg);
 		}else {
 
-			if(!file_exists(_TEMPORARY_DIRECTORY_."/logs") ) {
-				mkdir(_TEMPORARY_DIRECTORY_."/logs");
+			if(!file_exists(_TEMPORARY_."/logs") ) {
+				mkdir(_TEMPORARY_."/logs");
             }
 
-			$file = _TEMPORARY_DIRECTORY_."/logs/{$_file}.log";
+			$file = _TEMPORARY_."/logs/{$_file}.log";
 
             file_put_contents($file, $msg, FILE_APPEND | LOCK_EX);
 		}
@@ -263,8 +263,8 @@ class Log {
 		Creamos el directorio de logs sino estuviera creado
 	*/
 	public static function __initialize() {
-		if(!\team\FileSystem::exists("/logs/", _TEMPORARY_DIRECTORY_) ) {
-			mkdir( _TEMPORARY_DIRECTORY_."/logs/", 0777, true);
+		if(!\team\FileSystem::exists("/logs/", _TEMPORARY_) ) {
+			mkdir( _TEMPORARY_."/logs/", 0777, true);
 		}
     }
 
