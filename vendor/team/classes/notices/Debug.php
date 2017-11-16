@@ -69,7 +69,7 @@ final  class Debug
                 $backtrace = array_reverse($backtrace);
 
                 foreach ($backtrace as $trace) {
-                    if (strpos($trace["file"], _TEAM_) === false) {
+                    if (isset($trace["file"]) && strpos($trace["file"], _TEAM_) === false) {
                         $file = $trace["file"];
                         $line = $trace["line"];
                     }
