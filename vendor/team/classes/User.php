@@ -32,7 +32,7 @@ namespace team;
 
 
 
-\team\loader\Classes::load('\team\defaults\Member', '/classes/defaults/Member.php', _TEAM_);
+\team\loader\Classes::load('\team\predefined\Member', '/predefined/Member.php', _TEAM_);
 class User {
     /** Definimos la visibilidad */
     const
@@ -57,7 +57,7 @@ class User {
     public static function __initialize() {
 		if(isset(self::$current) ) return  ;
 
-      $user_class =\team\Context::get('\team\User', '\team\defaults\Member');
+      $user_class =\team\Context::get('\team\User', '\team\predefined\Member');
 
 	  if(isset($user_class) && class_exists($user_class )  ) {
 		 self::$current  = new  $user_class();

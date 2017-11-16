@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace team;
 
-\team\loader\Classes::load('\team\defaults\Apcu', '/classes/defaults/Apcu.php', _TEAM_);
+\team\loader\Classes::load('\team\predefined\Apcu', '/predefined/Apcu.php', _TEAM_);
 class Cache {
 	/** Current cache system */
     private static $current = null;
@@ -41,7 +41,7 @@ class Cache {
     public  static function __initialize() {
 		if(isset(self::$current) ) return  ;
 
-		  $cache_class = \team\Config::get('\team\Cache', '\team\defaults\Apcu');
+		  $cache_class = \team\Context::get('\team\Cache', '\team\predefined\Apcu');
 
 
 		  if(isset($cache_class) && class_exists($cache_class )  ) {
