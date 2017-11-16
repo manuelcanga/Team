@@ -21,9 +21,9 @@ class Configure
 
     private function preconfigureEnviroment() {
         //Añadimos la clase que gestiona los datos de session
-        \team\loaders\Classes::add('\team\User', '/classes/User.php', _TEAM_);
+        \team\loader\Classes::add('\team\User', '/classes/User.php', _TEAM_);
         //Cargamos la clase Log para todo ayudar al programador/maquetador en su tarea.
-        \team\loaders\Classes::add('\team\Log', '/classes/notices/Log.php', _TEAM_);
+        \team\loader\Classes::add('\team\Log', '/classes/notices/Log.php', _TEAM_);
 
         \team\Config::set('TRASWEB', 'dev');
         \team\Config::set('_THEME_', \_SCRIPT_.'/themes/default');
@@ -125,7 +125,7 @@ class Configure
      */
 
     function registerAutoload() {
-        spl_autoload_register(\team\Config::get('\team\autoload', ['\team\loaders\Classes', 'factory'] ));
+        spl_autoload_register(\team\Config::get('\team\autoload', ['\team\loader\Classes', 'factory'] ));
     }
 
     function cachingSystem() {

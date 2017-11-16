@@ -115,7 +115,7 @@ require(\_TEAM_.'/includes/data/Vars.php');
 //La clase que gestiona opciones de configuración
 require(\_TEAM_.'/classes/Config.php');
 //Classes se encarga de la autocarga y manejo de clases
-require(\_TEAM_.'/loaders/Classes.php');
+require(\_TEAM_.'/loader/Classes.php');
 //Manejo de configuración de locales
 require(\_TEAM_.'/classes/I18N.php');
 //Plantilla para la gestión fáci de datos de una clase

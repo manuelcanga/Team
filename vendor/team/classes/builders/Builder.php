@@ -32,9 +32,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace team\classes\builders;
 
 
-\team\loaders\Classes::add('\team\classes\builders\Gui', 			'/classes/builders/Gui.php', _TEAM_);
-\team\loaders\Classes::add('\team\classes\builders\Actions', 		'/classes/builders/Actions.php', _TEAM_);
-\team\loaders\Classes::add('\team\classes\builders\Commands', 	'/classes/builders/Commands.php', _TEAM_);
+\team\loader\Classes::add('\team\classes\builders\Gui', 			'/classes/builders/Gui.php', _TEAM_);
+\team\loader\Classes::add('\team\classes\builders\Actions', 		'/classes/builders/Actions.php', _TEAM_);
+\team\loader\Classes::add('\team\classes\builders\Commands', 	'/classes/builders/Commands.php', _TEAM_);
 
 /**
 Clase que se encargará de construcción de la acción para su lanzamiento
@@ -201,7 +201,7 @@ abstract class Builder implements \ArrayAccess {
         if(!$class_exists) {
             $class_file = str_replace('\\', '/', $this->controller).'.php';
 
-            if( ! \team\loaders\Classes::load($this->controller, $class_file )  )  {
+            if( ! \team\loader\Classes::load($this->controller, $class_file )  )  {
                 return \Team::system("Controller class file {$class_file} not found", '\team\responses\Response_Not_Found');
             }
         }

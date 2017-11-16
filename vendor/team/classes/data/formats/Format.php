@@ -30,17 +30,17 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace team\data\formats;
 
-\team\loaders\Classes::add('team\data\Format', "/includes/interfaces/data/Format.interface.php", _TEAM_);
+\team\loader\Classes::add('team\data\Format', "/includes/interfaces/data/Format.interface.php", _TEAM_);
 
-\team\loaders\Classes::add('\team\data\formats\Arrayformat', "/classes/data/formats/Arrayformat.php", _TEAM_);
-\team\loaders\Classes::add('\team\data\formats\Html', "/classes/data/formats/Html.php", _TEAM_);
-\team\loaders\Classes::add('\team\data\formats\Json', "/classes/data/formats/Json.php", _TEAM_);
-\team\loaders\Classes::add('\team\data\formats\Log', "/classes/data/formats/Log.php, _TEAM_");
-\team\loaders\Classes::add('\team\data\formats\Object', "/classes/data/formats/Object.php", _TEAM_);
-\team\loaders\Classes::add('\team\data\formats\String', "/classes/data/formats/String.php", _TEAM_);
-\team\loaders\Classes::add('\team\data\formats\Terminal', "/classes/data/formats/Terminal.php", _TEAM_);
-\team\loaders\Classes::add('\team\data\formats\Url', "/classes/data/formats/Url.php", _TEAM_);
-\team\loaders\Classes::add('\team\data\formats\Xml', "/classes/data/formats/Xml.php", _TEAM_);
+\team\loader\Classes::add('\team\data\formats\Arrayformat', "/classes/data/formats/Arrayformat.php", _TEAM_);
+\team\loader\Classes::add('\team\data\formats\Html', "/classes/data/formats/Html.php", _TEAM_);
+\team\loader\Classes::add('\team\data\formats\Json', "/classes/data/formats/Json.php", _TEAM_);
+\team\loader\Classes::add('\team\data\formats\Log', "/classes/data/formats/Log.php, _TEAM_");
+\team\loader\Classes::add('\team\data\formats\Object', "/classes/data/formats/Object.php", _TEAM_);
+\team\loader\Classes::add('\team\data\formats\String', "/classes/data/formats/String.php", _TEAM_);
+\team\loader\Classes::add('\team\data\formats\Terminal', "/classes/data/formats/Terminal.php", _TEAM_);
+\team\loader\Classes::add('\team\data\formats\Url', "/classes/data/formats/Url.php", _TEAM_);
+\team\loader\Classes::add('\team\data\formats\Xml', "/classes/data/formats/Xml.php", _TEAM_);
 
 
 
@@ -56,7 +56,7 @@ class Format {
 	
 		$class = \team\Filter::apply('\team\formats\\'.$type, '\team\data\formats\\'.$type);
 
-		return \team\loaders\Classes::factory($class, true);
+		return \team\loader\Classes::factory($class, true);
 	}
 
 

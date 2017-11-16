@@ -29,10 +29,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace team;
 
-\team\loaders\Classes::add('team\types\Store', "/classes/types/Store.php", _TEAM_);
-\team\loaders\Classes::add('team\data\formats\Format', "/classes/data/formats/Format.php", _TEAM_);
-\team\loaders\Classes::add('team\interfaces\data\Format', "/includes/interfaces/data/Format.php", _TEAM_);
-\team\loaders\Classes::add('team\interfaces\data\HtmlEngine', "/includes/interfaces/data/HtmlEngine.php", _TEAM_);
+\team\loader\Classes::add('team\types\Store', "/classes/types/Store.php", _TEAM_);
+\team\loader\Classes::add('team\data\formats\Format', "/classes/data/formats/Format.php", _TEAM_);
+\team\loader\Classes::add('team\interfaces\data\Format', "/includes/interfaces/data/Format.php", _TEAM_);
+\team\loader\Classes::add('team\interfaces\data\HtmlEngine', "/includes/interfaces/data/HtmlEngine.php", _TEAM_);
 
 require(__DIR__.'/types/Base.php');
 
