@@ -44,7 +44,7 @@ function smarty_block_cache($params, $content, Smarty_Internal_Template $templat
 
 	$cache_id = null;
     if(isset($params['id']) ) {
-        $cache_id = \team\Cache::checkIds($params['id']);
+        $cache_id = \team\system\Cache::checkIds($params['id']);
 
 		if(!$cache_id) return $content;
 	}else {
@@ -53,7 +53,7 @@ function smarty_block_cache($params, $content, Smarty_Internal_Template $templat
 
 	if($repeat) { //Al inicio de la etiqueta
 
-		$cache = \team\Cache::get($cache_id);
+		$cache = \team\system\Cache::get($cache_id);
 
 		if(!empty($cache)) {
 			$repeat= false; //No hace falta que se proceso lo interior
@@ -65,7 +65,7 @@ function smarty_block_cache($params, $content, Smarty_Internal_Template $templat
 
     $cache_time = $params['time']?? null;
 
-	\team\Cache::overwrite($cache_id, $content, $cache_time );
+	\team\system\Cache::overwrite($cache_id, $content, $cache_time );
 
 	return $content;
 }

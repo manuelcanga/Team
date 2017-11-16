@@ -79,7 +79,7 @@ abstract class Http
      * Set the headers for caching for $days days with JavaScript content type.
      */
     public function sendCacheJavascriptHeaders($days = 10) {
-        $expiresOffset = $days * \team\Date::A_DAY;
+        $expiresOffset = $days * \team\system\Date::A_DAY;
 
         header( "Content-Type: text/javascript; charset=" . get_bloginfo( 'charset' ) );
         header( "Vary: Accept-Encoding" ); // Handle proxies

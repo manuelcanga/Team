@@ -28,7 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-namespace team;
+namespace team\system;
+
 
 
 
@@ -128,8 +129,8 @@ final  class Filesystem
         Elimina una extensión de un archivo y le añade $new_extension si se le especifica
         @param string $_file: nombre del archivo al que se le quiere quiar la extensión
         @param string $_new_extension: nueva extensión, prefijada por punto, que se quiera añadir.
-        @example \team\FileSystem::stripExtension('mivista.tpl'); //mivista
-        @example \team\FileSystem::stripExtension('styles.min.css', '.css'); //style.css
+        @example \team\system\FileSystem::stripExtension('mivista.tpl'); //mivista
+        @example \team\system\FileSystem::stripExtension('styles.min.css', '.css'); //style.css
     */
     public static function stripExtension($_file, $_new_extension = '') {
 
@@ -275,7 +276,7 @@ final  class Filesystem
             return false;
         }
 
-        $base_upload = $options['dir']?? \team\Context::get('BASE_UPLOAD', \team\Date::current('base_upload'));
+        $base_upload = $options['dir']?? \team\Context::get('BASE_UPLOAD', \team\system\Date::current('base_upload'));
         $uploads_path =  $options['path']?? \team\Context::get('_UPLOADS_', _TEMPORARY_);
 
         self::mkdirRecursive($uploads_path.$base_upload);
@@ -283,7 +284,7 @@ final  class Filesystem
         if( isset($options['keep_name']) && $options['keep_name']) {
             $new_name = \team\Sanitize::identifier(\team\Sanitize::chars($name) );
         }else {
-            $new_name = md5(\team\Date::current('timestamp').'_'.$tmp_name);
+            $new_name = md5(\team\system\Date::current('timestamp').'_'.$tmp_name);
         }
 
 

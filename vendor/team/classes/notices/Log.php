@@ -263,7 +263,7 @@ class Log {
 		Creamos el directorio de logs sino estuviera creado
 	*/
 	public static function __initialize() {
-		if(!\team\FileSystem::exists("/logs/", _TEMPORARY_) ) {
+		if(!\team\system\FileSystem::exists("/logs/", _TEMPORARY_) ) {
 			mkdir( _TEMPORARY_."/logs/", 0777, true);
 		}
     }

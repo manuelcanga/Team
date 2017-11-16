@@ -28,7 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-namespace team;
+namespace team\system;
 
 \team\loader\Classes::load('\team\predefined\Apcu', '/predefined/Apcu.php', _TEAM_);
 class Cache {
@@ -83,10 +83,10 @@ class Cache {
      * @return array|int|string
      */
     public  static function checkTime($time, $cacheid) {
-		$time = \team\Date::strToTime($time);
+		$time = \team\system\Date::strToTime($time);
 
         if(is_null($time)){
-            return \team\Filter::apply('\team\cache\default_time', \team\Date::AN_HOUR, $cacheid);
+            return \team\Filter::apply('\team\cache\default_time', \team\system\Date::AN_HOUR, $cacheid);
         }
 
         return $time;

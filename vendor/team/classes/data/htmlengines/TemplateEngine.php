@@ -289,11 +289,11 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
         $view = \team\Context::get('VIEW');
 
         if(isset($view) ) {
-            $view = \team\FileSystem::stripExtension($view);
+            $view = \team\system\FileSystem::stripExtension($view);
         }
 
         if(isset($layout) ) {
-            $layout = \team\FileSystem::stripExtension($layout);
+            $layout = \team\system\FileSystem::stripExtension($layout);
         }
 
         $is_string = "string" === $layout;
@@ -317,7 +317,7 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
                 $template = '';
             }
 		}else {
-            $is_view =  $view_exists &&  \team\FileSystem::exists("/".$view.".tpl");
+            $is_view =  $view_exists &&  \team\system\FileSystem::exists("/".$view.".tpl");
 
             if (!$is_layout && $is_view ) {
                 $template = _SCRIPT_."/".$view.".tpl";

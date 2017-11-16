@@ -105,7 +105,7 @@ ini_set('display_errors', 0);
 
 
 //Utilidades sobre el sistema de archivos
-require(\_TEAM_.'/classes/FileSystem.php');
+require(\_TEAM_.'/system/FileSystem.php');
 //Cargamos la clase Filter que se encarga de las validaciones
 require(\_TEAM_.'/classes/Check.php');
 //Filter, permite el filtrado de datos de modo desacoplado.
@@ -113,7 +113,9 @@ require(\_TEAM_.'/classes/hooks/Filter.php');
 //Trait para las clases que manejan variables de configuración: Config y Context
 require(\_TEAM_.'/includes/data/Vars.php');
 //La clase que gestiona opciones de configuración
-require(\_TEAM_.'/classes/Config.php');
+require(\_TEAM_.'/system/Config.php');
+class_alias('\team\system\Config', '\team\Config', false);
+
 //Classes se encarga de la autocarga y manejo de clases
 require(\_TEAM_.'/loader/Classes.php');
 //Manejo de configuración de locales
@@ -121,7 +123,7 @@ require(\_TEAM_.'/classes/I18N.php');
 //Plantilla para la gestión fáci de datos de una clase
 require(\_TEAM_.'/includes/data/Storage.php');
 //La clase que gestiona caché
-require(\_TEAM_.'/classes/Cache.php');
+require(\_TEAM_.'/system/Cache.php');
 //La clase Context nos sirve para tener un control de variables de configuracion en funcion del contento
 require(\_TEAM_.'/classes/Context.php'); 
 //La clase Team, Notice y Erros llevan un control de las notificaciones de  avisos y errores del sistema

@@ -59,13 +59,13 @@ abstract class Builder implements \ArrayAccess {
             $PACKAGE = \team\Context::get('PACKAGE');
 
             if($PACKAGE ) {
-                \team\Filesystem::load("/{$PACKAGE}/commons.php",  \team\Context::get('_THEME_') );
+                \team\system\FileSystem::load("/{$PACKAGE}/commons.php",  \team\Context::get('_THEME_') );
             }
 
             $COMPONENT = \team\Context::get('COMPONENT');
 
             if($COMPONENT ) {
-                \team\Filesystem::load("/{$PACKAGE}/{$COMPONENT}.php", \team\Context::get('_THEME_'));
+                \team\system\FileSystem::load("/{$PACKAGE}/{$COMPONENT}.php", \team\Context::get('_THEME_'));
             }
         }
     }
@@ -74,7 +74,7 @@ abstract class Builder implements \ArrayAccess {
     Asignamos el paquete
      */
     protected function setPackage($package) {
-        if(!\team\Filesystem::exists('/'.$package) ) {
+        if(!\team\system\FileSystem::exists('/'.$package) ) {
             \Team::system("Package '{$package}' not found", '\team\responses\Response_Not_Found');
         }
 
@@ -116,7 +116,7 @@ abstract class Builder implements \ArrayAccess {
         //Guardamos el path a la acción tanto absoluta como relativamente
         $this->path = str_replace("\\", "/", $this->namespace);
 
-        if(empty($component) || !\team\Filesystem::exists($this->path) ) {
+        if(empty($component) || !\team\system\FileSystem::exists($this->path) ) {
             \Team::system("Component '{$this->package}/{$component}' not found", '\team\responses\Response_Not_Found', $this->get(), $level = 5);
         }
 

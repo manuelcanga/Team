@@ -14,7 +14,7 @@ trait View
     public function getView($_file, $component = null, $package = null ) {
 
         //Eliminamos la extensión( ya que eso depende del sistema de render escogido )
-        $file = \team\FileSystem::stripExtension($_file);
+        $file = \team\system\FileSystem::stripExtension($_file);
 
         //Es un resource
         if(strpos($_file, ':')) {
@@ -24,9 +24,9 @@ trait View
         if(empty($file) )
             $file = $this->getContext('RESPONSE');
 
-        $file = \team\FileSystem::getPath("views", $component, $package)."{$file}";
+        $file = \team\system\FileSystem::getPath("views", $component, $package)."{$file}";
 
-        if(\team\FileSystem::filename('/'.$file)) {
+        if(\team\system\FileSystem::filename('/'.$file)) {
             return $file;
         }else if(\team\Config::get('SHOW_RESOURCES_WARNINGS', false) ) {
             \team\Debug::me("View {$file}[{$_file}] not found in {$package}/{$component}", 3);

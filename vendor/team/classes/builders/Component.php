@@ -58,16 +58,16 @@ class Component   implements \ArrayAccess{
 
         //No se ha pasado un componente correcto
         $base_component = "/".$params['package'].'/'.$params['component'];
-        if(!\team\FileSystem::exists($base_component) ) {
+        if(!\team\system\FileSystem::exists($base_component) ) {
             \Team::warning("$widget_name not found. Review widget name or change \" to \' in your widget name param, please", 'WIDGET_NAME');
             return '';
         }
 
         $cache_id = null;
         if(isset($cache) ) {
-            $cache_id =  \team\Cache::checkIds($cache, $widget_name);
+            $cache_id =  \team\system\Cache::checkIds($cache, $widget_name);
 
-            $cache = \team\Cache::get($cache_id);
+            $cache = \team\system\Cache::get($cache_id);
 
             if(!empty($cache)) {
                 return $cache;
@@ -99,7 +99,7 @@ class Component   implements \ArrayAccess{
         if(isset($cache_id) ) {
             $cache_time = $params['cachetime']?? null;
 
-            \team\Cache::overwrite($cache_id, $widget_content, $cache_time );
+            \team\system\Cache::overwrite($cache_id, $widget_content, $cache_time );
         }
 
         return $widget_content;

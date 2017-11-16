@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
 	Clase que proporciona metodos utiles para asuntos de seguridad
 */
-namespace team;
+namespace team\system;
 
 
 
@@ -64,7 +64,7 @@ class Security {
 	 	Muy útil también para generar passwords
 
 	    @param int $length Longitud para la nueva sal
-		@example \team\Security::getSalt() => devuelve jbjltmnlp ( salt al azar )
+		@example \team\system\Security::getSalt() => devuelve jbjltmnlp ( salt al azar )
 
 		@return devuelve la salt generada del tamaño especificado
 	*/

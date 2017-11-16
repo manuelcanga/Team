@@ -52,7 +52,7 @@ function smarty_function_ago($params, &$smarty)
 	$and = $params['and']??  'y' ;
 
 	//Procesamos la hora
-	$diff = \team\Date::diff($date, $type);
+	$diff = \team\system\Date::diff($date, $type);
 
 
 

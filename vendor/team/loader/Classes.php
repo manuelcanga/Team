@@ -190,7 +190,7 @@ class  Classes{
 		}
 
 		//Comprobamos si no existe un package acorde al primer elemento del namespace de la clase
-		if(!isset($package)  || ! \team\FileSystem::exists("/$package") )  {
+		if(!isset($package)  || ! \team\system\FileSystem::exists("/$package") )  {
 			$subpath = '/';
 			if(!empty($namespace) ) {
 				$subpath = '/'.implode('/', $namespace).'/';
@@ -223,7 +223,7 @@ class  Classes{
 
 
 		//Comprobamos si es una clase de common pero con un subnamespace a partir de este.
-		 if(isset($package) && !isset($component) && ! \team\FileSystem::exists("/{$package}/{$component}")  )  {
+		 if(isset($package) && !isset($component) && ! \team\system\FileSystem::exists("/{$package}/{$component}")  )  {
 			$subpath = '/';
 			if(!empty($namespace) ) {
 				$subpath = '/'.implode('/', $namespace).'/';
@@ -234,7 +234,7 @@ class  Classes{
 	   	   }
 		}
 
-		if(isset($component) &&  \team\FileSystem::exists("/{$package}/{$component}") ) {
+		if(isset($component) &&  \team\system\FileSystem::exists("/{$package}/{$component}") ) {
 			$subpath = '/';
 			if(!empty($namespace) ) {
 				$subpath = '/'.implode('/', $namespace).'/';
@@ -355,7 +355,7 @@ class  Classes{
 	*/
 	public static  function isPseudoClass($package, $component) {
 
-		if(\team\FileSystem::exists("/{$package}/{$component}") ) {
+		if(\team\system\FileSystem::exists("/{$package}/{$component}") ) {
 			//Creamos una clase de componente
 			$new_class = "Namespace {$package}; class {$component} extends \\team\\Component { }";
 

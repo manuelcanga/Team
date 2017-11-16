@@ -88,7 +88,7 @@ abstract class Place
         return self::add($place, $order, 'content', function($content, $params, $engine) use ($file_with_content, $position) {
             $new_content = '';
 
-            if(\team\Filesystem::exists($file_with_content) ){
+            if(\team\system\FileSystem::exists($file_with_content) ){
                 $new_content = file_get_contents(_SCRIPT_.$file_with_content);
             }
 
@@ -112,7 +112,7 @@ abstract class Place
      * @param bool $order  orden de colocación de la vista respecto a otra en el mismo lugar.
      */
     public static  function view(string $place, $view, $_options = [], $order = 40, $position = 'end') {
-        $view =  \team\FileSystem::stripExtension($view);
+        $view =  \team\system\FileSystem::stripExtension($view);
         $idView = \team\Sanitize::identifier($view);
         $options =  $_options;
 
@@ -124,7 +124,7 @@ abstract class Place
         //Comprobamos si se quiere caché o no
         $cache_id = null;
         if(isset($_options['cache']) ) {
-            $cache_id =  \team\Cache::checkIds($_options['cache'], $idView);
+            $cache_id =  \team\system\Cache::checkIds($_options['cache'], $idView);
         }
 
 
@@ -134,7 +134,7 @@ abstract class Place
 
             //Comprobamos si ya estaba la plantilla cacheada
             if(isset($cache_id) ) {
-                $cache = \team\Cache::get($cache_id);
+                $cache = \team\system\Cache::get($cache_id);
                 if(!empty($cache)) {
                     return $content.$cache;
                 }
@@ -158,7 +158,7 @@ abstract class Place
             if(isset($cache_id) ) {
                 $cache_time = $options['cachetime']?? null;
 
-                \team\Cache::overwrite($cache_id,  $view_content, $cache_time );
+                \team\system\Cache::overwrite($cache_id,  $view_content, $cache_time );
             }
 
             return self::addContentInPosition($view_content, $position, $content);
@@ -176,13 +176,13 @@ abstract class Place
         //y llamaremos al evento \team\widget\{id_widget}
         $namespace =  \team\NS::explode($widget_name);
 
-        \team\FileSystem::ping("/{$namespace['package']}/{$namespace['component']}/config/placed.php");
+        \team\system\FileSystem::ping("/{$namespace['package']}/{$namespace['component']}/config/placed.php");
         \Team::event('\team\placed\\'.$idwidget, $place, $_options, $order);
 
         //Comprobamos si se quiere caché o no
         $cache_id = null;
         if(isset($_options['cache']) ) {
-            $cache_id =  \team\Cache::checkIds($_options['cache'], $idwidget);
+            $cache_id =  \team\system\Cache::checkIds($_options['cache'], $idwidget);
             unset($_options['cache']);
         }
 

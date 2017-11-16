@@ -114,7 +114,7 @@ function setUpPackage($package, $url) {
 
     //Aquí ya sabemos el package del main, así que le mandamos un Start
     //Así pueden añadir filtros o tasks dependientes del package( por ejemplo, para parseos de urls dependiendo del paquete )
-    \team\FileSystem::load("/{$package}/commons/config/Start.php");
+    \team\system\FileSystem::load("/{$package}/commons/config/Start.php");
 
     return $package;
 }

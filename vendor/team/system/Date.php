@@ -28,9 +28,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
  */
 
-namespace team;
+namespace team\system;
 
 
+class_alias('\team\system\Date', '\team\Date', false);
 
 
 class Date {
@@ -283,7 +284,7 @@ class Date {
     /**
      * Parses English $change( from $timestamp ) and converts to $to_format
      * e.g. \ team\Date::get('+2 days', 'day'); //result 'wednesday' if today is 'monday'
-     * e.g2:  \team\Date::get('-1 Week')
+     * e.g2:  \team\system\Date::get('-1 Week')
      **/
     public static function get($change, $to_format =  'timestamp', $timestamp = null) {
         $timestamp = $timestamp?: time();

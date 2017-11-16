@@ -49,7 +49,7 @@ trait Assets {
         if("internet" === $component)
             $file = $_file;
         else {
-            $file = "/".\team\FileSystem::getPath("css", $component, $package )."{$_file}";
+            $file = "/".\team\system\FileSystem::getPath("css", $component, $package )."{$_file}";
 
         }
 
@@ -57,7 +57,7 @@ trait Assets {
         $file .= '.css';
 
 
-        if( "internet" == $component || \team\Filesystem::exists($file) ) {
+        if( "internet" == $component || \team\system\FileSystem::exists($file) ) {
             \team\Config::add("\\team\\css\\{$position}", $idfile, $file);
 
         }else if(\team\Config::get('SHOW_RESOURCES_WARNINGS', false) ) {
@@ -84,13 +84,13 @@ trait Assets {
         if("internet" === $component)
             $file = $_file;
         else
-            $file = "/".\team\FileSystem::getPath("js", $component, $package)."{$_file}";
+            $file = "/".\team\system\FileSystem::getPath("js", $component, $package)."{$_file}";
 
         $idfile =    \team\Sanitize::identifier($file);
         $file .= '.js';
 
 
-        if('internet' == $component || \team\Filesystem::exists($file) ) {
+        if('internet' == $component || \team\system\FileSystem::exists($file) ) {
             \team\Config::add("\\team\\js\\{$position}", $idfile, $file);
         }else if(\team\Config::get('SHOW_RESOURCES_WARNINGS', false) ) {
             \team\Debug::me("Javascript file[$position] $file not found in {$package}/$component", 3);

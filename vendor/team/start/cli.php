@@ -42,7 +42,7 @@ if(!defined('_TEAM_') ) die("Hello,  World");
   First argument is name of command( ej: php ./site/index.php -> command: index )
 */
 function extract_command(& $argv) {
- return \team\FileSystem::basename(array_shift($argv));
+ return \team\system\FileSystem::basename(array_shift($argv));
 }
 
 

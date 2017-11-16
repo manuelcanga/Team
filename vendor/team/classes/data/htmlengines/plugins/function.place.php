@@ -52,9 +52,9 @@ function smarty_function_place($params, &$engine)
         //¿ Está el contenido de este place disponible desde la caché ?
 		$cache_id = null; 
 		if(isset($params['cache']) ) {
-            $cache_id =  \team\Cache::checkIds($params['cache'], $place);
+            $cache_id =  \team\system\Cache::checkIds($params['cache'], $place);
 
-            $cache = \team\Cache::get($cache_id);
+            $cache = \team\system\Cache::get($cache_id);
 
 			if(!empty($cache)) {
 				return $cache;
@@ -78,7 +78,7 @@ function smarty_function_place($params, &$engine)
             $cache_time = $params['cachetime']?? null;
 
 
-			\team\Cache::overwrite($cache_id, $content, $cache_time );
+			\team\system\Cache::overwrite($cache_id, $content, $cache_time );
 		}
 	}
 
