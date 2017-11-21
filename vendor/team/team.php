@@ -72,7 +72,7 @@ if(!defined('team\SCRIPT_ID') ) {
 
 /**
   TEAM looking for config for path to enviroments
-  You can change it in order to improve your system security
+  You can change it in order to improve your system f
   @since 0.1
 */
 if(!defined('team\_CONFIG_') ) {
