@@ -155,7 +155,7 @@ class User {
      * @return bool Whether the device is able to upload files.
      */
     public static function canUpload() {
-        if ( \team\Http::checkUserAgent('desktop') )
+        if ( \team\client\Http::checkUserAgent('desktop') )
             return true;
 
         $ua = $_SERVER['HTTP_USER_AGENT'];

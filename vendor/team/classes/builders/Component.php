@@ -46,7 +46,7 @@ class Component   implements \ArrayAccess{
     static function call($widget_name, $params, $cache = null) {
 
         //A partir del nombre tenemos que obtener el paquete y el componente al que pertenece el widget
-        $namespace =  \team\NS::explode($widget_name);
+        $namespace =  \team\system\NS::explode($widget_name);
 
         if(isset($namespace['name'])) {
             $namespace['response'] = $namespace['name'];

@@ -96,7 +96,7 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 
 			$_data['_']["USER"] = \team\User::getCurrent();
 			$_data['_']['notices'] = \Team::getCurrent();
-            $_data['USER_AGENT'] =  \team\Http::checkUserAgent();
+            $_data['USER_AGENT'] =  \team\client\Http::checkUserAgent();
 
 
         //Lanzamos un evento de inicio de transformacion de plantilla

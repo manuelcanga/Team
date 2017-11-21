@@ -46,7 +46,7 @@ function smarty_block_display($params, $content, Smarty_Internal_Template $templ
 
     extract($params, EXTR_SKIP);
 
-	extract(\team\Http::checkUserAgent(), EXTR_PREFIX_ALL, 'is');
+	extract(\team\client\Http::checkUserAgent(), EXTR_PREFIX_ALL, 'is');
 
 	if( ($desktop && $is_desktop) || ($mobile && $is_mobile) || ($tablet && $is_tablet)  ) {
         return $content;

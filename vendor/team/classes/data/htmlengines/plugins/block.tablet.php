@@ -42,7 +42,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 function smarty_block_tablet($params, $content, Smarty_Internal_Template $template, &$repeat)
 {
 
-    if(!\team\Http::checkUserAgent('tablet')) {
+    if(!\team\client\Http::checkUserAgent('tablet')) {
 		$repeat= false;
 		return '';
 	}

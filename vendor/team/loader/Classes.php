@@ -86,7 +86,7 @@ class  Classes{
 		if(!isset(self::$registers[$class]) ) {
 
             if(!isset($path)) {
-                $name = \team\NS::basename($class);
+                $name = \team\system\NS::basename($class);
                 $path = \team\Context::get('_COMPONENT_').'/classes/'.$name.'.php';
             }
 

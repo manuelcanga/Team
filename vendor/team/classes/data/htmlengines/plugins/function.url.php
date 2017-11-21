@@ -48,5 +48,5 @@ function smarty_function_url($params, &$smarty)
 	$name = $params['to'];
 	unset($params['to']);
 
-	return \team\Url::to($name, $params);
+	return \team\client\Url::to($name, $params);
 }

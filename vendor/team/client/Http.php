@@ -6,7 +6,7 @@
  * Time: 13:36
  */
 
-namespace team;
+namespace team\client;
 
 
 abstract class Http
@@ -63,7 +63,7 @@ abstract class Http
      * caching should occur.
      *
      *
-     * @see \team\Http::getNocacheHeaders()
+     * @see \team\client\Http::getNocacheHeaders()
      */
     public static function sendNoCacheHeaders() {
         $headers = self::getNocacheHeaders();

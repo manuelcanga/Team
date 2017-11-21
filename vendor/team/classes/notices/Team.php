@@ -38,7 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 
-require ( _TEAM_."/includes/exceptions/System_Error.php");
+require ( _TEAM_."/system/exception/System_Error.php");
 
 class Team
 {

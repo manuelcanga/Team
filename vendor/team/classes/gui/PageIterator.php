@@ -161,7 +161,7 @@ class PageIterator implements \ArrayAccess,  \Iterator, \Countable{
 	}
 
 	public function getPagedUrl($vars = []) {
-		return \team\Url::to($this->baseUrl, $vars + $this->data);
+		return \team\client\Url::to($this->baseUrl, $vars + $this->data);
 	}
 
 	public function getClasses($extra = '') {

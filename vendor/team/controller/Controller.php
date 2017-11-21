@@ -302,7 +302,7 @@ abstract class Controller  implements \ArrayAccess{
      * @return mixed devuelve el objeto del controlador
      */
     function getNewController($classname, $response,  $path, $data = [], $isolate = false) {
-        $namefile = \team\NS::basename($classname);
+        $namefile = \team\system\NS::basename($classname);
 
         $fileclass =  $path.$namefile.'.php';
 
@@ -347,7 +347,7 @@ abstract class Controller  implements \ArrayAccess{
 		$skels = class_uses($this); 
 
 		//Sólo nos importa el nombrebase de cada trait
-		$skels = array_map(['\team\NS', 'basename'], $skels);
+		$skels = array_map(['\team\system\NS', 'basename'], $skels);
 
 
         if(!empty($skels) ) {

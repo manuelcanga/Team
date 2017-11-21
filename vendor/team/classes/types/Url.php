@@ -153,7 +153,7 @@ class Url extends Type
 
 
 	public function check($pattern, &$new_args = [], $defaults = []) {
-		return \team\Url::match($this->data['raw'], $pattern, $new_args, $defaults);
+		return \team\client\Url::match($this->data['raw'], $pattern, $new_args, $defaults);
 	}
 
 	/**
@@ -184,7 +184,7 @@ class Url extends Type
 
 
     public function export($_target = null, Array $_data = [] ) {
-		return \team\Url::to($_target, $_data);
+		return \team\client\Url::to($_target, $_data);
 
     }
 }

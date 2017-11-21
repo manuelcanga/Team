@@ -62,7 +62,7 @@ class Pagination extends \team\db\Find{
 
 	 function __construct( $_elements_for_page = 10,  $current_page = 1, $data = [] ) {
 
-        if(\team\Http::checkUserAgent('mobile')) {
+        if(\team\client\Http::checkUserAgent('mobile')) {
             $this->range = 2;
         }
 
@@ -110,7 +110,7 @@ class Pagination extends \team\db\Find{
 
 
 	public function parseUrl($url,&$filtros = []) {
-		if(\team\Url::match($this->urlToCheck,  $url, $filtros) ) {
+		if(\team\client\Url::match($this->urlToCheck,  $url, $filtros) ) {
 			 $this->import($filtros);
 			return true;
 		}else {
@@ -424,7 +424,7 @@ class Pagination extends \team\db\Find{
 
 
 	public function getPagedUrl($vars = []) {
-		return \team\Url::to($this->baseUrl, $vars + $this->url->get() );
+		return \team\client\Url::to($this->baseUrl, $vars + $this->url->get() );
 	}
 
 }

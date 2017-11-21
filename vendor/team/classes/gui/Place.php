@@ -174,7 +174,7 @@ abstract class Place
         //es por ello, que le damos la oportunidad de que carguen la información que necesiten ya
         //para ello, cargaremos el script /config/placed.php
         //y llamaremos al evento \team\widget\{id_widget}
-        $namespace =  \team\NS::explode($widget_name);
+        $namespace =  \team\system\NS::explode($widget_name);
 
         \team\system\FileSystem::ping("/{$namespace['package']}/{$namespace['component']}/config/placed.php");
         \Team::event('\team\placed\\'.$idwidget, $place, $_options, $order);

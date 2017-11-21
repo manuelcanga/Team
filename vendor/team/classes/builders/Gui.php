@@ -102,8 +102,8 @@ class Gui extends Builder {
 	*/
 	public function getCriticalError($SE = null) {	
 		//Para las GUI no podemos mostrarle un aviso de error del sistema, hemos de enviar el error al programador cliente para que lo maneje.
-		if( !$SE instanceof \System_error ) {	
-			$SE = new \System_Error($SE->getMessage(), '\team\views\errors',$SE->getCode(), $SE->getFile(), $SE->getLine() /*, $SE->getFunction()*/ );
+		if( !$SE instanceof \team\system\exception\System_error ) {
+			$SE = new \team\system\exception\System_Error($SE->getMessage(), '\team\views\errors',$SE->getCode(), $SE->getFile(), $SE->getLine() /*, $SE->getFunction()*/ );
 			//Guardamos el namespace actual
 			$SE->setNamespace(\team\Context::get('NAMESPACE'));
 		}

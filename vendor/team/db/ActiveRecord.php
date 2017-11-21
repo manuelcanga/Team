@@ -93,7 +93,7 @@ abstract class ActiveRecord extends \team\db\Model{
 	public function getGeneratedUrl($data = null, &$matches = null) {
 		if(!isset($data) ) $data = $this->data;
 
-		return \team\Url::to(self::DETAILS_URL, $data, $matches);
+		return \team\client\Url::to(self::DETAILS_URL, $data, $matches);
 	}
 
     protected function loadData(array $data = []) {

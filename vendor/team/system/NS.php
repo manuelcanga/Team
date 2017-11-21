@@ -28,7 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-namespace team;
+namespace team\system;
 
 /** 
  Funciones útiles para manejo de namespaces
@@ -38,7 +38,7 @@ class NS {
 	/**
 		Convierte un path a namespace
 		@param path $path cadena path que se quiere transformar a string
-		@example: \team\NS::toPath("/team/news/index")  -> \team\news\index
+		@example: \team\system\NS::toPath("/team/news/index")  -> \team\news\index
 	*/
 	public static function pathToNS($path) {
   		 $path = trim($path, '/');
@@ -48,7 +48,7 @@ class NS {
 	/**
 		Convierte un namespace en path
 		@param namespace $namespace cadena namespace que se quiere pasar a path
-		@example: \team\NS::toPath("\team\news\index")  -> /team/news/index
+		@example: \team\system\NS::toPath("\team\news\index")  -> /team/news/index
 	*/
 	public static function toPath($namespace) { 
 		 $path = str_replace('\\', '/', $namespace);
@@ -61,7 +61,7 @@ class NS {
 	/**
 		Transforma el path relativo de un archivo a namespace
 		@param $file nombre de archivo con su path
-		@example: \team\NS::fileToNS("/team/news/index.html")  -> \team\news
+		@example: \team\system\NS::fileToNS("/team/news/index.html")  -> \team\news
 	*/
 	public static function fileToNS($file) {
 		$path = basename($file);
@@ -73,7 +73,7 @@ class NS {
 		Convierte una cadena(normalmente, namesapace o path) a uno más manejable/friendly
 		@param string $str cadena que se quiere transformar
 		@param char $separator carácter separador de elementos en $str ( \ para namespace, / para path ) 
-		@example: \team\NS::friendly("\team\news\Evento") ->  "team_news_Evento"
+		@example: \team\system\NS::friendly("\team\news\Evento") ->  "team_news_Evento"
 	*/
 	public static function friendly($str = '', $separator = '\\' ) {
 		$str = trim($str, $separator);

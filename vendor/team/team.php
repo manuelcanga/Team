@@ -133,7 +133,7 @@ require(\_TEAM_.'/classes/notices/Team.php');
 //La gran clase Data es un gestor de datos y su representación en distintos formatos
 require(\_TEAM_.'/classes/Data.php');
 //Para el manejo fácil de namespaces
-require(\_TEAM_.'/classes/NS.php');
+require(\_TEAM_.'/system/NS.php');
 //Task permite la delegación de tareas
 require(\_TEAM_.'/classes/hooks/Task.php');
 //Cargamos la clase Debug y Log para todo ayudar al programador/maquetador en su tarea.
@@ -146,7 +146,7 @@ require(\_TEAM_.'/controller/Controller.php');
 //Clase que hace funciones de limpieza
 require(\_TEAM_.'/classes/Sanitize.php');
 //Clase que maneja cabeceras http
-require(\_TEAM_.'/classes/Http.php');
+require(\_TEAM_.'/client/Http.php');
 //Clase que maneja base de datos
 require(\_TEAM_.'/classes/DB.php');
 

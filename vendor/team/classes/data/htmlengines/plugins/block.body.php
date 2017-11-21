@@ -68,12 +68,12 @@ function smarty_block_body($params, $content, Smarty_Internal_Template $template
 		/* Body Classes */
 		$body_classes = \team\Context::get('BODY_CLASSES');
 
-        if( \team\Http::checkUserAgent('mobile') ) {
+        if( \team\client\Http::checkUserAgent('mobile') ) {
             $body_classes[] = 'movil';
         }else {
             $body_classes[] = 'desktop';
         }
-        $body_classes[] = \team\Http::checkUserAgent('navigator');
+        $body_classes[] = \team\client\Http::checkUserAgent('navigator');
         $body_classes[] = $params['class']?? '';
 
         $params['class'] = \team\gui\Place::getClasses($place,$body_classes);

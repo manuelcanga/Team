@@ -90,17 +90,17 @@ class Gui extends Controller {
 
     /* ____________ UserAgent ___________ */
 
-    function getNavigator() {return  \team\Http::checkUserAgent('navigator'); }
+    function getNavigator() {return  \team\client\Http::checkUserAgent('navigator'); }
 
-    function getDevice() {return  \team\Http::checkUserAgent('device'); }
+    function getDevice() {return  \team\client\Http::checkUserAgent('device'); }
 
-    function isMobile() { return  \team\Http::checkUserAgent('mobile'); }
+    function isMobile() { return  \team\client\Http::checkUserAgent('mobile'); }
 
-    function isDesktop() { return  \team\Http::checkUserAgent('desktop'); }
+    function isDesktop() { return  \team\client\Http::checkUserAgent('desktop'); }
 
-    function isComputer() { return  \team\Http::checkUserAgent('computer'); }
+    function isComputer() { return  \team\client\Http::checkUserAgent('computer'); }
 
-    function isTablet() { return  \team\Http::checkUserAgent('tablet'); }
+    function isTablet() { return  \team\client\Http::checkUserAgent('tablet'); }
 
     function addBodyClass($class = '', $overwrite = false) {
         if($overwrite) {
