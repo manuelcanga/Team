@@ -160,34 +160,54 @@ class  Classes{
         }
 
 
+        /* new mode on */
+        $filename = "/".str_replace('\\', '/', $class_name_full).".php";
+        if(self::load($class_name_full, $filename, \team\_VENDOR_) || self::load($class_name_full, $filename, \team\_SERVER_)) {
+            return self::newClass($class_name_full, $instance);
+        }
+
+
+        /** ------ old mode ------- */
+
+
         $namespace = explode('\\', $class_name_full);
 		$name = array_pop($namespace);
+
 
         //Optimización: es una clase smarty salimos
         if(0 === strpos($name, 'Smarty_')) {
             return false;
         }
-		
+
+
 		$package = null;
 		if(!empty($namespace) ) {
 			$package = array_shift($namespace);
 		}
 
-		/* Si es de nivel 0 ( sin namespace ) entonces es una clase:
-		   - del raiz/root
-		   - de la más utilizadas de team
-		*/
+
+
+
+        /* Si es de nivel 0 ( sin namespace ) entonces es una clase:
+           - del raiz/root
+           - de la más utilizadas de team
+
+            @deprecated mode
+        */
       	//buscamos bajo team
 		if('team' == $package  ) {
 			$subpath = '/';
 			if(!empty($namespace) ) {
 				$subpath = '/'.implode('/', $namespace).'/';
 			}
-				
+
 			 if( self::findClass($name, '/', $subpath ,$class_name_full,  _TEAM_) ) {
 				return self::newClass($class_name_full, $instance);
 			 }
+
+
 		}
+
 
 		//Comprobamos si no existe un package acorde al primer elemento del namespace de la clase
 		if(!isset($package)  || ! \team\system\FileSystem::exists("/$package") )  {
@@ -337,13 +357,9 @@ class  Classes{
 		if(self::classExists($file, $base) ) {
 			if(self::newClass($class_name, false) ) {
 				return true;
-			}	
-
-	   	  \team\Debug::me("Hubo un error al buscar la clase $class_name en el archivo $file", $class_name);
-		}else {
-
-			\team\Debug::me("No se encontró el archivo $file asociado a la clase $class_name", $class_name);
+			}
 		}
+
 		return false;
 	}
 	

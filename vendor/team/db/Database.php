@@ -1,7 +1,6 @@
 <?php
 namespace team\db;
 
-require_once(_TEAM_.'/classes/db/DB.php');
 trait Database {
 
     protected function getDatabase($name_new_conection = null) {
