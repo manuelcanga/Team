@@ -475,7 +475,7 @@ class DB {
 		$sql = 'UPDATE '.$table.' SET '.$_set;
 		$sql .=  $this->whereProccesor($where);
 
-		if($secure)  $sql .= ' LIMIT 1';
+        if($secure && !strpos($_table, ','))  $sql .= ' LIMIT 1';
 
 		return  $this->query($sql, $_values);
 
