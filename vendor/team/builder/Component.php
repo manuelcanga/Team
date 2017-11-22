@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace team;
 
-require(_TEAM_.'/classes/builders/Builder.php');
+require(_TEAM_.'/builder/Builder.php');
 
 
 /**
@@ -195,9 +195,9 @@ class Component   implements \ArrayAccess{
 	*/
 	public  function _getBuilder($params) {
 		$builders = array(
-			'command' => '\team\classes\builders\Commands',
-			'html' 	  => '\team\classes\builders\Gui',
-			'action' => '\team\classes\builders\Actions'
+			'command' => '\team\builder\Commands',
+			'html' 	  => '\team\builder\Gui',
+			'action' => '\team\builder\Actions'
 		 );
 
 		//Filtramos por el tipo de salida

@@ -140,7 +140,7 @@ require(\_TEAM_.'/classes/hooks/Task.php');
 require(\_TEAM_.'/classes/notices/Log.php');
 require(\_TEAM_.'/classes/notices/Debug.php');
 //Añadimos la clase para gestionar componentes virtualmente
-require(\_TEAM_.'/classes/builders/Component.php');
+require(\_TEAM_.'/builder/Component.php');
 //Clase que sirve de clase base para los controladores
 require(\_TEAM_.'/controller/Controller.php');
 //Clase que hace funciones de limpieza

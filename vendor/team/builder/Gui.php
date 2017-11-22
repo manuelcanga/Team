@@ -28,19 +28,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
+namespace team\builder;
 
-namespace team\classes\builders;
+require_once(_TEAM_.'/controller/Gui.php');
 
-
-require_once(_TEAM_.'/controller/Actions.php');
-
-
-class Actions extends Builder {
+class Gui extends Builder {
 
 
-	
 	public function checkParent($class) {
-		return is_subclass_of($this->controller, '\team\controller\Actions');
+		return is_subclass_of($this->controller, '\team\controller\Gui');
 	}
 
 
@@ -49,98 +45,82 @@ class Actions extends Builder {
       que debe de instanciar
 	*/
     public function getTypeController() {
-        return 'Actions';
+        return 'Gui';
     }
 
 
 
-	public function checkErrors(\team\Data $_data) {
-		//-------Gestion de errores-----------
-		$_data->ok = !\Team::getResult();
-		$_data->nok = !$_data->ok;
 
+
+    public function checkErrors(\team\Data $_data) {
+		//-------Gestion de errores-----------
+		$ok = !\Team::getResult();
+		$nok = !$_data->ok;
 
 		//------ NOTIFICACIONES -----------
-		$_data->notices = array(
+		$notices = array(
 			"result" 	=>  \Team::getResult(), 
-			"code"		 	=>  \Team::getCode(), 
 			"msg"		 	=>  \Team::getMsg(), 
 			"details" 	=>  \Team::getDetails() 
 		);
 
+
+		$_data['_']['ok'] = $ok;
+		$_data['_']['nok'] = $nok;
+		$_data['_']['NOTICES'] = $notices;
+
 	}
 
-	
+	public function transform(\team\Data &$_data, $_controller, $_result = null ) {
 
+		$hubo_resultado_devuelto_por_response = isset($_result)  && is_string($_result);
 
-	public function transform(\team\Data &$_data, & $_controller, $_result ) {
-		if(!empty($_result) ) {
-			//Si lo que se devuelve es un string. Lo consideramos una salida en bruto
-			if(is_string($_result) ) {
-				return $_result;
-			}
-
-			//Si es una operacion y se devuelve un array. Se considera ese el resultado
-			if( is_array($_result) ) {
-				$_data->set($_result);
-			}
+		//Si es una gui y se devuelve un valor string, se considera eso la salida html
+		//Antes se renderizaba la salida, pero era un derroche tremendo de recursos
+		//Por no hablar que un response podía devolver una salida ya renderizada(de, por ejemplo, un widget )
+		//y entonces había un doble renderizado.
+		if($hubo_resultado_devuelto_por_response ) {
+			return $_result;
 		}
 
-	//	Event("Pre_Out", '\team\actions')->ocurred($_data);
-		$_data->out = $_data->out($this->out, [], $isolate = false);
-	//	Event("Post_Out", '\team\actions')->ocurred($_data);
+
+		/** Añadimos las variables del sistema */
+	    $out = '';
+		$params = $_controller->getParams();
 
 
-		return $_data->out;
+		//Sólo para html añadimos los argumentos de la GUI
+		$_data['_'] = $params;
+
+		$out = $_data->out($this->out, [], $isolate = false);
+
+		return $out;
 	}
-
 
 	/**
-		Se devuelve un error( para caso de critical )
+		Se devuelve un valor por defecto. 
 	*/
-	public function getCriticalError($SE = null) {
-
-		$msg = \team\Config::get('CRITICAL_MESSAGE', 'We are in maintenance, sorry');
-
-		$_data = new \team\Data();
-
-		//-------Gestion de errores-----------
-		$_data->nok = true;
-		$_data->ok = !$_data->nok;
-
-		$result = '';
-		$details = '';
-		$type = 'system';
-		$code = 'critical';
-		if(!isset($SE) ) {
-			$result = \Team::getResult();
-			$type = \Team::getType();
-			$details = \Team::getDetails();
+	public function getCriticalError($SE = null) {	
+		//Para las GUI no podemos mostrarle un aviso de error del sistema, hemos de enviar el error al programador cliente para que lo maneje.
+		if( !$SE instanceof \team\system\exception\System_error ) {
+			$SE = new \team\system\exception\System_Error($SE->getMessage(), '\team\views\errors',$SE->getCode(), $SE->getFile(), $SE->getLine() /*, $SE->getFunction()*/ );
+			//Guardamos el namespace actual
+			$SE->setNamespace(\team\Context::get('NAMESPACE'));
 		}
+		\Team::systemException($SE );
 
 
-		//------ NOTIFICACIONES -----------
-		$_data->notices = array(
-			"result" 	=>  $result, 
-			"msg"		 	=>  $msg, 
-			"details" 	=>  $details, 
-			"type" 		=> $type,
-			"code" 		=> $code 
-		);
-
-		return $_data->out($this->out);
+		return '';
 	}
 
-    /**
-    Mandamos al navegador los header necesarios
-     */
+
+
     function sendHeader() {
         //header("Content-Type: application/x-www-form-urlencoded;charset=".CHARSET);
         //setlocale(LC_ALL,"es_ES",  "es_ES.UTF-8", "es", "spanish");
 
 
-        $this->sendHeaderHTTP('application/'.$this->out);
+        $this->sendHeaderHTTP('text/html');
 
     }
-
 }

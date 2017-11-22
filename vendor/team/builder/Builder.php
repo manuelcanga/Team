@@ -29,12 +29,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
  */
 
-namespace team\classes\builders;
+namespace team\builder;
 
 
-\team\loader\Classes::add('\team\classes\builders\Gui', 			'/classes/builders/Gui.php', _TEAM_);
-\team\loader\Classes::add('\team\classes\builders\Actions', 		'/classes/builders/Actions.php', _TEAM_);
-\team\loader\Classes::add('\team\classes\builders\Commands', 	'/classes/builders/Commands.php', _TEAM_);
+\team\loader\Classes::add('\team\builder\Gui', 			'/builder/Gui.php', _TEAM_);
+\team\loader\Classes::add('\team\builder\Actions', 		'/builder/Actions.php', _TEAM_);
+\team\loader\Classes::add('\team\builder\Commands', 	'/builder/Commands.php', _TEAM_);
 
 /**
 Clase que se encargará de construcción de la acción para su lanzamiento

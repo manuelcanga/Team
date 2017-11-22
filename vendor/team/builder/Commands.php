@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-namespace team\classes\builders;
+namespace team\builder;
 
 require_once(_TEAM_.'/controller/Commands.php');
 
