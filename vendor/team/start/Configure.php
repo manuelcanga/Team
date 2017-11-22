@@ -133,8 +133,8 @@ class Configure
 
     function system() {
         \team\Config::setUp();
-        \team\I18N::setTimezone();
-        \team\I18N::setLocale();
+        \team\system\I18N::setTimezone();
+        \team\system\I18N::setLocale();
 
         //Sistema de errores
         \Team::__initialize();

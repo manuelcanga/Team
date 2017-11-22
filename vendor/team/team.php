@@ -119,7 +119,7 @@ class_alias('\team\system\Config', '\team\Config', false);
 //Classes se encarga de la autocarga y manejo de clases
 require(\_TEAM_.'/loader/Classes.php');
 //Manejo de configuración de locales
-require(\_TEAM_.'/classes/I18N.php');
+require(\_TEAM_.'/system/I18N.php');
 //Plantilla para la gestión fáci de datos de una clase
 require(\_TEAM_.'/includes/data/Storage.php');
 //La clase que gestiona caché
