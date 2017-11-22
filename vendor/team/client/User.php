@@ -28,7 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-namespace team;
+namespace team\client;
 
 
 
@@ -57,11 +57,16 @@ class User {
     public static function __initialize() {
 		if(isset(self::$current) ) return  ;
 
-      $user_class =\team\Context::get('\team\User', '\team\predefined\Member');
+        class_alias('\team\client\User', '\team\User', false);
 
-	  if(isset($user_class) && class_exists($user_class )  ) {
+        $user_class =\team\Context::get('\team\User', '\team\predefined\Member');
+
+        if(isset($user_class) && class_exists($user_class )  ) {
 		 self::$current  = new  $user_class();
 	  }
+
+
+
     }
 
     public function  __call($func, $args) {

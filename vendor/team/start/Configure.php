@@ -20,8 +20,6 @@ class Configure
     }
 
     private function preconfigureEnviroment() {
-        //Añadimos la clase que gestiona los datos de session
-        \team\loader\Classes::add('\team\User', '/classes/User.php', _TEAM_);
         //Cargamos la clase Log para todo ayudar al programador/maquetador en su tarea.
         \team\loader\Classes::add('\team\Log', '/classes/notices/Log.php', _TEAM_);
 
@@ -140,5 +138,8 @@ class Configure
 
         //Sistema de errores
         \Team::__initialize();
+
+        //Añadimos la clase que gestiona los datos de session
+        \team\loader\Classes::load('\team\client\User', '/client/User.php', _TEAM_);
     }
 }
