@@ -182,7 +182,7 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 		$found_type = false;
         switch($type) {
             case 'team':
-              $template =  _TEAM_."/views/{$name}";
+              $template =  _TEAM_."/gui/views/{$name}";
               $found_type =  true;
             break;
             case 'theme':
