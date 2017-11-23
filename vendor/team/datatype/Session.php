@@ -28,7 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-namespace team\type;
+namespace team\datatype;
 /** Seguridad antes que nada  */
 ini_set('session.cookie_httponly'   , 1);
 ini_set('session.use_cookies'       , 1);

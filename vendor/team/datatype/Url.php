@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-namespace team\type;
+namespace team\datatype;
 
 class Url extends Type
 {

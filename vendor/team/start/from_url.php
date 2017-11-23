@@ -28,7 +28,7 @@ if(!defined('_TEAM_') ) die("Hello,  World");
         $_POST = \team\Filter::apply('\team\parse_post', $_POST);
 
         //Parseamos la url en busca de los parámetros de la web, los argumentos base serán los de post
-		$args = new \team\type\Url($url, [], $_POST +((array)$this->area_params) + $defaults);
+		$args = new \team\datatype\Url($url, [], $_POST +((array)$this->area_params) + $defaults);
 
 
         //*** Evitamos que desde el exterior se creen parámetros propios del framework y que no se deberían de modificar directamente ***
