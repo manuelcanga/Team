@@ -28,42 +28,35 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-/**
-	TODO Que se le llame al engine de Smarty(Otros posibles PHP y XML ) segun configuración módulo
-*/
-
 namespace team\data\formats;
 
-\team\loader\Classes::add('team\data\HtmlEngine', "/includes/interfaces/data/HtmlEngine.interface.php", _TEAM_);
+\team\loader\Classes::add('team\data\Format', "/includes/interfaces/data/Format.interface.php", _TEAM_);
 
-\team\loader\Classes::add('team\data\htmlengines\TemplateEngine', "/classes/data/htmlengines/TemplateEngine.php", _TEAM_);
-\team\loader\Classes::add('team\data\htmlengines\HtmlEngine', "/classes/data/htmlengines/HtmlEngine.php", _TEAM_);
-\team\loader\Classes::add('team\data\htmlengines\PhpEngine', "/classes/data/htmlengines/PhpEngine.php", _TEAM_);
-\team\loader\Classes::add('team\data\htmlengines\XmlEngine', "/classes/data/htmlengines/XmlEngine.php", _TEAM_);
+\team\loader\Classes::add('\team\data\formats\Arrayformat', "/data/formats/Arrayformat.php", _TEAM_);
+\team\loader\Classes::add('\team\data\formats\Html', "/data/formats/Html.php", _TEAM_);
+\team\loader\Classes::add('\team\data\formats\Json', "/data/formats/Json.php", _TEAM_);
+\team\loader\Classes::add('\team\data\formats\Log', "/data/formats/Log.php, _TEAM_");
+\team\loader\Classes::add('\team\data\formats\Object', "/data/formats/Object.php", _TEAM_);
+\team\loader\Classes::add('\team\data\formats\String', "/data/formats/String.php", _TEAM_);
+\team\loader\Classes::add('\team\data\formats\Terminal', "/data/formats/Terminal.php", _TEAM_);
+\team\loader\Classes::add('\team\data\formats\Url', "/data/formats/Url.php", _TEAM_);
+\team\loader\Classes::add('\team\data\formats\Xml', "/data/formats/Xml.php", _TEAM_);
 
 
-final class Html implements \team\interfaces\data\Format  {
-	public function renderer(Array $_data) {
-		$type_engine = $_data["HTML_ENGINE"]?? \team\Config::get("HTML_ENGINE");
 
-        $engine = $this->get($type_engine);
-
-		return $engine->transform($_data);
+class Format {
+	final function filter($_type, $_default = null) {
+		$type =  ucfirst(strtolower(\team\Check::key($_type, $_default)));
+		return ('Array' == $_type)? 'Arrayformat' : $type;
 	}
 
-	public function filter($_type, $_default) {
-		return  ucfirst(\team\Check::key($_type, $_default));
-	}
-
-
-	 function get($type_engine) {
-		$type_engine = $this->filter($type_engine, "TemplateEngine");
-		if(!isset($type_engine) ) return null;
-
+	final function get($_type) {
+		$type = $this->filter($_type);
+		if(!isset($type) ) return null;
 	
-		$class = \team\Filter::apply('\team\htmlengines\\'.$type_engine, '\team\data\htmlengines\\'.$type_engine);
+		$class = \team\Filter::apply('\team\formats\\'.$type, '\team\data\formats\\'.$type);
 
-		return  \team\loader\Classes::factory($class, true);
+		return \team\loader\Classes::factory($class, true);
 	}
 
 
