@@ -29,20 +29,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace team;
 
-\team\loader\Classes::add('team\types\Store', "/classes/types/Store.php", _TEAM_);
+\team\loader\Classes::add('team\type\Store', "/type/Store.php", _TEAM_);
 \team\loader\Classes::add('team\data\formats\Format', "/classes/data/formats/Format.php", _TEAM_);
 \team\loader\Classes::add('team\interfaces\data\Format', "/includes/interfaces/data/Format.php", _TEAM_);
 \team\loader\Classes::add('team\interfaces\data\HtmlEngine', "/includes/interfaces/data/HtmlEngine.php", _TEAM_);
 
-require(__DIR__.'/types/Base.php');
+require(_TEAM_.'/type/Base.php');
 
-class Data extends \team\types\Base
+class Data extends \team\type\Base
 {
 
     public function __construct($data = []) {
 
         //Check if implements Box instead
-        if($data instanceof  \team\types\Base) {
+        if($data instanceof  \team\type\Base) {
             $this->data = $data->get();
         }else if(is_array($data) ) {
             $this->data = $data;

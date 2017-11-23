@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 
-namespace team\types;
+namespace team\type;
 
 
 class Email extends Type
