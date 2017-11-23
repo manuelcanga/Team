@@ -111,7 +111,7 @@ require(\_TEAM_.'/classes/Check.php');
 //Filter, permite el filtrado de datos de modo desacoplado.
 require(\_TEAM_.'/classes/hooks/Filter.php');
 //Trait para las clases que manejan variables de configuración: Config y Context
-require(\_TEAM_.'/includes/data/Vars.php');
+require(\_TEAM_.'/data/Vars.php');
 //La clase que gestiona opciones de configuración
 require(\_TEAM_.'/system/Config.php');
 class_alias('\team\system\Config', '\team\Config', false);
@@ -121,7 +121,7 @@ require(\_TEAM_.'/loader/Classes.php');
 //Manejo de configuración de locales
 require(\_TEAM_.'/system/I18N.php');
 //Plantilla para la gestión fáci de datos de una clase
-require(\_TEAM_.'/includes/data/Storage.php');
+require(\_TEAM_.'/data/Storage.php');
 //La clase que gestiona caché
 require(\_TEAM_.'/system/Cache.php');
 //La clase Context nos sirve para tener un control de variables de configuracion en funcion del contento
