@@ -105,7 +105,6 @@ class Date {
         $diff = [];
 
         $diff['isPast'] = $diff['isFuture'] = $diff['isToday'] = $diff['isNull'] =false;
-        $diff['units'] = [];
 
         $date_in_seconds = self::toTime($date, $from_format);
 
@@ -113,27 +112,19 @@ class Date {
             $diff['isNull'] = true;
         }
 
-        if($date_in_seconds < 0 ) {
-            $diff['isPast'] = true;
-            return $diff;
-        }
-
-
         $now = time();
 
         $diff['diff'] = $date_in_seconds - $now;
-
-        $seconds = abs($diff['diff']);
 
         //comparando la fecha con respecto al día de hoy.
         $today = self::dayStartEnd( );
 
         //¿ Es la fecha pasada anterior al día de hoy ?
-        if($seconds < $today['start']) {
+        if($date_in_seconds < $today['start'] || $diff['diff'] < 0 ) {
             $diff['isPast'] = true;
 
             //¿ Es la fecha pasada posterior al día de hoy ?
-        }else if($seconds > $today['end']) {
+        }else if($date_in_seconds > $today['end']) {
             $diff['isFuture'] = true;
 
             //¿ Es la fecha pasada el día de hoy ?
@@ -145,6 +136,8 @@ class Date {
         if(!$with_units) return $diff;
 
         $units = self::getUnits();
+        $seconds = abs($diff['diff']);
+
 
         foreach($units as $seconds_in_unit =>  $unit) {
             if($seconds > $seconds_in_unit) {
