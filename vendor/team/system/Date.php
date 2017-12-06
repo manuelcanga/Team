@@ -120,7 +120,7 @@ class Date {
         $today = self::dayStartEnd( );
 
         //¿ Es la fecha pasada anterior al día de hoy ?
-        if($date_in_seconds < $today['start'] || $diff['diff'] < 0 ) {
+        if($date_in_seconds < $today['start'] || $date_in_seconds < 0 ) {
             $diff['isPast'] = true;
 
             //¿ Es la fecha pasada posterior al día de hoy ?
