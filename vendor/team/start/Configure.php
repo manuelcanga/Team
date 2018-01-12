@@ -15,7 +15,7 @@ class Configure
         $this->preconfigureEnviroment();
         $this->preconfigureUrlConfigs();
 
-        //Añadimos las constantes que hubiera como variables de configuración
+        //AÃ±adimos las constantes que hubiera como variables de configuraciÃ³n
         \team\Config::set(get_defined_constants(true)['user']);
     }
 
@@ -35,27 +35,32 @@ class Configure
 
 
         //Es posible lanzar TEAM framework desde terminal
-        //Así que comprobamos si se está haciendo
+        //AsÃ­ que comprobamos si se estÃ¡ haciendo
         global $argv, $argc;
         $cli_mode = true;
         if('cli' != php_sapi_name() || empty($argv) || 0 == $argc  ) {
             $cli_mode = false;
         }
 
-        \team\Debug::trace('¿Cli mode activo?', $cli_mode);
+        \team\Debug::trace('Â¿Cli mode activo?', $cli_mode);
         \team\Config::set('CLI_MODE',   $cli_mode );
     }
 
 
     private function preconfigureUrlConfigs() {
 
+        //Avoid proxys domains
+        \team\Filter::add('\team\request_uri', function($url) {
+               return  parse_url($url, PHP_URL_PATH);
+        });
+
         /*
          * Un area se marca a traves de una url base.
-         * Todas las peticiones webs que contengan esa url base formarán parte de esa zona.
+         * Todas las peticiones webs que contengan esa url base formarÃ¡n parte de esa zona.
          * A cada area( o zonas) se le puede asignar un target( /package/component ) que la procese.
-         * El area vacía o con valor '/', se refiere al area principal. Pues todas las peticiones dependerán de ella
+         * El area vacÃ­a o con valor '/', se refiere al area principal. Pues todas las peticiones dependerÃ¡n de ella
          *
-         * Las areas más especificas( mayor path ) tienen prioridad sobre las más globales( menor path )
+         * Las areas mÃ¡s especificas( mayor path ) tienen prioridad sobre las mÃ¡s globales( menor path )
          */
         \team\Config::set('AREAS',  ['/' =>  '/web/welcome'] );
 
@@ -105,7 +110,7 @@ class Configure
 
     /**
      * Llamamos a los scripts de comienzos.
-     * Estos scripts deberían de asignar filtros, eventos y tareas deseados
+     * Estos scripts deberÃ­an de asignar filtros, eventos y tareas deseados
      */
     function launchConfigScripts() {
         \team\system\FileSystem::load('/Start.php', _TEAM_);
@@ -119,7 +124,7 @@ class Configure
      *  Definimos un autoload de clases
      *
      *  Por cada clase desconocida que se instancie o se utilice sin haberse procesado, php llamara a Classes.
-     *  Este método define un autoloader por defecto llamado Casses y avisa a php para que lo utilice
+     *  Este mÃ©todo define un autoloader por defecto llamado Casses y avisa a php para que lo utilice
      */
 
     function registerAutoload() {
@@ -139,7 +144,7 @@ class Configure
         //Sistema de errores
         \Team::__initialize();
 
-        //Añadimos la clase que gestiona los datos de session
+        //AÃ±adimos la clase que gestiona los datos de session
         \team\loader\Classes::load('\team\client\User', '/client/User.php', _TEAM_);
     }
 }
