@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace team\data\formats;
 
-\team\loader\Classes::add('team\data\Format', "/includes/interfaces/data/Format.interface.php", _TEAM_);
+\team\loader\Classes::add('team\data\formats\interfaces\Format', "/data/formats/interfaces/Format.php", _TEAM_);
 
 \team\loader\Classes::add('\team\data\formats\Arrayformat', "/data/formats/Arrayformat.php", _TEAM_);
 \team\loader\Classes::add('\team\data\formats\Html', "/data/formats/Html.php", _TEAM_);

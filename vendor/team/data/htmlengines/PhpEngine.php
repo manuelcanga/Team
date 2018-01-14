@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace team\data\htmlengines;
 
-class PhpEngine implements \team\interfaces\data\HtmlEngine {
+class PhpEngine {
 
 	function transform(Array $_data) {
 		/** @TODO */

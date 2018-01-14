@@ -10,15 +10,15 @@
 
 
 	if(\team\Config::get('CLI_MODE')) {
-	  return include(__DIR__ . '/start/cli.php');
+	  return include(_TEAM_ . '/start/cli.php');
 	}
     
  
 	//Si hemos llegado hasta aquí, queremos lanzar un MVC basados en la url
 	//Suele suer la opción principal. 
-    include(__DIR__ . '/start/check_areas.php');
-    include(__DIR__ . '/start/parse_url.php');
-    include(__DIR__ . '/start/from_url.php');
+    include(_TEAM_ . '/start/check_areas.php');
+    include(_TEAM_ . '/start/parse_url.php');
+    include(_TEAM_ . '/start/from_url.php');
 
 });
 

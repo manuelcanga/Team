@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace team\data\formats;
 
-class Object implements \team\interfaces\data\Format   {
+class Object implements \team\data\formats\interfaces\Format   {
 	public function renderer(Array $_data) {
 		return (object) $_data;
 	}

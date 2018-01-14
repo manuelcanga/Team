@@ -113,7 +113,7 @@ class Configure
      * Estos scripts deberían de asignar filtros, eventos y tareas deseados
      */
     function launchConfigScripts() {
-        \team\system\FileSystem::load('/Start.php', _TEAM_);
+        \team\system\FileSystem::load('/start/Start.php', _TEAM_);
         \team\system\FileSystem::load('/config/setup.php', \team\_SERVER_);
         \team\system\FileSystem::load('/'. \team\Config::get('TRASWEB').'/setup.php', \team\_CONFIG_);
     }

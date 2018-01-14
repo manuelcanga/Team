@@ -45,7 +45,7 @@ Se lanza el callback: registerDefaultPluginHandler
 Para la busqueda de tags que no han sido definidos. 
 
 */
-class TemplateEngine implements \team\interfaces\data\HtmlEngine{
+class TemplateEngine {
 	private static $functions_user_cache = array();
 
     private $gui = null;

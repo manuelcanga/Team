@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace team\data\formats;
 
-\team\loader\Classes::add('team\data\HtmlEngine', "/includes/interfaces/data/HtmlEngine.interface.php", _TEAM_);
+\team\loader\Classes::add('team\data\formats\interfaces\Format', "/data/formats/interfaces/Format.php", _TEAM_);
 
 \team\loader\Classes::add('team\data\htmlengines\TemplateEngine', "/data/htmlengines/TemplateEngine.php", _TEAM_);
 \team\loader\Classes::add('team\data\htmlengines\HtmlEngine', "/data/htmlengines/HtmlEngine.php", _TEAM_);
@@ -42,7 +42,7 @@ namespace team\data\formats;
 \team\loader\Classes::add('team\data\htmlengines\XmlEngine', "/data/htmlengines/XmlEngine.php", _TEAM_);
 
 
-final class Html implements \team\interfaces\data\Format  {
+final class Html implements \team\data\formats\interfaces\Format  {
 	public function renderer(Array $_data) {
 		$type_engine = $_data["HTML_ENGINE"]?? \team\Config::get("HTML_ENGINE");
 

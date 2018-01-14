@@ -47,7 +47,9 @@ define('BASE', '/');
   ( always without / end )
   @since 0.1
 */
-define('_TEAM_', __DIR__);
+define('_TEAM_', dirname(__DIR__) );
+
+
 
 define('team\_SERVER_', dirname(\_SCRIPT_));
 
@@ -105,48 +107,52 @@ ini_set('display_errors', 0);
 
 
 //Utilidades sobre el sistema de archivos
-require(\_TEAM_.'/system/FileSystem.php');
+require(\_TEAM_ . '/system/FileSystem.php');
 //Cargamos la clase Filter que se encarga de las validaciones
 require(\_TEAM_ . '/data/Check.php');
 //Filter, permite el filtrado de datos de modo desacoplado.
 require(\_TEAM_ . '/data/Filter.php');
 //Trait para las clases que manejan variables de configuración: Config y Context
-require(\_TEAM_.'/data/Vars.php');
+require(\_TEAM_ . '/data/Vars.php');
 //La clase que gestiona opciones de configuración
-require(\_TEAM_.'/system/Config.php');
-class_alias('\team\system\Config', '\team\Config', false);
+require(\_TEAM_ . '/Config.php');
 
 //Classes se encarga de la autocarga y manejo de clases
-require(\_TEAM_.'/loader/Classes.php');
+require(\_TEAM_ . '/loader/Classes.php');
 //Manejo de configuración de locales
-require(\_TEAM_.'/system/I18N.php');
+require(\_TEAM_ . '/system/I18N.php');
 //Plantilla para la gestión fáci de datos de una clase
-require(\_TEAM_.'/data/Storage.php');
+require(\_TEAM_ . '/data/Storage.php');
 //La clase que gestiona caché
-require(\_TEAM_.'/system/Cache.php');
+require(\_TEAM_ . '/system/Cache.php');
 //La clase Context nos sirve para tener un control de variables de configuracion en funcion del contento
 require(\_TEAM_ . '/system/Context.php');
 //La clase Team, Notice y Erros llevan un control de las notificaciones de  avisos y errores del sistema
-require(\_TEAM_.'/classes/notices/Errors.php');
-require(\_TEAM_.'/classes/notices/Notice.php');
-require(\_TEAM_.'/classes/notices/Team.php');
+require(\_TEAM_ . '/notices/Errors.php');
+require(\_TEAM_ . '/notices/Notice.php');
+require(\_TEAM_ . '/Team.php');
 //La gran clase Data es un gestor de datos y su representación en distintos formatos
 require(\_TEAM_ . '/data/Data.php');
 //Para el manejo fácil de namespaces
-require(\_TEAM_.'/system/NS.php');
+require(\_TEAM_ . '/system/NS.php');
 //Task permite la delegación de tareas
 require(\_TEAM_ . '/system/Task.php');
 //Cargamos la clase Debug y Log para todo ayudar al programador/maquetador en su tarea.
-require(\_TEAM_.'/classes/notices/Log.php');
-require(\_TEAM_.'/classes/notices/Debug.php');
+require(\_TEAM_ . '/notices/Log.php');
+require(\_TEAM_ . '/Debug.php');
+
+if(!class_exists('Debug', false)) {
+    class_alias('\team\Debug', 'Debug', false);
+}
+
 //Añadimos la clase para gestionar componentes virtualmente
-require(\_TEAM_.'/builder/Component.php');
+require(\_TEAM_ . '/builder/Component.php');
 //Clase que sirve de clase base para los controladores
-require(\_TEAM_.'/controller/Controller.php');
+require(\_TEAM_ . '/controller/Controller.php');
 //Clase que hace funciones de limpieza
 require(\_TEAM_ . '/data/Sanitize.php');
 //Clase que maneja cabeceras http
-require(\_TEAM_.'/client/Http.php');
+require(\_TEAM_ . '/client/Http.php');
 //Clase que maneja base de datos
 require(\_TEAM_ . '/system/DB.php');
 
@@ -155,7 +161,7 @@ require(\_TEAM_ . '/system/DB.php');
 
 try {
     //Clase que configura el sistema
-    require(\_TEAM_.'/start/Configure.php');
+    require(\_TEAM_ . '/start/Configure.php');
 
     $configure = new \team\start\Configure;
     $configure->preconfigure();

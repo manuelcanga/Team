@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace team\data\formats;
 
 
-class Url  implements \team\interfaces\data\Format   {
+class Url  implements \team\data\formats\interfaces\Format   {
 	public function renderer(Array $_data) {
 		return http_build_query($_data);
 	}

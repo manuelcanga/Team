@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace team\data\formats;
 
-class Terminal implements \team\interfaces\data\Format   {
+class Terminal implements \team\data\formats\interfaces\Format   {
 	public function renderer(Array $_data) {
 		if(!empty($_data) ) {
 			foreach($_data as $_key => $_value) {

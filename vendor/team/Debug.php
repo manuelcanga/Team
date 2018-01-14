@@ -30,11 +30,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace team;
 
-if(!class_exists('\Debug', false) ) {
-	class_alias('\team\Debug', 'Debug', false);
-}
-
-
 
 /** ******************************************************************************
 	Class for debugging, of course.
@@ -225,7 +220,7 @@ final  class Debug
 			
 		if($is_object || $is_array  ) {
 
-            $data->setContext('VIEW',  \team\Config::get('\team\debug\compound_template', 'team:framework/debug/compound') );
+            $data->setContext('VIEW',  \team\Config::get('\team\Debug\compound_template', 'team:framework/debug/compound') );
 			$data->label = $label;
 			$data->sublabel = null;
 
@@ -240,7 +235,7 @@ final  class Debug
 		
 			$data->vars = self::normalizeCompound($var);
         }else {
-                $data->setContext('VIEW',  \team\Config::get('\team\debug\scalar_template', 'team:framework/debug/scalar') );
+                $data->setContext('VIEW',  \team\Config::get('\team\Debug\scalar_template', 'team:framework/debug/scalar') );
 
                 $data->msg = self::normalizeScalar($var);
 
@@ -291,7 +286,7 @@ final  class Debug
 	public static  function log($var, $label = false, $file = null, $line = null) {
 		self::getFileLine($file, $line);
 
-		\team\Log::insertLog("debug", $var, "$label", $file, $line );
+		\team\notices\Log::insertLog("debug", $var, "$label", $file, $line );
 	}
 
 

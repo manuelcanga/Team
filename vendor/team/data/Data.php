@@ -31,8 +31,8 @@ namespace team\data;
 
 \team\loader\Classes::add('team\datatype\Store', "/datatype/Store.php", _TEAM_);
 \team\loader\Classes::add('team\data\formats\Format', "/data/formats/Format.php", _TEAM_);
-\team\loader\Classes::add('team\interfaces\data\Format', "/includes/interfaces/data/Format.php", _TEAM_);
-\team\loader\Classes::add('team\interfaces\data\HtmlEngine', "/includes/interfaces/data/HtmlEngine.php", _TEAM_);
+\team\loader\Classes::add('team\data\formats\interfaces\Format', "/includes/data/interfaces/Format.php", _TEAM_);
+\team\loader\Classes::add('team\data\interfaces\HtmlEngine', "/includes/data/interfaces/HtmlEngine.php", _TEAM_);
 
 require(_TEAM_ . '/datatype/Base.php');
 

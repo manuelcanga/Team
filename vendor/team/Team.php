@@ -38,7 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 
-require ( _TEAM_."/system/exception/System_Error.php");
+require(_TEAM_ . "/system/exception/System_Error.php");
 
 class Team
 {
@@ -208,7 +208,7 @@ class Team
         $error_type = "SYSTEM";
         $result = \Team::event($exception->getCode(), $exception->get(), $error_type);
 		if($result) {
-			return $resut;
+			return $result;
 		}
 
 		throw $exception;

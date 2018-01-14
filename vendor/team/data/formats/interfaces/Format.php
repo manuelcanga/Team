@@ -28,7 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-namespace team\interfaces\data;
+namespace team\data\formats\interfaces;
 
 interface Format {
 	public function renderer(Array $_data);

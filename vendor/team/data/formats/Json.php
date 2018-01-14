@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace team\data\formats;
 
-class Json implements \team\interfaces\data\Format  {
+class Json implements \team\data\formats\interfaces\Format  {
 	public function renderer(Array $_data) {
 
 		$data = $this->convert_entities($_data);

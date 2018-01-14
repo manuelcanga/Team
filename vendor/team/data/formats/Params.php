@@ -32,7 +32,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace team\data\formats;
 
 
-class Params  implements \team\interfaces\data\Format   {
+class Params  implements \team\data\formats\interfaces\Format   {
 	public function renderer(Array $_data, $options = []) {
 		$separator_fields = $options['fields']?? '="';
 		$separator_params = $options['params']?? ' ';

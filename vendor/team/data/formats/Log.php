@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 namespace team\data\formats;
 
-class Log implements \team\interfaces\data\Format   {
+class Log implements \team\data\formats\interfaces\Format   {
 
 
 	public function renderer(Array $_data) {

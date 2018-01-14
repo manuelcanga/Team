@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace team\data\formats;
 
 
-class Xml  implements \team\interfaces\data\Format  {
+class Xml  implements \team\data\formats\interfaces\Format  {
 	public function renderer(Array $_data) {
 	  return  $this->array_to_xml($_data, new \SimpleXMLElement('<root/>'))->asXML();
 	}

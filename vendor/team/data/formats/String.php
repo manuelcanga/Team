@@ -31,7 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace team\data\formats;
 
-class String implements \team\interfaces\data\Format   {
+class String implements \team\data\formats\interfaces\Format   {
 	public function renderer(Array $_data) {
 		return  print_r($_data,true);
 	}
