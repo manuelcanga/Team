@@ -54,7 +54,7 @@ class Actions extends Builder {
 
 
 
-	public function checkErrors(\team\Data $_data) {
+	public function checkErrors(\team\data\Data $_data) {
 		//-------Gestion de errores-----------
 		$_data->ok = !\Team::getResult();
 		$_data->nok = !$_data->ok;
@@ -73,7 +73,7 @@ class Actions extends Builder {
 	
 
 
-	public function transform(\team\Data &$_data, & $_controller, $_result ) {
+	public function transform(\team\data\Data &$_data, & $_controller, $_result ) {
 		if(!empty($_result) ) {
 			//Si lo que se devuelve es un string. Lo consideramos una salida en bruto
 			if(is_string($_result) ) {
@@ -102,7 +102,7 @@ class Actions extends Builder {
 
 		$msg = \team\Config::get('CRITICAL_MESSAGE', 'We are in maintenance, sorry');
 
-		$_data = new \team\Data();
+		$_data = new \team\data\Data();
 
 		//-------Gestion de errores-----------
 		$_data->nok = true;

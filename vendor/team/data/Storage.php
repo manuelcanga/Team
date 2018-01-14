@@ -29,7 +29,7 @@ trait Storage {
 
 
         //¿Tiene un método asociado ?
-        $method =  'get'.\team\Sanitize::identifier($name);
+        $method =  'get'.\team\data\Sanitize::identifier($name);
         if($method && method_exists($this, $method) ) {
             return  $this->$method();
         }
@@ -46,7 +46,7 @@ trait Storage {
     }
 
     function __call($_method, $arguments) {
-        $method =  'get'.\team\Sanitize::identifier($_method);
+        $method =  'get'.\team\data\Sanitize::identifier($_method);
         if(method_exists($this,$method)) {
             return call_user_func_array([$this, $method], $arguments);
         }else {

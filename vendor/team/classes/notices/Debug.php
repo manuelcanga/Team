@@ -98,9 +98,9 @@ final  class Debug
 
 		if(!\team\Config::get('SHOW_ERRORS', false)  ) return ;
 
-		if(\team\Context::get('CLI_MODE') ) {
+		if(\team\system\Context::get('CLI_MODE') ) {
 			self::output($var, $label, $file, $line);
-		}else if(false === \team\Config::get('SHOW_IN_NAVIGATOR', false)  ||  \team\Context::main("AJAX")  ) {
+		}else if(false === \team\Config::get('SHOW_IN_NAVIGATOR', false)  ||  \team\system\Context::main("AJAX")  ) {
 			self::log($var, $label, $file, $line);
 		}else {
             self::log($var, $label, $file, $line);
@@ -161,7 +161,7 @@ final  class Debug
 			$key = str_replace('*', '', $key);
 
 			if(is_object($value) )  {
-				if (!($value instanceof \team\Data ) )
+				if (!($value instanceof \team\data\Data ) )
 					$value = "Object of ".get_class($value)." ";
 				else {
 					$key = "{$key} [ ".get_class($value)." ] ";
@@ -189,7 +189,7 @@ final  class Debug
 	private static function normalizeScalar($var, $out = 'html') {
 			 if(is_string($var) ){
 				if('html' == $out) {
-                    return htmlentities($var, ENT_NOQUOTES | ENT_HTML5, \team\Context::get('CHARSET'));
+                    return htmlentities($var, ENT_NOQUOTES | ENT_HTML5, \team\system\Context::get('CHARSET'));
                 }else {
 					return $var;
                 }
@@ -205,7 +205,7 @@ final  class Debug
 	*/
 	private static function formatDisplay( $var, $label, $file, $line) {
 	
-        if("string" != \team\Context::get('ERRORS')  && class_exists('\team\Data', false) ) {
+        if("string" != \team\system\Context::get('ERRORS')  && class_exists('\team\Data', false) ) {
             return self::withData( $var, $label, $file, $line);
         }else {
             return self::withString( $var, $label, $file, $line);
@@ -214,7 +214,7 @@ final  class Debug
 	
    private static function withData($var, $label, $file, $line) {
 
-		$data = new \team\Data();
+		$data = new \team\data\Data();
 		$data->file = $file;
 		$data->line = $line;
 		$data->label = $label;
@@ -515,7 +515,7 @@ de $jumps saltos hacia atrás  */
     public static function filter($label='Last Filtered', $file = null, $line = null, $level = 1) {
         self::getFileLine($file, $line,  $level);
 
-        $filtered = \team\Filter::getLast();
+        $filtered = \team\data\Filter::getLast();
 
         $label .= ': '.$filtered['name'];
         unset($filtered['name']);

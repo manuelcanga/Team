@@ -5,7 +5,7 @@
  * Time: 14:27
  */
 
-namespace team;
+namespace team\system;
 
 /**
  *
@@ -17,13 +17,13 @@ abstract class DB
     protected static $databases = [];
 
     public static function getConnection($conname =  null, $place = null) {
-        return  \team\Context::get('CONNAME', $conname?? 'main',   $place);
+        return  \team\system\Context::get('CONNAME', $conname?? 'main',   $place);
     }
 
     public static function get($new_conection_name = null, $place = null){
         $new_conection_name = self::getConnection($new_conection_name, $place);
 
-        $DB_class = \team\Context::get('\team\DB', '\team\db\DB',  $new_conection_name);
+        $DB_class = \team\system\Context::get('\team\DB', '\team\db\DB',  $new_conection_name);
 
         return new $DB_class($new_conection_name);
     }
@@ -58,6 +58,6 @@ abstract class DB
     public static function getConfig($conname = null) {
         $connection_data = self::$databases[$conname]?? [];
 
-        return \team\Filter::apply('\team\db\\'.$conname, $connection_data, $conname );
+        return \team\data\Filter::apply('\team\db\\'.$conname, $connection_data, $conname );
     }
 }

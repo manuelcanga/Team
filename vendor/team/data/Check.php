@@ -28,7 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-namespace team;
+namespace team\data;
 
 
 /** **********************************************************************************
@@ -43,10 +43,10 @@ abstract class Check
 
 		@param mixed $number es la cadena ( que se presume que es un número ) a validar
 		@param mixed|false $default es lo que se devuelve si $number no es válido.
-		@example \team\Check::id('hola mundo') 		=> devuelve false
-		@example \team\Check::id('hola mundo', 10) 	=> devuelve 10
-		@example \team\Check::id(-50) 					=> devuelve false
-		@example \team\Check::id(10, 5) 				=> devuelve 10
+		@example \team\data\Check::id('hola mundo') 		=> devuelve false
+		@example \team\data\Check::id('hola mundo', 10) 	=> devuelve 10
+		@example \team\data\Check::id(-50) 					=> devuelve false
+		@example \team\data\Check::id(10, 5) 				=> devuelve 10
 
 		@return devuelve $number si es un número natural positivo sino devuelve $default
 	*/
@@ -63,10 +63,10 @@ abstract class Check
 
 		@param mixed $number es la cadena  ( que se presume que es un número ) a validar
 		@param mixed|false $default es el valor a devolver en caso de que $number no sea válido
-		@example \team\Check::number('hola mundo') 		=> devuelve false
-		@example \team\Check::number('hola mundo', 10) => devuelve 10
-		@example \team\Check::number(-50) 					=> devuelve -50
-		@example \team\Check::number(10, 5) 				=> devuelve 10
+		@example \team\data\Check::number('hola mundo') 		=> devuelve false
+		@example \team\data\Check::number('hola mundo', 10) => devuelve 10
+		@example \team\data\Check::number(-50) 					=> devuelve -50
+		@example \team\data\Check::number(10, 5) 				=> devuelve 10
 
 		@return devuelve $number si es un número natural positivo sino devuelve $default
 	*/
@@ -85,11 +85,11 @@ abstract class Check
 
 		@param mixed $number es la cadena  ( que se presume que es un número real ) a validar
 		@param mixed|false $default es el valor a devolver en caso de que $number no sea válido
-		@example \team\Check::number('hola mundo') 		=> devuelve false
-		@example \team\Check::number('hola mundo', 10) => devuelve 10
-		@example \team\Check::number(-50) 					=> devuelve -50
-		@example \team\Check::number(10, 5) 				=> devuelve 10
-		@example \team\Check::number(10.5, 5) 				=> devuelve 10.5
+		@example \team\data\Check::number('hola mundo') 		=> devuelve false
+		@example \team\data\Check::number('hola mundo', 10) => devuelve 10
+		@example \team\data\Check::number(-50) 					=> devuelve -50
+		@example \team\data\Check::number(10, 5) 				=> devuelve 10
+		@example \team\data\Check::number(10.5, 5) 				=> devuelve 10.5
 
 		@return devuelve $number si es un número natural positivo sino devuelve $default
 	*/
@@ -111,9 +111,9 @@ abstract class Check
     static function DNI($dni, $default = null){
 
         $letter =  substr($dni, strspn($dni, "1234567890"), 1);
-        $numbers = \team\Sanitize::natural($dni);
+        $numbers = \team\data\Sanitize::natural($dni);
 
-        if( empty($letter) || I18N::length($numbers) != 8  ) {
+        if( empty($letter) || \team\system\I18N::length($numbers) != 8  ) {
             return $default;
         }
 
@@ -133,10 +133,10 @@ abstract class Check
 
 		@param mixed $alphameric es la cadena  ( que se presume que es alfanumerica ) a validar
 		@param mixed|false $default es el valor a devolver en caso de que $alphameric no sea válido
-		@example \team\Check::key('hola mundo') 		=> devuelve false
-		@example \team\Check::key('hola mundo', 10) 	=> devuelve 10
-		@example \team\Check::key(-50) 					=> devuelve false
-		@example \team\Check::key('prueba10', 10) 		=> devuelve 'prueba10'
+		@example \team\data\Check::key('hola mundo') 		=> devuelve false
+		@example \team\data\Check::key('hola mundo', 10) 	=> devuelve 10
+		@example \team\data\Check::key(-50) 					=> devuelve false
+		@example \team\data\Check::key('prueba10', 10) 		=> devuelve 'prueba10'
 
 		@return devuelve $alphameric si es una cadena alfanumérica[/[a-z0-9\.\_\-]+$/i] sino devuelve $default
     */
@@ -154,11 +154,11 @@ abstract class Check
 
 		@param mixed $word es la cadena  ( que se presume que es una palabra ) a validar
 		@param mixed|false $default es el valor a devolver en caso de que $word no sea válido
-		@example \team\Check::word('hola mundo') 		=> devuelve false
-		@example \team\Check::word('hola mundo', 10) 	=> devuelve 10
-		@example \team\Check::word(-50) 					=> devuelve false
-		@example \team\Check::word('prueba10', 10) 		=> devuelve 10
-		@example \team\Check::word('HolaMundo', 10) 	=> devuelve HolaMundo
+		@example \team\data\Check::word('hola mundo') 		=> devuelve false
+		@example \team\data\Check::word('hola mundo', 10) 	=> devuelve 10
+		@example \team\data\Check::word(-50) 					=> devuelve false
+		@example \team\data\Check::word('prueba10', 10) 		=> devuelve 10
+		@example \team\data\Check::word('HolaMundo', 10) 	=> devuelve HolaMundo
 
 		@return devuelve $word si es una palabra sino devuelve $default
     */
@@ -203,9 +203,9 @@ abstract class Check
 
 		@param mixed $url es la cadena  ( que se presume que es una url ) a validar
 		@param mixed|false $default es el valor a devolver en caso de que $url no sea válido
-		@example \team\Check::url('http') 					=> devuelve false
-		@example \team\Check::url('wwwteamnet', 10) 	=> devuelve 10
-		@example \team\Check::url('http://trasweb.net') 	=> devuelve http://trasweb.net
+		@example \team\data\Check::url('http') 					=> devuelve false
+		@example \team\data\Check::url('wwwteamnet', 10) 	=> devuelve 10
+		@example \team\data\Check::url('http://trasweb.net') 	=> devuelve http://trasweb.net
 
         @params int flags:
 
@@ -234,9 +234,9 @@ abstract class Check
 		@param mixed|false $default es el valor a devolver en caso de que $string no sea válido
 		@param int $length_max número máximo de carácteres que puede tener la cadena
 		@param int $length_min número mínimo de carácteres que puede tener la cadena
-		@example \team\Check::length('hola mundo', 'adios', 4); 	   => devuelve 'adios'
-		@emample \team\Check::length('hola mundo', 'adios', 50);	   => devuelve 'hola mundo';
-		@emample \team\Check::length('hola mundo', 'adios', 50, 10); => devuelve 'adios'
+		@example \team\data\Check::length('hola mundo', 'adios', 4); 	   => devuelve 'adios'
+		@emample \team\data\Check::length('hola mundo', 'adios', 50);	   => devuelve 'hola mundo';
+		@emample \team\data\Check::length('hola mundo', 'adios', 50, 10); => devuelve 'adios'
 		
 		@return devuelve o el $string pasado si es válido o el valor $default sino es válido
 
@@ -260,9 +260,9 @@ abstract class Check
 		@param mixed $email es la cadena  ( que se presume que es un correo elecotrónico ) a validar
 		@param mixed|false $default es el valor a devolver en caso de que $email no sea válido
 		@param true|false	establece si se hace comprobación dns de existencia del dominio pertenciente al email.
-		@example \team\Check::email('miemail') 													=> devuelve false
-		@example \team\Check::email('miemail@esteno.es', 10) 								=> devuelve 10
-		@example \team\Check::email('miemail@rayosycentellassss.es', false, true) 	=> devuelve false
+		@example \team\data\Check::email('miemail') 													=> devuelve false
+		@example \team\data\Check::email('miemail@esteno.es', 10) 								=> devuelve 10
+		@example \team\data\Check::email('miemail@rayosycentellassss.es', false, true) 	=> devuelve false
 
 		@return devuelve $email si es un correo electrónico válido sino devuelve $default
 	*/
@@ -272,7 +272,7 @@ abstract class Check
         if (isset($email) &&  filter_var($email, FILTER_VALIDATE_EMAIL) !== false) {
             //Comprobamos que sea un dominio mx correcto. Muy útil para altas de usuarios
             $domain = explode('@', $email);
-            if ( ! $strict || \team\Checkdnsrr($domain) )
+            if ( ! $strict || Checkdnsrr($domain) )
                 return $email;
         }
 	
@@ -310,6 +310,6 @@ abstract class Check
 	}
 
 	static function __callStatic($name, $arguments) {
-        return \team\Filter::apply('\team\Check\\'.$name, ...$arguments );
+        return \team\data\Filter::apply('\team\data\Check\\'.$name, ...$arguments );
     }
 }

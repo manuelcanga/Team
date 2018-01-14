@@ -75,7 +75,7 @@ class DB {
 	}
 
     public function connect($conname = null) {
-        $connection= \team\DB::getConfig($conname);
+        $connection= \team\system\DB::getConfig($conname);
 
 
         extract( $connection, EXTR_SKIP);
@@ -288,9 +288,9 @@ class DB {
 
         $this->rows = $query->fetchAll($this->getTypeRows());
 		//Guardamos el numero de elementos afectados
-		$this->numRows = \team\Check::id($query->rowCount(),0);
+		$this->numRows = \team\data\Check::id($query->rowCount(),0);
 		//Guardamos el id, por si fuera una insercion
-		$this->lastId = \team\Check::id( $conection->lastInsertId(), 0 );
+		$this->lastId = \team\data\Check::id( $conection->lastInsertId(), 0 );
 
 		$this->registerSQL($_sql, $_values);
 
@@ -323,7 +323,7 @@ class DB {
 		self::$error = $query->errorInfo();
 
 		//Guardamos el numero de registros afectados
-		$this->numRows =  \team\Check::id($query->rowCount(),0);
+		$this->numRows =  \team\data\Check::id($query->rowCount(),0);
 		//
 		$this->rows = $query->fetchAll($this->getTypeRows());
 
@@ -506,7 +506,7 @@ class DB {
 
 		//Si todo salio ok, devolvemos el ultimo id que se realizo
 		if($this->result) {
-            $this->lastId = \team\Check::id( $this->server->lastInsertId(), 0 );
+            $this->lastId = \team\data\Check::id( $this->server->lastInsertId(), 0 );
             return $this->getLastId();
         }
 		

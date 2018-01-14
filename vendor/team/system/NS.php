@@ -53,7 +53,7 @@ class NS {
 	public static function toPath($namespace) { 
 		 $path = str_replace('\\', '/', $namespace);
 
-		 $path = \team\Sanitize::trim($path, '/');
+		 $path = \team\data\Sanitize::trim($path, '/');
 
 		 return $path; 
 	}
@@ -135,7 +135,7 @@ class NS {
 
 
 	  //Nos aseguramos que todos los valores son correctos
-	   $namespace = array_filter($namespace, function($value) { return \team\Check::key($value, false); });
+	   $namespace = array_filter($namespace, function($value) { return \team\data\Check::key($value, false); });
 
 		//Obtenemos el paquete, componente y acción del namespace
 		list($package, $component) = array_pad($namespace, 3, null);

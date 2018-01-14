@@ -50,7 +50,7 @@ abstract class Http
         );
 
 
-        $headers = (array) \team\Filter::apply( '\team\http\nocache_headers', $headers );
+        $headers = (array) \team\data\Filter::apply( '\team\http\nocache_headers', $headers );
         $headers['Last-Modified'] = false;
         return $headers;
     }
@@ -153,7 +153,7 @@ abstract class Http
 
         $user_agent = ['navigator' => $navigator, 'device' => $device, 'bot' => $bot,  'computer' => $computer, 'mobile' => $mobile,'tablet' => $tablet, 'desktop' => ($computer || $tablet) ];
 
-        $user_agent = \team\Filter::apply('\team\user_agent', $user_agent);
+        $user_agent = \team\data\Filter::apply('\team\user_agent', $user_agent);
 
 
         return $key? $user_agent[$key] : $user_agent;
@@ -162,11 +162,11 @@ abstract class Http
 
 
     public static function redirect($redirect, $code = 301, $protocol = null) {
-        $redirect = \team\Sanitize::internalUrl($redirect);
+        $redirect = \team\data\Sanitize::internalUrl($redirect);
 
 
         if(isset($protocol)) {
-            \team\Context::set('PROTOCOL', $protocol);
+            \team\system\Context::set('PROTOCOL', $protocol);
         }
 
         $web = \team\Config::get("WEB");
@@ -188,7 +188,7 @@ abstract class Http
     public static function getStatusHeaderDesc( $code ) {
         static $code2header_desc;
 
-        $code = \team\Check::id( $code, 0);
+        $code = \team\data\Check::id( $code, 0);
 
         if ( !isset( $code2header_desc ) ) {
             $code2header_desc = array(
@@ -274,10 +274,10 @@ abstract class Http
             return ;
         }
 
-        $protocol = \team\Context::get('PROTOCOL');
+        $protocol = \team\system\Context::get('PROTOCOL');
         $status_header = "$protocol $code $description";
 
-        $status_header = \team\Filter::apply('\team\http\status_header', $status_header, $code, $description, $protocol);
+        $status_header = \team\data\Filter::apply('\team\http\status_header', $status_header, $code, $description, $protocol);
 
         @header( $status_header, true, $code );
     }

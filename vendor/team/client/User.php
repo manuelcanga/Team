@@ -59,7 +59,7 @@ class User {
 
         class_alias('\team\client\User', '\team\User', false);
 
-        $user_class =\team\Context::get('\team\User', '\team\predefined\Member');
+        $user_class =\team\system\Context::get('\team\User', '\team\predefined\Member');
 
         if(isset($user_class) && class_exists($user_class )  ) {
 		 self::$current  = new  $user_class();
@@ -147,7 +147,7 @@ class User {
        $sources = ['HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR' ];
 
 		foreach($sources as $source) {
-			if(isset($_SERVER[$source]) && \team\Check::ip($_SERVER[$source]) ) {
+			if(isset($_SERVER[$source]) && \team\data\Check::ip($_SERVER[$source]) ) {
 				return $ip = $_SERVER[$source];
 			}
 		}

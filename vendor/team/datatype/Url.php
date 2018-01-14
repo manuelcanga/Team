@@ -76,7 +76,7 @@ class Url extends Type
 
             //Si hay ancla la añadimos tambien al get
             if (isset($url['fragment'])) {
-                $args["anchor"] = \team\Check::key($url["fragment"]);
+                $args["anchor"] = \team\data\Check::key($url["fragment"]);
             }
         }
 
@@ -87,7 +87,7 @@ class Url extends Type
             $args['url_path_list'] = explode('/', trim($url["path"], '/'));
 
             //Quitamos todo lo que no sea adecuado
-            $args['url_path_list'] = array_filter($args['url_path_list'], ['\team\Sanitize', 'key']);
+            $args['url_path_list'] = array_filter($args['url_path_list'], ['\team\data\Sanitize', 'key']);
 
             //Vamos a analizar el último elemento
             $last = end( $args['url_path_list']);
@@ -99,7 +99,7 @@ class Url extends Type
                 $item_extension = null;
                 if (false !== $ext_position) {
                     $extension = strtolower(substr($last, $ext_position + /* point */ 1) );
-                    $extensions = \team\Filter::apply('\team\url\extensions', ['html' => 'html', 'htm' => 'html', 'json' => 'json', 'php' => 'html', 'xml' => 'xml']);
+                    $extensions = \team\data\Filter::apply('\team\url\extensions', ['html' => 'html', 'htm' => 'html', 'json' => 'json', 'php' => 'html', 'xml' => 'xml']);
                     if(isset($extensions[$extension])) {
                         $out = $extensions[$extension];
                         $item_extension = $extension;
@@ -112,7 +112,7 @@ class Url extends Type
 
 					$args['item_ext'] = $item_extension;
 
-		            $item = \team\Sanitize::urlFriendly($item);
+		            $item = \team\data\Sanitize::urlFriendly($item);
 
 
 		            $item_expression = '/(?<item_name>[a-z0-9\-\_\+]+?)(-(?<item_id>\d+))?$/x';
@@ -125,7 +125,7 @@ class Url extends Type
 		                    $args['item_name'] = $result['item_name'];
 
 		                if (isset($result['item_id']))
-		                    $args['item_id'] = \team\Check::id($result['item_id']);
+		                    $args['item_id'] = \team\data\Check::id($result['item_id']);
 		            }
 		            $last = end( $args['url_path_list']);
 		        }

@@ -45,7 +45,7 @@ class Security {
 	*/
 	public static function getToken(int $length = 10) {
 		$token_values = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTVWYXZ";
-		$token_values = \team\Filter::apply('\team\security\token_values', $token_values);
+		$token_values = \team\data\Filter::apply('\team\security\token_values', $token_values);
 
 		$min_number = 0;
 		$max_number = strlen($token_values) - 1;
@@ -118,7 +118,7 @@ class Security {
 			'osis',
 			'zoo' ];
 
-		$words = \team\Filter::apply('\team\security\words', $words);
+		$words = \team\data\Filter::apply('\team\security\words', $words);
 
 		$prefix = array_rand($words);
 		$postfix = array_rand($words);

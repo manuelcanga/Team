@@ -27,14 +27,14 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace team;
+namespace team\data;
 
 \team\loader\Classes::add('team\datatype\Store', "/datatype/Store.php", _TEAM_);
 \team\loader\Classes::add('team\data\formats\Format', "/data/formats/Format.php", _TEAM_);
 \team\loader\Classes::add('team\interfaces\data\Format', "/includes/interfaces/data/Format.php", _TEAM_);
 \team\loader\Classes::add('team\interfaces\data\HtmlEngine', "/includes/interfaces/data/HtmlEngine.php", _TEAM_);
 
-require(_TEAM_.'/datatype/Base.php');
+require(_TEAM_ . '/datatype/Base.php');
 
 class Data extends \team\datatype\Base
 {

@@ -61,7 +61,7 @@ abstract class ActiveRecord extends \team\db\Model{
 		@param $id es el valor a usar como campo clave
 	*/
 	function checkId($id) {
-			return \team\Check::key($id, 0);
+			return \team\data\Check::key($id, 0);
 	}
 
 	function isSafe() {

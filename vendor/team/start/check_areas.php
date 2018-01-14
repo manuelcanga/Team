@@ -14,7 +14,7 @@ if(!defined('_TEAM_') ) die("Hello,  World");
    package: private, component: noticias, response: listado,  AREA: 'panel', _URL_ = '/panel'
 */        
 
-\team\Task::join('\team\url', function(& $url) {
+\team\system\Task::join('\team\url', function(& $url) {
 
     /*
      * Es posible asignar una acción main por variable de configuración/constante. Eso sobreescribirá la acción main dependiente de la url
@@ -40,7 +40,7 @@ if(!defined('_TEAM_') ) die("Hello,  World");
 
 
 function getMainFromConfig(string $url) {
-    $main =  \team\Filter::apply('\team\url\main', \team\Config::get('MAIN'), $url );
+    $main =  \team\data\Filter::apply('\team\url\main', \team\Config::get('MAIN'), $url );
     \team\Config::set('MAIN', $main);
     return $main;
 }
@@ -75,7 +75,7 @@ function findCurrentArea( & $url, &$main) {
     //Nos aseguramos que las comparaciones no coja en mitad de la cadena añadiendo un / a la url y a las áreas.
     //Ej:  base: /noticias/listado  url: /noticias/listado-autores, daría un match. Sin embargo, si trimeamos y añaddimos un /
     //Ej2:   base: noticias/listado url: noticias/listado-autores/  no daría match.
-    $_url =  \team\Sanitize::trim($url);
+    $_url =  \team\data\Sanitize::trim($url);
 
     $_main = null;
     if(isset($areas['/']) ) {
@@ -83,7 +83,7 @@ function findCurrentArea( & $url, &$main) {
     }
 
     foreach($areas as $_area =>  $_params) {
-        $_area =  \team\Sanitize::trim($_area);
+        $_area =  \team\data\Sanitize::trim($_area);
 
         if(!substr_compare($_area, $_url, 0, strlen($_area) ) ) {
 
@@ -92,7 +92,7 @@ function findCurrentArea( & $url, &$main) {
             //La base ya la hemos proccesado así que la quitamos de la url
             //Recuerda que substr empieza en 0, de ahí el +1
             $url = substr($url,strlen($_area));
-            $url = \team\Sanitize::ltrim($url);
+            $url = \team\data\Sanitize::ltrim($url);
 
             $_area_ = rtrim('/'.$_area, '/');
             break;
@@ -111,7 +111,7 @@ function findCurrentArea( & $url, &$main) {
         $main = $_main;
     }
 
-    $area =  \team\Filter::apply('\team\area', $_area_, $area_params );
+    $area =  \team\data\Filter::apply('\team\area', $_area_, $area_params );
 
     return [$_area_, $area_params];
 }
@@ -128,9 +128,9 @@ function sortAreas($areas) {
 function setConfigArea(string $_area_) {
     $_area_ = trim($_area_, '/');
 
-    $_area_ =  \team\Filter::apply('\team\area', $_area_ );
+    $_area_ =  \team\data\Filter::apply('\team\area', $_area_ );
 
-    $area =  \team\Sanitize::identifier($_area_);
+    $area =  \team\data\Sanitize::identifier($_area_);
 
     \team\Config::set("AREA", $area); //Identificador area sin slash. Ej: cms
     \team\Config::set("_AREA_", rtrim('/'.$_area_,'/') ); //path a area con slash( al principio y no al final. Ej: /cms

@@ -163,7 +163,7 @@ class Email extends Type
             $headers[] = $replyTo;
 
 
-        $headers = \team\Filter::apply('\team\email\headers',$headers);
+        $headers = \team\data\Filter::apply('\team\email\headers',$headers);
 
 
         return implode("\r\n", $headers);

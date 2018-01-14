@@ -5,7 +5,7 @@ namespace team;
 if(!defined('_TEAM_')) die("Hello, World!");
 
 
-\team\DB::add([
+\team\system\DB::add([
         'user'       => 'my_user',
         'password'   => 'my_passwd',
         'name'       => 'my_db',

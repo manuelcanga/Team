@@ -44,7 +44,7 @@ class Commands extends Builder
 
 
 
-    public function checkErrors(\team\Data $_data)
+    public function checkErrors(\team\data\Data $_data)
     {
         //-------Gestion de errores-----------
         $_data->ok = !\Team::getResult();
@@ -61,7 +61,7 @@ class Commands extends Builder
     }
 
 
-    public function transform(\team\Data &$_data, & $_action_ob, $_result)
+    public function transform(\team\data\Data &$_data, & $_action_ob, $_result)
     {
 
         return $_data;

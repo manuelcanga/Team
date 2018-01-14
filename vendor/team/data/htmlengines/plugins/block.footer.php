@@ -49,7 +49,7 @@ function smarty_block_footer($params, $content, Smarty_Internal_Template $templa
 		}
 		$out .= '>';
 	}else {//close tag
-		$content =  \team\Filter::apply('\team\tag\footer', $content);
+		$content =  \team\data\Filter::apply('\team\tag\footer', $content);
 
 		$out = trim($content).'</footer>';
 	}

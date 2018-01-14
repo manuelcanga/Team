@@ -51,7 +51,7 @@ trait Select {
         $result = $query->getAll("@Access");
 
         Ejemplo 3 alternativo:
-        $data = new \team\Data();
+        $data = new \team\data\Data();
         $data->idmenor = 3;
         $data->idmayor = 5;
         $result = new \team\db\Query($data)->getAll("@Access");

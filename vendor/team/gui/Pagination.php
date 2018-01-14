@@ -67,19 +67,19 @@ class Pagination extends \team\db\Find{
         }
 
 		 $this->data = [];
-         $this->url = new \team\Data($data);
-		 $this->GUI = \team\Context::get('CONTROLLER');
+         $this->url = new \team\data\Data($data);
+		 $this->GUI = \team\system\Context::get('CONTROLLER');
 
          $this->setElementsForPage($_elements_for_page);
          $this->setCurrentPage($current_page);
 
-		$base_url = \team\Context::get('SELF');
+		$base_url = \team\system\Context::get('SELF');
 		if(!empty($base_url))  {
 			$this->setBaseUrl($base_url.':page');
 		}
 
 
-		$current_url = \team\Context::get('URL');
+		$current_url = \team\system\Context::get('URL');
         $this->setUrlToCheck($current_url['location']);
 
 		$this->onInitialize($data);
@@ -184,7 +184,7 @@ class Pagination extends \team\db\Find{
 
 	public function setElementsForPage($_elements_for_page = 'all') {
         if( 'all' !== $_elements_for_page) {
-		    $this->elementsForPage = \team\Check::id($_elements_for_page, $this->elementsForPage);
+		    $this->elementsForPage = \team\data\Check::id($_elements_for_page, $this->elementsForPage);
         }else
             $this->elementsForPage = 'all';
 
@@ -230,7 +230,7 @@ class Pagination extends \team\db\Find{
 	*/
 	public function getcount() { return $this->count;	}
 	public function setCount($_num = 0) {
-		$this->count = \team\Check::id($_num,0);
+		$this->count = \team\data\Check::id($_num,0);
 		return $this;
 	}
 
@@ -253,7 +253,7 @@ class Pagination extends \team\db\Find{
 
 
 	public function setCurrentPage($_currentPage) {
-		$this->currentPage =  \team\Check::id($_currentPage, 1);
+		$this->currentPage =  \team\data\Check::id($_currentPage, 1);
         $this->url["page"]  =  $this->currentPage;
 
 		return $this;
@@ -265,11 +265,11 @@ class Pagination extends \team\db\Find{
 
 	//Pagina desde la que empezaremos a mostrar la paginación Ej: 5 6 7 8 |9| 10 11 12 13 . este caso 5
 	public function getStart() {
-		return $this->start =  \team\Check::id($this->start, 1);
+		return $this->start =  \team\data\Check::id($this->start, 1);
 	}
 
 	public function getEnd() {
-		return $this->end =  \team\Check::id($this->end, $this->pages);
+		return $this->end =  \team\data\Check::id($this->end, $this->pages);
 	}
 
 	//Pagina hasta la que mostraremos la paginación Ej: 5 6 7 8 |9| 10 11 12 13 .  en este caso 13
@@ -282,7 +282,7 @@ class Pagination extends \team\db\Find{
 			}
 		}
 
-		$this->start =  \team\Check::id($this->currentPage -  $range, 1);
+		$this->start =  \team\data\Check::id($this->currentPage -  $range, 1);
 		$max_range = ($range*2)+1;
 
 
@@ -344,7 +344,7 @@ class Pagination extends \team\db\Find{
 			if(!$this->elementsForPage) {
 				$this->pages = 1;
 			}else {
-				$this->pages = \team\Check::id(ceil($this->count/$this->elementsForPage), 1);
+				$this->pages = \team\data\Check::id(ceil($this->count/$this->elementsForPage), 1);
 			}
 
 			/** Validamos que la pagina actual sea mayor o igual que 1 y menor o igual que el número máximo de paginas */

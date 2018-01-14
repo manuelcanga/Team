@@ -48,8 +48,8 @@ function smarty_function_view($params, &$engine)
     }
 
     $father = $engine;
-    $view = $params['name']?? \team\Context::get('VIEW');
-    $idView = \team\Sanitize::identifier($view);
+    $view = $params['name']?? \team\system\Context::get('VIEW');
+    $idView = \team\data\Sanitize::identifier($view);
     $template = $engine->createTemplate($view.'.tpl', $idView, $idView, $father);
     $template->assign($params);
 

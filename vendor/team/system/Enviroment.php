@@ -37,7 +37,7 @@ class Enviroment
         /**
          * Whether the server software is IIS 7.X or greater
          */
-        $iis7 = $IIS && \team\Check::id( substr( $_SERVER['SERVER_SOFTWARE'], strpos( $_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS/' ) + 14 ) ) >= 7;
+        $iis7 = $IIS && \team\data\Check::id( substr( $_SERVER['SERVER_SOFTWARE'], strpos( $_SERVER['SERVER_SOFTWARE'], 'Microsoft-IIS/' ) + 14 ) ) >= 7;
         $software = $iis7? 'iis7' : $software;
 
         $server = ['software' => $software, "apache" => $apache, "nginx" => $nginx, "IIS" => $IIS, 'iis7' => $iis7  ];

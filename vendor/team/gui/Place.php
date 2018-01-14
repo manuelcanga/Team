@@ -32,9 +32,9 @@ abstract class Place
     }
 
     public static function addClass($place, $class, $overwrite = false,  $order = 40) {
-        $placeid = \team\Sanitize::identifier($place);
+        $placeid = \team\data\Sanitize::identifier($place);
 
-        \team\Filter::add('\team\gui\classes\\'.$placeid, function($classes) use($class, $overwrite){
+        \team\data\Filter::add('\team\gui\classes\\'.$placeid, function($classes) use($class, $overwrite){
             if($overwrite) {
                 $classes = [$class];
             }else {
@@ -47,9 +47,9 @@ abstract class Place
 
     public static function getClasses($place, $classes) {
         if(!empty($place)) {
-            $placeid = \team\Sanitize::identifier($place);
+            $placeid = \team\data\Sanitize::identifier($place);
 
-            $classes = \team\Filter::apply('\team\gui\classes\\'.$placeid, (array)$classes, $place);
+            $classes = \team\data\Filter::apply('\team\gui\classes\\'.$placeid, (array)$classes, $place);
 
         }
 
@@ -113,7 +113,7 @@ abstract class Place
      */
     public static  function view(string $place, $view, $_options = [], $order = 40, $position = 'end') {
         $view =  \team\system\FileSystem::stripExtension($view);
-        $idView = \team\Sanitize::identifier($view);
+        $idView = \team\data\Sanitize::identifier($view);
         $options =  $_options;
 
         $isolate = true;
@@ -168,7 +168,7 @@ abstract class Place
     }
 
     public static  function widget(string $place, $widget_name, $_options = [], $order = 40, $position = 'end') {
-        $idwidget = \team\Sanitize::identifier($widget_name);
+        $idwidget = \team\data\Sanitize::identifier($widget_name);
 
         //Puede haber ocasiones que un widget requiera de colocar información en otras partes del html
         //es por ello, que le damos la oportunidad de que carguen la información que necesiten ya

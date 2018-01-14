@@ -11,11 +11,11 @@ if(!defined('_TEAM_') ) die("Hello,  World");
  Aquí se encuentra el código de parseo de url de TEAM. 
 
 */
-\team\Task::join('\team\parse_url', function($args, $url, $package) {
-    $others_characters = \team\Context::get('URL_EXTRA_CHARS', '');
+\team\system\Task::join('\team\parse_url', function($args, $url, $package) {
+    $others_characters = \team\system\Context::get('URL_EXTRA_CHARS', '');
 
 
-    $args->response = \team\Check::key($args->response, null, $others_characters);
+    $args->response = \team\data\Check::key($args->response, null, $others_characters);
 
 
     $new_url_path_list = $args->url_path_list;
@@ -37,12 +37,12 @@ if(!defined('_TEAM_') ) die("Hello,  World");
 			$subpath = array_shift($url_path_list);
 			if(is_numeric($subpath) ) {
 				if(!isset($args->id) ) {
-					$args->id = \team\Check::id($subpath, 0);
+					$args->id = \team\data\Check::id($subpath, 0);
 				}
-				$filters_list[] = \team\Check::id($subpath);
+				$filters_list[] = \team\data\Check::id($subpath);
 
 			}else {
-			    $subpath =  \team\Check::key($subpath, null, $others_characters);
+			    $subpath =  \team\data\Check::key($subpath, null, $others_characters);
 				if( ( $args->component && $args->response )  ) {
 					if( strlen($subpath) < 3 ) {
 						$filters_list[] = $subpath;
@@ -64,7 +64,7 @@ if(!defined('_TEAM_') ) die("Hello,  World");
 			$args->id = $args->item_id;
 		}
 
-		$args->id = \team\Check::id($args->id);
+		$args->id = \team\data\Check::id($args->id);
 
         $args->filters_list =$filters_list;
 

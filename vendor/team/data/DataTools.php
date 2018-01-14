@@ -31,7 +31,7 @@ trait DataTools {
         //Si hay datos los procesamos
         if(!empty($data) ){
             foreach ($fields as $_name) {
-                $name = \team\Check::key($_name);
+                $name = \team\data\Check::key($_name);
                 if(empty($name) ) continue;
     
                 $method = $prefix. str_replace('_','',$name);

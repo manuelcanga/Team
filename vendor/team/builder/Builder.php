@@ -52,20 +52,20 @@ abstract class Builder implements \ArrayAccess {
     public function __construct($params = []) {
         $this->data = $params;
 
-        \team\Context::set('CONTROLLER_BUILDER', $this);
-        \team\Context::set('CONTROLLER_TYPE', $this->getTypeController() );
+        \team\system\Context::set('CONTROLLER_BUILDER', $this);
+        \team\system\Context::set('CONTROLLER_TYPE', $this->getTypeController() );
 
-        if(\team\Context::isMain() && "Gui" == $this->getTypeController() ){
-            $PACKAGE = \team\Context::get('PACKAGE');
+        if(\team\system\Context::isMain() && "Gui" == $this->getTypeController() ){
+            $PACKAGE = \team\system\Context::get('PACKAGE');
 
             if($PACKAGE ) {
-                \team\system\FileSystem::load("/{$PACKAGE}/commons.php",  \team\Context::get('_THEME_') );
+                \team\system\FileSystem::load("/{$PACKAGE}/commons.php",  \team\system\Context::get('_THEME_') );
             }
 
-            $COMPONENT = \team\Context::get('COMPONENT');
+            $COMPONENT = \team\system\Context::get('COMPONENT');
 
             if($COMPONENT ) {
-                \team\system\FileSystem::load("/{$PACKAGE}/{$COMPONENT}.php", \team\Context::get('_THEME_'));
+                \team\system\FileSystem::load("/{$PACKAGE}/{$COMPONENT}.php", \team\system\Context::get('_THEME_'));
             }
         }
     }
@@ -78,7 +78,7 @@ abstract class Builder implements \ArrayAccess {
             \Team::system("Package '{$package}' not found", '\team\responses\Response_Not_Found');
         }
 
-        \team\Context::set('NAMESPACE', '\\'.$package);
+        \team\system\Context::set('NAMESPACE', '\\'.$package);
         $this->namespace = '\\';
 
         $this->setContext('PACKAGE', $package);
@@ -89,13 +89,13 @@ abstract class Builder implements \ArrayAccess {
 
 
         //Preparamos los datos para filtrar
-        $data = new \team\Data($this->data);
+        $data = new \team\data\Data($this->data);
         if($this['is_main']) {
             $data = new \team\datatype\Url(null, [], $data->get());
         }
 
         //Vamos a mandar un filtro de personalización de argumentos. Por si un package quiere personalizar sus argumentos( por ejemplo, acorde a la url de entrada )
-        $data = \team\Filter::apply('\team\builder_data', $data);
+        $data = \team\data\Filter::apply('\team\builder_data', $data);
 
         $this->set($data->get() );
     }
@@ -104,7 +104,7 @@ abstract class Builder implements \ArrayAccess {
     Asignamos el componente
      */
     protected function setComponent($component) {
-        $component = \team\Sanitize::identifier($component);
+        $component = \team\data\Sanitize::identifier($component);
 
         if(empty($component)) {
             \Team::system("Component in package '{$this->package}' not specified", '\team\responses\Response_Not_Found', $this->get(), $level = 5);
@@ -122,7 +122,7 @@ abstract class Builder implements \ArrayAccess {
 
 
         //Tendriamos que comprobar que existe el directorio del componente
-        \team\Context::set('NAMESPACE', $this->namespace);
+        \team\system\Context::set('NAMESPACE', $this->namespace);
 
         //Guardamos los datos de componente
         $this->setContext('PACKAGE', $this->package);
@@ -130,7 +130,7 @@ abstract class Builder implements \ArrayAccess {
         $this->setContext('COMPONENT', $component);
         $this->setContext('_COMPONENT_', _SCRIPT_.$this->path);
         $this->setContext('BASE', '/'.$this->package.'/'.$component);
-        $this->setContext('BASE_URL',  \team\Context::get('_AREA_').'/'.$component.'/');
+        $this->setContext('BASE_URL',  \team\system\Context::get('_AREA_').'/'.$component.'/');
 
 
 
@@ -142,22 +142,22 @@ abstract class Builder implements \ArrayAccess {
     Se parsea la respuesta y asignamos una válida
      */
     protected function setResponse($response) {
-        $response = \team\Sanitize::identifier($response);
+        $response = \team\data\Sanitize::identifier($response);
         $response = strtolower($response);
 
         //Default template is when response is wrong or empty and notfound_response is when response doesn't exit
-        $response = (empty($response) || ("_" == $response[0]))?  \team\Filter::apply('\team\default_response', 'index', $response) : $response;
+        $response = (empty($response) || ("_" == $response[0]))?  \team\data\Filter::apply('\team\default_response', 'index', $response) : $response;
 
         //Tendriamos que comprobar que existe el directorio o la clase de la acción
-        \team\Context::set("RESPONSE", $response);
-        $self = \team\Context::get('BASE_URL').$response.'/';
+        \team\system\Context::set("RESPONSE", $response);
+        $self = \team\system\Context::get('BASE_URL').$response.'/';
 
         if($this->id){
             $self .= $this->id.'/';
         }
 
         //Se diferencia de _SELF_ en que que SELF es es dependiente del contexto y _SELF_ es la que se llamó por el usuario
-        \team\Context::set('SELF', $self);
+        \team\system\Context::set('SELF', $self);
 
 
         $this->response = $response;
@@ -171,7 +171,7 @@ abstract class Builder implements \ArrayAccess {
     private function setContext($var, $value) {
         if(empty($var) ) return ;
 
-        $namespace = \team\Sanitize::trim($this->namespace, '\\');
+        $namespace = \team\data\Sanitize::trim($this->namespace, '\\');
 
         $constant_name = ltrim($namespace.$var, '\\');
 
@@ -179,7 +179,7 @@ abstract class Builder implements \ArrayAccess {
             define($constant_name, $value);
         }
 
-        \team\Context::set($var, $value);
+        \team\system\Context::set($var, $value);
     }
 
     /**
@@ -194,7 +194,7 @@ abstract class Builder implements \ArrayAccess {
 
         //Ej de nombre de clase de tipo gui:  /web/news/Gui
         $this->controller = $this->getController($this->response);
-        $this->controller = \team\Filter::apply('\team\builder\controller', $this->controller);
+        $this->controller = \team\data\Filter::apply('\team\builder\controller', $this->controller);
 
         $class_exists = class_exists($this->controller, false);
 
@@ -268,7 +268,7 @@ abstract class Builder implements \ArrayAccess {
 
         if(!$is_default && !$response_exists) {
             //Si no se encuentra o no existe respuesta, se tomará como response el response por defecto 'noencontrada'
-            $response = \team\Filter::apply('\team\notfound_response', 'main', $response, $class ) ;
+            $response = \team\data\Filter::apply('\team\notfound_response', 'main', $response, $class ) ;
             return $this->getMethod($class, $response, $reflection_class, $is_default = true);
         }
 
@@ -322,7 +322,7 @@ abstract class Builder implements \ArrayAccess {
 
             //Todas las constantes públicas que tenbga la clase las usamos como variables de contexto
             $reflection_class = new \ReflectionClass($class);
-            \team\Context::defaults($reflection_class->getConstants() );
+            \team\system\Context::defaults($reflection_class->getConstants() );
 
             $method = $this->getMethod($class, $this->response, $reflection_class);
 
@@ -340,7 +340,7 @@ abstract class Builder implements \ArrayAccess {
 
 
             //Lanzamos la transformación ( Lo podriamos hacer desde Component, primero lanzamos la acción y luego lanzamos la vista )
-            \team\Context::set('TRANSFORMING_RESPONSE_DATA', true);
+            \team\system\Context::set('TRANSFORMING_RESPONSE_DATA', true);
 
             $result = $this->transform($data, $controller, $result);
 
@@ -355,9 +355,9 @@ abstract class Builder implements \ArrayAccess {
 
 
 
-        \team\Context::set('TRANSFORMING_RESPONSE_DATA', false);
+        \team\system\Context::set('TRANSFORMING_RESPONSE_DATA', false);
 
-        if(($this->is_main || 1 ==  \team\Context::getLevel() ) ) {
+        if(($this->is_main || 1 ==  \team\system\Context::getLevel() ) ) {
             $this->header();
         }
 
@@ -382,7 +382,7 @@ abstract class Builder implements \ArrayAccess {
      */
     protected function error($SE, $controller = null, $result = '') {
 
-        $msg = "[".\team\Context::get('NAMESPACE')."]: ".$SE->getMessage();
+        $msg = "[".\team\system\Context::get('NAMESPACE')."]: ".$SE->getMessage();
 
         //Si no es main, se debería de volver al nivel inferior devolviendo '' con un error ( para que sepan que algo pasó )
         if(!$this->is_main || 'Gui' != $this->getTypeController() ) {
@@ -432,7 +432,7 @@ abstract class Builder implements \ArrayAccess {
 
             $header = "Content-Type: $type; charset=".\team\Config::get("CHARSET");
 
-            $header = \team\Filter::apply('\team\header', $header);
+            $header = \team\data\Filter::apply('\team\header', $header);
 
             header($header, true);
         }

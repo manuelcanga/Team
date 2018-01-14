@@ -32,7 +32,7 @@ trait Update {
     Ejemplo 4:
 
     //Valores necesarios
-    $data = new \team\Data();
+    $data = new \team\data\Data();
     $data->title = $title;
     $data->idwidget = $idwidget;
     $data->iduser = \team\User::get();

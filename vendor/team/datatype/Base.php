@@ -31,16 +31,16 @@ abstract class Base implements \ArrayAccess
 
 
     public function out($_type = NULL, $options = [], $isolate = true) {
-        \team\Context::open($isolate);
+        \team\system\Context::open($isolate);
 
-        \team\Context::set($this->contexts);
+        \team\system\Context::set($this->contexts);
 
         $format_class = new \team\data\formats\Format();
 
         $type = $_type?? $format_class->filter($_type);
 
         if( !isset($type) &&  isset($this->out) ) {
-            $type = \team\Check::key($this->get("out"), "Array");
+            $type = \team\data\Check::key($this->get("out"), "Array");
 
             unset($this->out);
         }
@@ -56,7 +56,7 @@ abstract class Base implements \ArrayAccess
 
         $out =  $obj->renderer($this->data, $options);
 
-        \team\Context::close();
+        \team\system\Context::close();
 
         return $out;
     }

@@ -207,7 +207,7 @@ class Log {
 	*/
    public static function saveLog($_file, $msg) {
 
-		if( "apache" == $_file || \team\Context::get("ERROR_LOG") ) {
+		if( "apache" == $_file || \team\system\Context::get("ERROR_LOG") ) {
 			error_log($msg);
 		}else {
 

@@ -60,7 +60,7 @@ function smarty_block_multiwrapper($params, $content, Smarty_Internal_Template $
         $out = '';
         $tags = [];
         foreach($params as  $tag => $classes) {
-            $tag =  \team\Sanitize::text($tag);
+            $tag =  \team\data\Sanitize::text($tag);
             $tags[] = $tag;
 
             if(!empty($classes)) {

@@ -107,9 +107,9 @@ ini_set('display_errors', 0);
 //Utilidades sobre el sistema de archivos
 require(\_TEAM_.'/system/FileSystem.php');
 //Cargamos la clase Filter que se encarga de las validaciones
-require(\_TEAM_.'/classes/Check.php');
+require(\_TEAM_ . '/data/Check.php');
 //Filter, permite el filtrado de datos de modo desacoplado.
-require(\_TEAM_.'/classes/hooks/Filter.php');
+require(\_TEAM_ . '/data/Filter.php');
 //Trait para las clases que manejan variables de configuración: Config y Context
 require(\_TEAM_.'/data/Vars.php');
 //La clase que gestiona opciones de configuración
@@ -125,17 +125,17 @@ require(\_TEAM_.'/data/Storage.php');
 //La clase que gestiona caché
 require(\_TEAM_.'/system/Cache.php');
 //La clase Context nos sirve para tener un control de variables de configuracion en funcion del contento
-require(\_TEAM_.'/classes/Context.php'); 
+require(\_TEAM_ . '/system/Context.php');
 //La clase Team, Notice y Erros llevan un control de las notificaciones de  avisos y errores del sistema
 require(\_TEAM_.'/classes/notices/Errors.php');
 require(\_TEAM_.'/classes/notices/Notice.php');
 require(\_TEAM_.'/classes/notices/Team.php');
 //La gran clase Data es un gestor de datos y su representación en distintos formatos
-require(\_TEAM_.'/classes/Data.php');
+require(\_TEAM_ . '/data/Data.php');
 //Para el manejo fácil de namespaces
 require(\_TEAM_.'/system/NS.php');
 //Task permite la delegación de tareas
-require(\_TEAM_.'/classes/hooks/Task.php');
+require(\_TEAM_ . '/system/Task.php');
 //Cargamos la clase Debug y Log para todo ayudar al programador/maquetador en su tarea.
 require(\_TEAM_.'/classes/notices/Log.php');
 require(\_TEAM_.'/classes/notices/Debug.php');
@@ -144,11 +144,11 @@ require(\_TEAM_.'/builder/Component.php');
 //Clase que sirve de clase base para los controladores
 require(\_TEAM_.'/controller/Controller.php');
 //Clase que hace funciones de limpieza
-require(\_TEAM_.'/classes/Sanitize.php');
+require(\_TEAM_ . '/data/Sanitize.php');
 //Clase que maneja cabeceras http
 require(\_TEAM_.'/client/Http.php');
 //Clase que maneja base de datos
-require(\_TEAM_.'/classes/DB.php');
+require(\_TEAM_ . '/system/DB.php');
 
 
 
@@ -190,14 +190,14 @@ function up() {
         /**
          * 7. Se parsea los parámetros de entrada
          */
-        $REQUEST_URI = \team\Filter::apply('\team\request_uri', $_SERVER["REQUEST_URI"]);
-        $args = \team\Task('\team\url', array() )->with($REQUEST_URI);
+        $REQUEST_URI = \team\data\Filter::apply('\team\request_uri', $_SERVER["REQUEST_URI"]);
+        $args = \team\system\Task('\team\url', array() )->with($REQUEST_URI);
 
 
         /**
          * 8. Se llama al encargado( un componente o función __main ) de procesar el primer response o main
          */
-        $result =  \team\Task('\team\main', '')->with($args);
+        $result =  \team\system\Task('\team\main', '')->with($args);
 
         \team\Debug::trace("Se acabó, ya hemos realizado todas las operaciones pedidas. Bye!");
 

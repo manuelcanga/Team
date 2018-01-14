@@ -152,7 +152,7 @@ class Team
 	public static function addListener($event, $listener, $order = 65) {
 		$event = rtrim($event, '\\');
 
-		$order = \team\Check::id($order);
+		$order = \team\data\Check::id($order);
 
 		//Si no habia listeners asociados al evento, ahora si
 		self::$listeners[$event] =  self::$listeners[$event]??  [];

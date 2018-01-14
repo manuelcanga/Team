@@ -57,7 +57,7 @@ trait Box {
 
     /**** GETTER ****/
 
-    public function getDataObj() { return new \team\Data($this->data); }
+    public function getDataObj() { return new \team\data\Data($this->data); }
 
 
     public function  get($name = null, $default = null) {

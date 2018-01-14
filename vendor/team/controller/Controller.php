@@ -49,17 +49,17 @@ abstract class Controller  implements \ArrayAccess{
 
     function __construct($params, $response ) {
 
-		\team\Context::set('CONTROLLER',  $this );
+		\team\system\Context::set('CONTROLLER',  $this );
 
 		if($params instanceof \team\Data) {
 		  $this->params = $params;
 		}else{
-	      $this->params = new \team\Data($params);
+	      $this->params = new \team\data\Data($params);
 		}
 
 
         //Contamos las veces que se ha creado
-        \team\Context::set('TIMES',  static::controllerInitialized($response) );
+        \team\system\Context::set('TIMES',  static::controllerInitialized($response) );
     }
 
 
@@ -75,7 +75,7 @@ abstract class Controller  implements \ArrayAccess{
                         false si hubo más veces
 	*/
 	function isFirstTime() {
-        return (1 === \team\Context::get('TIMES')['commons'] );
+        return (1 === \team\system\Context::get('TIMES')['commons'] );
 	}
 
 
@@ -92,14 +92,14 @@ abstract class Controller  implements \ArrayAccess{
         Devuelve el nombre del componente al que pertenece este controlador
     */
     function getComponent() {
-        return \team\Context::get('COMPONENT');
+        return \team\system\Context::get('COMPONENT');
     }
 
     /*
         Devuelve el nombre del paquete al que pertenece este controlador
     */
     function getPackage() {
-        return \team\Context::get('PACKAGE');
+        return \team\system\Context::get('PACKAGE');
     }
 
 
@@ -225,7 +225,7 @@ abstract class Controller  implements \ArrayAccess{
      */
     function delegate(array $params = [], $full = true) {
 
-        $namefile = ucfirst(\team\Context::get('RESPONSE') );
+        $namefile = ucfirst(\team\system\Context::get('RESPONSE') );
 
         if(!$full) {
             $params['ref'] = $this->params->id;
@@ -242,7 +242,7 @@ abstract class Controller  implements \ArrayAccess{
 
             $response = $this->params->url_path_list[0]?? 'index';
         }else {
-            $response = \team\Context::get('RESPONSE');
+            $response = \team\system\Context::get('RESPONSE');
         }
 
 
@@ -261,13 +261,13 @@ abstract class Controller  implements \ArrayAccess{
      * @return mixed devuelve la respuesta del response
      */
     function newController($name, $_response = null, $data = [], $isolate = true, &$new_controller = null) {
-        $classname = \team\Context::get('NAMESPACE').'\\'.$name;
-        $response = $_response?:  \team\Context::get('RESPONSE');
+        $classname = \team\system\Context::get('NAMESPACE').'\\'.$name;
+        $response = $_response?:  \team\system\Context::get('RESPONSE');
         $result = null;
 
         if(!class_exists($classname, false)) {
 
-            $pathToController = \team\Context::get('_COMPONENT_').static::DEPENDENCIES;
+            $pathToController = \team\system\Context::get('_COMPONENT_').static::DEPENDENCIES;
             $new_controller = $this->getNewController($classname, $response, $pathToController , $data, $isolate);
 
 
@@ -282,7 +282,7 @@ abstract class Controller  implements \ArrayAccess{
                     $result = $new_controller->___unload($result, $response, $new_controller);
                 }
 
-                \team\Context::set('CONTROLLER',  $this );
+                \team\system\Context::set('CONTROLLER',  $this );
             }
 
         }

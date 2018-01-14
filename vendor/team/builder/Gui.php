@@ -52,7 +52,7 @@ class Gui extends Builder {
 
 
 
-    public function checkErrors(\team\Data $_data) {
+    public function checkErrors(\team\data\Data $_data) {
 		//-------Gestion de errores-----------
 		$ok = !\Team::getResult();
 		$nok = !$_data->ok;
@@ -71,7 +71,7 @@ class Gui extends Builder {
 
 	}
 
-	public function transform(\team\Data &$_data, $_controller, $_result = null ) {
+	public function transform(\team\data\Data &$_data, $_controller, $_result = null ) {
 
 		$hubo_resultado_devuelto_por_response = isset($_result)  && is_string($_result);
 
@@ -105,7 +105,7 @@ class Gui extends Builder {
 		if( !$SE instanceof \team\system\exception\System_error ) {
 			$SE = new \team\system\exception\System_Error($SE->getMessage(), '\team\views\errors',$SE->getCode(), $SE->getFile(), $SE->getLine() /*, $SE->getFunction()*/ );
 			//Guardamos el namespace actual
-			$SE->setNamespace(\team\Context::get('NAMESPACE'));
+			$SE->setNamespace(\team\system\Context::get('NAMESPACE'));
 		}
 		\Team::systemException($SE );
 

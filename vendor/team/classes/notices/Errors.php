@@ -78,7 +78,7 @@ class Errors {
 	
 	public function PHPError($_errno, $_errstr, $_errfile, $_errline, $_context = array()) {
 
-		$namespace = \team\Context::get('NAMESPACE');
+		$namespace = \team\system\Context::get('NAMESPACE');
 		$is_critical = true;
 		$_errorcode =  self::$php_errors_code[$_errno]?? 'CRITICAL';
 
@@ -91,8 +91,8 @@ class Errors {
             $is_critical = true;
 
 			//Nuestro último intento de salvar el sistema, probamos a visualizar un mensaje de error
-			if(empty($_context) && class_exists('\Context') && \team\Context::getIndex()  > 1) {
-				$builder = \team\Context::get('CONTROLLER_BUILDER');
+			if(empty($_context) && class_exists('\Context') && \team\system\Context::getIndex()  > 1) {
+				$builder = \team\system\Context::get('CONTROLLER_BUILDER');
 
 				$result = '';
 				if(isset($builder) ) {
@@ -129,8 +129,8 @@ class Errors {
 	    static $num_criticals  = 0;
 
 		$error = error_get_last();
-		$data = new \team\Data();
-		$data->namespace = \team\Context::get('NAMESPACE');
+		$data = new \team\data\Data();
+		$data->namespace = \team\system\Context::get('NAMESPACE');
 		$critical = true;
 
 		if(isset($error['type']) && $error['type'] >= 0) {
@@ -157,7 +157,7 @@ class Errors {
 		}else {
 
             //framework's halting
-			\team\Context::close();
+			\team\system\Context::close();
 			return 	\Team::event('\team\halt', $data);;
 		}
 
@@ -177,13 +177,13 @@ class Errors {
 		}
 
 		//Asignamos un contextlevel para que quien lo recoja sepa si es o no main dónde se produjo el error
-		$data->context  = new \team\Data( \team\Context::getContext() );
-		$data->level = \team\Context::getIndex();
-		if( \team\Context::get('out') != 'html' ) {
+		$data->context  = new \team\data\Data( \team\system\Context::getContext() );
+		$data->level = \team\system\Context::getIndex();
+		if( \team\system\Context::get('out') != 'html' ) {
 		
-			$context_main = \team\Context::before();
+			$context_main = \team\system\Context::before();
 			//Si el método main no es el que ha cascado, llamamos a su método critical para que lo arregle todo.
-			$builder = \team\Context::get('CONTROLLER_BUILDER');
+			$builder = \team\system\Context::get('CONTROLLER_BUILDER');
 
 			if(isset($builder) ) {
 				echo  $builder->getCriticalError($data);

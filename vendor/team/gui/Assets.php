@@ -44,7 +44,7 @@ trait Assets {
 
         $_file = str_replace('.css','',$_file);
 
-        $component = $component?? \team\Context::get('COMPONENT');
+        $component = $component?? \team\system\Context::get('COMPONENT');
 
         if("internet" === $component)
             $file = $_file;
@@ -53,7 +53,7 @@ trait Assets {
 
         }
 
-        $idfile =    \team\Sanitize::identifier($file);
+        $idfile =    \team\data\Sanitize::identifier($file);
         $file .= '.css';
 
 
@@ -79,14 +79,14 @@ trait Assets {
 
         $_file = str_replace('.js','',$_file);
 
-        $component = $component?? \team\Context::get('COMPONENT');
+        $component = $component?? \team\system\Context::get('COMPONENT');
 
         if("internet" === $component)
             $file = $_file;
         else
             $file = "/".\team\system\FileSystem::getPath("js", $component, $package)."{$_file}";
 
-        $idfile =    \team\Sanitize::identifier($file);
+        $idfile =    \team\data\Sanitize::identifier($file);
         $file .= '.js';
 
 

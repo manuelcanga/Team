@@ -207,7 +207,7 @@ final  class Filesystem
         }
 
         if(isset($dirs_filter)) {
-            $dirs = \team\Filter::apply($dirs_filter, $dirs);
+            $dirs = \team\data\Filter::apply($dirs_filter, $dirs);
         }
 
         if(!empty($dirs) ){
@@ -276,13 +276,13 @@ final  class Filesystem
             return false;
         }
 
-        $base_upload = $options['dir']?? \team\Context::get('BASE_UPLOAD', \team\system\Date::current('base_upload'));
-        $uploads_path =  $options['path']?? \team\Context::get('_UPLOADS_', _TEMPORARY_);
+        $base_upload = $options['dir']?? \team\system\Context::get('BASE_UPLOAD', \team\system\Date::current('base_upload'));
+        $uploads_path =  $options['path']?? \team\system\Context::get('_UPLOADS_', _TEMPORARY_);
 
         self::mkdirRecursive($uploads_path.$base_upload);
 
         if( isset($options['keep_name']) && $options['keep_name']) {
-            $new_name = \team\Sanitize::identifier(\team\Sanitize::chars($name) );
+            $new_name = \team\data\Sanitize::identifier(\team\data\Sanitize::chars($name) );
         }else {
             $new_name = md5(\team\system\Date::current('timestamp').'_'.$tmp_name);
         }
@@ -313,7 +313,7 @@ final  class Filesystem
     }
 
     public static function rmUploaded($file, $path = null) {
-       $_UPLOADS_ = $path??  \team\Context::get('_UPLOADS_', _TEMPORARY_);
+       $_UPLOADS_ = $path??  \team\system\Context::get('_UPLOADS_', _TEMPORARY_);
 
         return unlink($_UPLOADS_.$file);
     }
@@ -321,7 +321,7 @@ final  class Filesystem
     public static function download($file, $name = null, $isUploaded = true) {
 
 	    if($isUploaded) {
-            $path = \team\Context::get('_UPLOADS_', _TEMPORARY_);
+            $path = \team\system\Context::get('_UPLOADS_', _TEMPORARY_);
             $file = $path.$file;
         }
 
@@ -410,8 +410,8 @@ final  class Filesystem
     public static function getPath($subpath, $component = null, $package = null) {
 
         $subpath = trim($subpath, '/');
-        $component = $component?? \team\Context::get('COMPONENT');
-        $package = $package?? \team\Context::get('PACKAGE');
+        $component = $component?? \team\system\Context::get('COMPONENT');
+        $package = $package?? \team\system\Context::get('PACKAGE');
 
         if ('root' === $package || 'root' === $component) {
             return "commons/{$subpath}/";
@@ -532,7 +532,7 @@ final  class Filesystem
          * @param array $ext2type Multi-dimensional array with extensions for a default set
          *                        of file types.
          */
-        $ext2type = \team\Filter::apply( '\team\filesystem\ext2type', array(
+        $ext2type = \team\data\Filter::apply( '\team\filesystem\ext2type', array(
             'image'       => array( 'jpg', 'jpeg', 'jpe',  'gif',  'png',  'bmp',   'tif',  'tiff', 'ico' ),
             'audio'       => array( 'aac', 'ac3',  'aif',  'aiff', 'm3a',  'm4a',   'm4b',  'mka',  'mp1',  'mp2',  'mp3', 'ogg', 'oga', 'ram', 'wav', 'wma' ),
             'video'       => array( '3g2',  '3gp', '3gpp', 'asf', 'avi',  'divx', 'dv',   'flv',  'm4v',   'mkv',  'mov',  'mp4',  'mpeg', 'mpg', 'mpv', 'ogm', 'ogv', 'qt',  'rm', 'vob', 'wmv' ),
@@ -558,7 +558,7 @@ final  class Filesystem
      * @return array Array of mime types keyed by the file extension
      */
     public static function getMimeTypes() {
-        return \team\Filter::apply( '\team\filesystem\mime_types', array(
+        return \team\data\Filter::apply( '\team\filesystem\mime_types', array(
             // Image formats.
             'jpg' => 'image/jpeg',
             'jpeg' => 'image/jpeg',
@@ -698,7 +698,7 @@ final  class Filesystem
      * @return array Array of icons keyed by the file extension
      */
     public static function getIcons() {
-        return  \team\Filter::apply( '\team\filesystem\icons', array(
+        return  \team\data\Filter::apply( '\team\filesystem\icons', array(
             // Image formats.
             'jpg' => 'fa-file-image-o',
             'jpeg' => 'fa-file-image-o',

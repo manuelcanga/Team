@@ -62,7 +62,7 @@ function smarty_block_head($params, $content, Smarty_Internal_Template $template
 
         $out .= '><head>'.$responsive.trim($content);
 
-        $charset = \team\Context::get('CHARSET');
+        $charset = \team\system\Context::get('CHARSET');
         $out .= "<meta charset='{$charset}'>";
 
         return $out;
@@ -74,8 +74,8 @@ function smarty_block_head($params, $content, Smarty_Internal_Template $template
 
         /* ******************** METAS *************** */
         //head tag
-        $metas =  (array) \team\Context::get('SEO_METAS');
-        $metas =  \team\Filter::apply('\team\tag\metas', $metas);
+        $metas =  (array) \team\system\Context::get('SEO_METAS');
+        $metas =  \team\data\Filter::apply('\team\tag\metas', $metas);
 
 
         foreach($metas as $name => $content) {
@@ -97,7 +97,7 @@ function smarty_block_head($params, $content, Smarty_Internal_Template $template
         }
 
 
-        $out =  trim(\team\Filter::apply('\team\tag\head', $out));
+        $out =  trim(\team\data\Filter::apply('\team\tag\head', $out));
 
         /* ******************** TOP CSS Y JS FILES *************** */
         //TOP CSS

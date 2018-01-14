@@ -41,7 +41,7 @@ class Cache {
     public  static function __initialize() {
 		if(isset(self::$current) ) return  ;
 
-		  $cache_class = \team\Context::get('\team\Cache', '\team\predefined\Apcu');
+		  $cache_class = \team\system\Context::get('\team\Cache', '\team\predefined\Apcu');
 
 
 		  if(isset($cache_class) && class_exists($cache_class )  ) {
@@ -63,7 +63,7 @@ class Cache {
       foreach($ids as $cacheid) {
           if(!is_string($cacheid)) continue;
 
-          $new_id = \team\Sanitize::identifier($cacheid);
+          $new_id = \team\data\Sanitize::identifier($cacheid);
           $new_id = trim(trim($new_id,'_'));
 
           if(!empty($new_id)) return $new_id;
@@ -86,7 +86,7 @@ class Cache {
 		$time = \team\system\Date::strToTime($time);
 
         if(is_null($time)){
-            return \team\Filter::apply('\team\cache\default_time', \team\system\Date::AN_HOUR, $cacheid);
+            return \team\data\Filter::apply('\team\cache\default_time', \team\system\Date::AN_HOUR, $cacheid);
         }
 
         return $time;
@@ -116,7 +116,7 @@ class Cache {
 	}
 
     public  static  function get($cacheid, $default = null) {
-        return \team\Filter::apply('\team\cache\\'.$cacheid, self::$current->get($cacheid, $default) );
+        return \team\data\Filter::apply('\team\cache\\'.$cacheid, self::$current->get($cacheid, $default) );
     }
 
     public  static function debug($msg = null) {

@@ -54,9 +54,9 @@ function smarty_block_body($params, $content, Smarty_Internal_Template $template
 
 
 		//Atributos del body
-		$package = \team\Context::get('PACKAGE');
-		$component = \team\Context::get('COMPONENT');
-		$response = \team\Context::get('RESPONSE');
+		$package = \team\system\Context::get('PACKAGE');
+		$component = \team\system\Context::get('COMPONENT');
+		$response = \team\system\Context::get('RESPONSE');
 
 		$default = [
 			 'id' =>  $package.'_'.$component,
@@ -66,7 +66,7 @@ function smarty_block_body($params, $content, Smarty_Internal_Template $template
 
 
 		/* Body Classes */
-		$body_classes = \team\Context::get('BODY_CLASSES');
+		$body_classes = \team\system\Context::get('BODY_CLASSES');
 
         if( \team\client\Http::checkUserAgent('mobile') ) {
             $body_classes[] = 'movil';
@@ -84,14 +84,14 @@ function smarty_block_body($params, $content, Smarty_Internal_Template $template
 
 
         $out .= '<body';
-		$params =  \team\Filter::apply('\team\tag\body\params', $params + $default);
+		$params =  \team\data\Filter::apply('\team\tag\body\params', $params + $default);
 		foreach($params as $attr => $value) {
 				$out .= " {$attr}='{$value}'";
 		}
 		$out .= '>';
 
 
-		$out .=  trim(\team\Filter::apply('\team\tag\body', $content, $params, $template));
+		$out .=  trim(\team\data\Filter::apply('\team\tag\body', $content, $params, $template));
 
 
 		/* ******************** BOTTOM CSS Y JS FILES *************** */

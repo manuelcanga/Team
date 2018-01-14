@@ -70,7 +70,7 @@ trait Seo {
      */
     public function setTitle($title, $separator = true, $after = false) {
 
-        $SEO_TITLE = \team\Context::get('SEO_TITLE', '');
+        $SEO_TITLE = \team\system\Context::get('SEO_TITLE', '');
 
 
         if(null === $separator || !$SEO_TITLE) {
@@ -82,7 +82,7 @@ trait Seo {
         }
 
 
-        \team\Context::set('SEO_TITLE', $SEO_TITLE);
+        \team\system\Context::set('SEO_TITLE', $SEO_TITLE);
 
         return $SEO_TITLE;
     }

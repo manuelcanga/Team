@@ -109,7 +109,7 @@ class Find implements \ArrayAccess{
     }
 
     public function setOrderBy($_order_by, $_order = 'DESC'){
-        $this->orderBy = \team\Check::key($_order_by, null);
+        $this->orderBy = \team\data\Check::key($_order_by, null);
         $this->setOrder($_order);
 
         return $this;

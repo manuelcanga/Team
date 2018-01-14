@@ -138,11 +138,11 @@ class Component   implements \ArrayAccess{
 
         $this->path = str_replace("\\", "/", $this->namespace);
 
-        $this->embedded = (bool)\team\Context::getIndex();
+        $this->embedded = (bool)\team\system\Context::getIndex();
         $this->is_main =  !$this->embedded;
         
 	   //Especificamos si se está usando o no la linea de comando
-        $this->terminal = (boolean)\team\Context::get("CLI_MODE");
+        $this->terminal = (boolean)\team\system\Context::get("CLI_MODE");
 
 	}
 
@@ -165,21 +165,21 @@ class Component   implements \ArrayAccess{
 		
 	*/
 	final function retrieveResponse($response_name = NULL, $arguments = []) {
-		\team\Context::open(); //Abrimos un contexto que encapsule la response
+		\team\system\Context::open(); //Abrimos un contexto que encapsule la response
 
 		$this->addData($arguments);
 
-        $this->response = \team\Check::key($response_name, $this->response);
+        $this->response = \team\data\Check::key($response_name, $this->response);
 
 		//Llamamos a un contructor de response, para que se encargue de hacer todo lo necesario para que la petición
 		//llegue a este la response adecuado
 		$data =  $this->getDataObj();
-		$response = \team\Task('\team\builders\get_builder', array( $this,"_getBuilder") )->with($data);
+		$response = \team\system\Task('\team\builders\get_builder', array( $this,"_getBuilder") )->with($data);
 
 		$result =  $response->buildResponse();
 
 		//Acabamos la encapsulación del contexto de response
-	   \team\Context::close(); 
+	   \team\system\Context::close();
 
 		return $result;
 	}
@@ -201,19 +201,19 @@ class Component   implements \ArrayAccess{
 		 );
 
 		//Filtramos por el tipo de salida
-	  if(\team\Context::get('CLI_MODE')) {
-       $params->out = \team\Check::key($params->out, 'command');
+	  if(\team\system\Context::get('CLI_MODE')) {
+       $params->out = \team\data\Check::key($params->out, 'command');
 	  }else if($params->is_main) {
-       $params->out = \team\Check::key($params->out, 'html');
+       $params->out = \team\data\Check::key($params->out, 'html');
      }else {
-       $params->out = \team\Check::key( $params->out, 'array');
+       $params->out = \team\data\Check::key( $params->out, 'array');
      }
 
 
 		//Cogemos dependiendo del tipo de salida. Sino el predeterminado será el de acciones
 		$class = isset($builders[$params->out])?  $builders[$params->out] : $builders['action'];
-		\team\Context::set("out", $params->out);
-        \team\Context::set("AJAX",  $params->out != 'html' && $params->out != 'array');
+		\team\system\Context::set("out", $params->out);
+        \team\system\Context::set("AJAX",  $params->out != 'html' && $params->out != 'array');
 
 		if(class_exists($class) ) {
 			\team\Debug::trace("Se usará el siguiente builder para crear una respuesta con salida {$params->out} ", $class);

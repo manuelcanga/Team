@@ -38,7 +38,7 @@ class Member implements \ArrayAccess {
 	public function __construct() {
 		$user_data = ['active' => 0, 'level' => \team\User::GUEST];
 	
-		$this->data = \team\Task('\team\member', function($data) {
+		$this->data = \team\system\Task('\team\member', function($data) {
             return new \team\datatype\Session($data, []);
 		})->with($user_data);
 
@@ -143,7 +143,7 @@ class Member implements \ArrayAccess {
     public function doLogin($email, $passwd, $others_data)
     {
 
-		$data = \team\Task('\team\login', function($user, $passwd = null, $others_data = []) {
+		$data = \team\system\Task('\team\login', function($user, $passwd = null, $others_data = []) {
 
 		    $passwd = trim($passwd);
 		    $without_passwd = empty($passwd);
@@ -152,20 +152,20 @@ class Member implements \ArrayAccess {
 		        return [];
 
 
-		    $user_data = \team\Filter::apply('\team\session\login',[],  $user);
+		    $user_data = \team\data\Filter::apply('\team\session\login',[],  $user);
 		    $user_not_found = empty($user_data);
 
 		    if($user_not_found) return [];
 
 		    $hash_passwd = md5($passwd);
 		    $right_passwd = isset($user_data['password']) &&  $user_data['password'] === $hash_passwd;
-            $right_passwd = \team\Filter::apply('\team\session\right_passwd', $right_passwd, $user_data,  $passwd, $others_data );
+            $right_passwd = \team\data\Filter::apply('\team\session\right_passwd', $right_passwd, $user_data,  $passwd, $others_data );
 
             if(!$right_passwd) return [];
 
 
-            $user_can_login = \team\Check::id($user_data['active'],0) > 0 ;
-            $user_can_login = \team\Filter::apply('\team\session\user_can_login', $user_can_login, $user_data, $others_data );
+            $user_can_login = \team\data\Check::id($user_data['active'],0) > 0 ;
+            $user_can_login = \team\data\Filter::apply('\team\session\user_can_login', $user_can_login, $user_data, $others_data );
 
             if(!$user_can_login)  return [];
 

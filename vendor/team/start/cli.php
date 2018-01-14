@@ -9,7 +9,7 @@ if(!defined('_TEAM_') ) die("Hello,  World");
 /**
  * Ahora vamos a comprobar si estamos lanzando Team en modo Cli mode
  */
-\team\Task::join('\team\url', function() {
+\team\system\Task::join('\team\url', function() {
 	
 	global $argv;
 
@@ -99,9 +99,9 @@ function get_key_value_and_type($arg) {
 function get_store_for_args($url = null) {
 
 	if(isset($url)) {
-	  return new \team\Data('Url',$url);   
+	  return new \team\data\Data('Url',$url);
 	}else {
-	  return  new \team\Data();
+	  return  new \team\data\Data();
 	}
 }
 

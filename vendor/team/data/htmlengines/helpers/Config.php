@@ -13,7 +13,7 @@ class Config  implements \ArrayAccess
     /* ------------------- ArrayAccess  ---------------------- */
 
     public function offsetUnset($offset){
-        return \team\Context::delete($offset);
+        return \team\system\Context::delete($offset);
     }
 
     public function offsetExists($offset) {
@@ -21,12 +21,12 @@ class Config  implements \ArrayAccess
     }
 
     public function   offsetGet($offset) {
-        return \team\Context::get($offset, '');
+        return \team\system\Context::get($offset, '');
     }
 
 
     public function  offsetSet($offset, $valor) {
-        return \team\Context::get($offset, $valor);
+        return \team\system\Context::get($offset, $valor);
 
     }
 

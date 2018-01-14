@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 
-namespace team;
+namespace team\data;
 
 /*  **********************************************************************************
 Sistema de modificación en cascada
@@ -101,7 +101,7 @@ class Filter {
     /**
     El usuario cliente lanza el proceso de filtrado mediante esta función
     @param mixed|mixed[]|null $data El dato a procesar por la cadena de filtros de namespace $pipeline
-    @example \team\Filter::apply("/team/strings/uppercase", "Team Framework");
+    @example \team\data\Filter::apply("/team/strings/uppercase", "Team Framework");
 
     @return Devuelve $data procesado por los filtros. Ej anterior: _TEAM_ FRAMEWORK
      */

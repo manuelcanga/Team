@@ -60,7 +60,7 @@ function smarty_function_filter($params, &$smarty)
 			unset($params['assign']);
 		}
 
-		$out =  \team\Filter::apply($name,$value, $params,  $smarty);
+		$out =  \team\data\Filter::apply($name,$value, $params,  $smarty);
 
 		if(isset($assign) ) {
 			$smarty->assign($assign, $out);

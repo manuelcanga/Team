@@ -29,7 +29,7 @@
   También permite crear pequeños comandos cli que no necesitan ser organizados en paquetes/componentes 
 */
 if(function_exists('__main') ) {
-	\team\Task::join('\team\main', function ($args) {
+	\team\system\Task::join('\team\main', function ($args) {
 		$this->finish();
 
 		$result =  __main($args);
@@ -44,7 +44,7 @@ if(function_exists('__main') ) {
   Definimos un trabajador para la tarea de lanzar la primera acción
   Es este worker el que desencadena el mvc.
  */
-\team\Task::join('\team\main', function($args) {
+\team\system\Task::join('\team\main', function($args) {
 
     \team\Debug::trace("Instanciamos \Component para lanzar la primera response", $args);
     

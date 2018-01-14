@@ -28,11 +28,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-namespace team;
+namespace team\system;
 
 //Create a new helper function. E.g  Task("/web/list/Init", null);
 if(!function_exists("Task") ) {
-	function Task($task, $default = "") { return new \team\Task($task, $default); }
+	function Task($task, $default = "") { return new \team\system\Task($task, $default); }
 }
 
 /**
@@ -163,7 +163,7 @@ class Task implements \ArrayAccess{
 		$task = trim($task, "\\");
 		if(!is_callable($worker,  $syntax_only = true) ) return ;
 
-		$order = \team\Check::id($order);
+		$order = \team\data\Check::id($order);
 
 		if(!isset(self::$workers[$task]) )
 			self::$workers[$task] = [];

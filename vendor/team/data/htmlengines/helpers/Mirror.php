@@ -13,7 +13,7 @@ class Mirror {
 			$name = substr($name, 7);
 		}
 
-		$namespace = \team\Context::get('NAMESPACE');
+		$namespace = \team\system\Context::get('NAMESPACE');
 		\team\Debug::me("[{$namespace}][Template]:Not found a replacement for '{$name}'  ");
 	}
 }

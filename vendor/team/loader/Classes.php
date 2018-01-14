@@ -87,7 +87,7 @@ class  Classes{
 
             if(!isset($path)) {
                 $name = \team\system\NS::basename($class);
-                $path = \team\Context::get('_COMPONENT_').'/classes/'.$name.'.php';
+                $path = \team\system\Context::get('_COMPONENT_').'/classes/'.$name.'.php';
             }
 
 			self::$registers[$class] = ['path' => $path, 'base' => $base, 'name'=> $class, 'initialized' => false ];
@@ -107,7 +107,7 @@ class  Classes{
         $_alias = ltrim($_alias,'\\');
         $class = ltrim($class,'\\');
 
-        \team\Context::add('classs_alias', $_alias, $class);
+        \team\system\Context::add('classs_alias', $_alias, $class);
         return self::add($class, $path, $base);
     }
 
@@ -125,7 +125,7 @@ class  Classes{
         $class_name_full = ltrim($class_name_full,'\\');
 
         if($with_alias) {
-            $class = \team\Context::getKey($class_name_full, 'classs_alias');
+            $class = \team\system\Context::getKey($class_name_full, 'classs_alias');
 
             if(isset($class)) {
                 $class_name_full = $class;

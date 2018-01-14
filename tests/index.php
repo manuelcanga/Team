@@ -1,7 +1,7 @@
 <?php
 
 function __test() {
-    $date = new \team\Data();
+    $date = new \team\data\Data();
     $date->view = 'index.tpl';
 
 
@@ -47,7 +47,7 @@ function __test() {
     $date->change2_fecha_days =   \team\system\Date::get('+3 Days',  'database-date');
     $date->change2_fecha_dia =   \team\system\Date::get('+3 Days', 'nombredia');
 
-    \team\Context::set('CHARSET', 'UTF-8');
+    \team\system\Context::set('CHARSET', 'UTF-8');
     setlocale(LC_TIME, "de_DE.utf8");
 
     $date->change3_fecha_mes =   \team\system\Date::get('+1 Month',  'fecha');

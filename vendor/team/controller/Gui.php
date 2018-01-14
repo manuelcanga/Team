@@ -49,7 +49,7 @@ class Gui extends Controller {
     function ___load($response) {
 
         //Add Default template and layout
-        $this->setView(\team\Context::get('RESPONSE'));
+        $this->setView(\team\system\Context::get('RESPONSE'));
 
         //Por defecto, no habrá layout
         $this->noLayout();
@@ -73,7 +73,7 @@ class Gui extends Controller {
     public function addClassToWrapper($class, $wrapper, $order = 50) {
         $pipeline = '\team\gui\wrappers\\'.$wrapper;
 
-        return \team\Filter::add($pipeline,function($classes) use ($class) {
+        return \team\data\Filter::add($pipeline,function($classes) use ($class) {
             return trim($classes.' '.$class);
         }, $order);
     }
@@ -81,11 +81,11 @@ class Gui extends Controller {
     /* ____________ Contextos ___________ */
 
     public function getContext($var, $default = null) {
-        return \team\Context::get($var, $default);
+        return \team\system\Context::get($var, $default);
 
     }
     public function setContext($var, $value) {
-        \team\Context::set($var, $value);
+        \team\system\Context::set($var, $value);
     }
 
     /* ____________ UserAgent ___________ */
@@ -104,9 +104,9 @@ class Gui extends Controller {
 
     function addBodyClass($class = '', $overwrite = false) {
         if($overwrite) {
-            \team\Context::set('BODY_CLASSES', [$class]);
+            \team\system\Context::set('BODY_CLASSES', [$class]);
         }else {
-            \team\Context::push('BODY_CLASSES', $class);
+            \team\system\Context::push('BODY_CLASSES', $class);
         }
     }
 

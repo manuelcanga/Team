@@ -46,7 +46,7 @@ namespace team\data\formats;
 
 class Format {
 	final function filter($_type, $_default = null) {
-		$type =  ucfirst(strtolower(\team\Check::key($_type, $_default)));
+		$type =  ucfirst(strtolower(\team\data\Check::key($_type, $_default)));
 		return ('Array' == $_type)? 'Arrayformat' : $type;
 	}
 
@@ -54,7 +54,7 @@ class Format {
 		$type = $this->filter($_type);
 		if(!isset($type) ) return null;
 	
-		$class = \team\Filter::apply('\team\formats\\'.$type, '\team\data\formats\\'.$type);
+		$class = \team\data\Filter::apply('\team\formats\\'.$type, '\team\data\formats\\'.$type);
 
 		return \team\loader\Classes::factory($class, true);
 	}

@@ -50,7 +50,7 @@ class Configure
     private function preconfigureUrlConfigs() {
 
         //Avoid proxys domains
-        \team\Filter::add('\team\request_uri', function($url) {
+        \team\data\Filter::add('\team\request_uri', function($url) {
                return  parse_url($url, PHP_URL_PATH);
         });
 
@@ -72,7 +72,7 @@ class Configure
 
 
         $is_ssl = false;
-        if ( isset($_SERVER['HTTPS']) &&  \team\Check::choice($_SERVER['HTTPS']) ) {
+        if ( isset($_SERVER['HTTPS']) &&  \team\data\Check::choice($_SERVER['HTTPS']) ) {
             $is_ssl = true;
         } elseif (  '443' == $port  ) {
             $is_ssl = true;
@@ -86,15 +86,15 @@ class Configure
         \team\Config::addModifier('WEB', function($url){
             if(isset($url)) return $url;
 
-            $domain = \team\Context::get('DOMAIN');
+            $domain = \team\system\Context::get('DOMAIN');
 
-            $port = \team\Context::get('PORT');
+            $port = \team\system\Context::get('PORT');
             $with_port = '';
             if('80' != $port && '443' != $port) {
                 $with_port = ":{$port}";
             }
 
-            $protocol =  \team\Context::get('PROTOCOL');
+            $protocol =  \team\system\Context::get('PROTOCOL');
             $domain = rtrim($domain, '/');
 
 

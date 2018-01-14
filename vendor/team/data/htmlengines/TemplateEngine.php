@@ -88,7 +88,7 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 
     function __construct() {
 		//Le añadimos una referencia a la GUI Actual.
-        $this->gui = \team\Context::get("CONTROLLER");
+        $this->gui = \team\system\Context::get("CONTROLLER");
 
     }
 
@@ -102,7 +102,7 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
         //Lanzamos un evento de inicio de transformacion de plantilla
 		//	$event = \Event('Transform', '\team\view')->ocurred($data);
 
-            $_data = \team\Filter::apply('\team\template\data', $_data);
+            $_data = \team\data\Filter::apply('\team\template\data', $_data);
 
             $engine = new \Smarty();
 
@@ -116,13 +116,13 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 			$engine_data = $this->transformToEngineData($_data);
 
 
-			$is_main = \team\Context::isMain();
+			$is_main = \team\system\Context::isMain();
 			\Team::event('\team\view\fetching', $template, $engine, $engine_data, $is_main);
 
 			$result =  $engine->fetch($template, $engine_data);
 
 
-   		    if(!$this->gui || \team\Context::get("SHOW_VIEWS", true) ) {
+   		    if(!$this->gui || \team\system\Context::get("SHOW_VIEWS", true) ) {
 				return $result;
 			}else {
 				return "";
@@ -175,8 +175,8 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
     public function default_template_handler_func($type, $name, &$content, &$modified, \Smarty $smarty) {
         $name = str_replace('.tpl', '', $name).'.tpl';
 
-  	   $component = \team\Context::get('COMPONENT');
-       $package = '/'.\team\Context::get('PACKAGE');
+  	   $component = \team\system\Context::get('COMPONENT');
+       $package = '/'.\team\system\Context::get('PACKAGE');
 
         $template = $name;
 		$found_type = false;
@@ -186,11 +186,11 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
               $found_type =  true;
             break;
             case 'theme':
-                $template =  \team\Context::get('_THEME_')."/{$name}";
+                $template =  \team\system\Context::get('_THEME_')."/{$name}";
                 $found_type =  true;
                 break;
             case 'custom':
-                $template =  \team\Context::get('_THEME_')."/{$package}/{$component}/views/{$name}";
+                $template =  \team\system\Context::get('_THEME_')."/{$package}/{$component}/views/{$name}";
                 $found_type =  true;
                 break;
             case 'commons':
@@ -210,7 +210,7 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
         }
 
 	if($found_type && !file_exists($template) ) {
-		if(\team\Context::get('SHOW_RESOURCES_WARNINGS', false) ) {
+		if(\team\system\Context::get('SHOW_RESOURCES_WARNINGS', false) ) {
 			\Debug::me("Not found view {$template} of type {$type} and name {$name}");
 		}
 
@@ -227,9 +227,9 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 	*/
 	function initializeEngine(\Smarty  $_engine, $_data, $_template) {
 
-		$package = \team\Context::get('PACKAGE');
-		$component =  \team\Context::get('COMPONENT');
-		$response = \team\Context::get('RESPONSE');
+		$package = \team\system\Context::get('PACKAGE');
+		$component =  \team\system\Context::get('COMPONENT');
+		$response = \team\system\Context::get('RESPONSE');
 
 		$_engine->addPluginsDir(_SCRIPT_.'/'.$package.'/'.$component.'/views/plugins');
 		$_engine->addPluginsDir(_SCRIPT_.'/'.$package.'/commons/views/plugins');
@@ -249,12 +249,12 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 		$functions = get_defined_functions();
 		 self::$functions_user_cache = $functions["user"];
 
-		 $view_cache =  \team\Context::get('VIEW_CACHE', false);
+		 $view_cache =  \team\system\Context::get('VIEW_CACHE', false);
 
 		 $_engine->compile_check = !$view_cache;
 		 $_engine->caching = $view_cache;
-		 $compile_id = $package.\team\Context::get('AREA').\team\Context::get('LAYOUT');
-		 $_engine->compile_id =  \team\Filter::apply('\team\smarty\compile_id',$compile_id );
+		 $compile_id = $package.\team\system\Context::get('AREA').\team\system\Context::get('LAYOUT');
+		 $_engine->compile_id =  \team\data\Filter::apply('\team\smarty\compile_id',$compile_id );
 
 		
 		//Un componente sólo vería sus cosas, aún así puede usar root: package: etc
@@ -263,7 +263,7 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 		$_engine->setCacheDir(_TEMPORARY_."/smarty/cache");
 
 			/** Usamos un filtro para que no haya espacio en blanco  */
-        if((bool)\team\Context::get('MINIMIZE_VIEW', true)) {
+        if((bool)\team\system\Context::get('MINIMIZE_VIEW', true)) {
  		  $_engine->loadFilter('output', 'trimwhitespace');
 		}
 
@@ -285,8 +285,8 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 	*/
 	function getView(Array $_data = null) {
 
-	    $layout = \team\Context::get('LAYOUT');
-        $view = \team\Context::get('VIEW');
+	    $layout = \team\system\Context::get('LAYOUT');
+        $view = \team\system\Context::get('VIEW');
 
         if(isset($view) ) {
             $view = \team\system\FileSystem::stripExtension($view);
@@ -347,7 +347,7 @@ class TemplateEngine implements \team\interfaces\data\HtmlEngine{
 		$data = new \Smarty_Data();
 		//Añadimos a la plantilla todas las constantes de configuracion
 		$data->config_vars = new Config();
-		if(\team\Context::get("TRACE_CONFIG") ) {
+		if(\team\system\Context::get("TRACE_CONFIG") ) {
 			\team\Debug::me($data->config_vars, "Variables de configuracion smarty");
 		}
 

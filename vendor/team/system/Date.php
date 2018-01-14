@@ -86,7 +86,7 @@ class Date {
 
 
     public static function getUnits() {
-        return \team\Filter::apply('\team\system\Date\units', [
+        return \team\data\Filter::apply('\team\system\Date\units', [
             self::A_YEAR  =>  ['a&ntilde;o', 'a&ntilde;os'],
             self::A_MONTH => ['mes','meses'],
             self::A_WEEK => ['semana', 'semanas'],
@@ -169,7 +169,7 @@ class Date {
     public static function  getDaysOfWeek() {
         $days_of_week = [1=>'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo' ];
 
-        return  \team\Filter::apply('\team\days_of_week', $days_of_week  );
+        return  \team\data\Filter::apply('\team\days_of_week', $days_of_week  );
     }
 
     /**
@@ -197,7 +197,7 @@ class Date {
         $months = [ 1 =>'Enero', 'Febrero', 'Marzo', 'Abril','Mayo','Junio','Julio',
             'Agosto','Septiembre', 'Octubre','Noviembre','Diciembre'];
 
-        return  \team\Filter::apply('\team\months', $months  );
+        return  \team\data\Filter::apply('\team\months', $months  );
     }
 
 
@@ -216,7 +216,7 @@ class Date {
         $weekday = date( 'w', $day );
 
         if ( !is_numeric($start_of_week) )
-            $start_of_week = \team\Context::get( 'START_OF_WEEK', 0, '\team\system\Date' );
+            $start_of_week = \team\system\Context::get( 'START_OF_WEEK', 0, '\team\system\Date' );
 
         if ( $weekday < $start_of_week )
             $weekday += 7;
@@ -444,14 +444,14 @@ class Date {
      */
     public static function getWithRealFormat($format = null, $timestamp = null) {
         if(empty($format) ) {
-            $format = \team\Context::get('DATE_FORMAT',  'i18n', '\team\system\Date');
+            $format = \team\system\Context::get('DATE_FORMAT',  'i18n', '\team\system\Date');
         }
 
         switch($format) {
             case 'i18n':
-                $format = self::getWithRealFormat(\team\Context::get('DATE_I18N',  'date', '\team\system\Date'), $timestamp);break;
+                $format = self::getWithRealFormat(\team\system\Context::get('DATE_I18N',  'date', '\team\system\Date'), $timestamp);break;
             case 'long-i18n':
-                $format = self::getWithRealFormat(\team\Context::get('LONG_DATE_I18N',  'datetime', '\team\system\Date'), $timestamp );break;
+                $format = self::getWithRealFormat(\team\system\Context::get('LONG_DATE_I18N',  'datetime', '\team\system\Date'), $timestamp );break;
             case 'timestamp':
                 $format = '%s';break;
             case 'tiempo':
@@ -533,7 +533,7 @@ class Date {
             case 'base_upload':
                 $format = '/%Y/%m';break;
             default:
-                $date_format =  \team\Context::get("\\team\\date_format\\{$format}", null, '\team\system\Date');
+                $date_format =  \team\system\Context::get("\\team\\date_format\\{$format}", null, '\team\system\Date');
                 if(isset($date_format)){
                     $format = self::getWithRealFormat($date_format);
                 }else {

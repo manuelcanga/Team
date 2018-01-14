@@ -44,7 +44,7 @@ function smarty_block_title($params, $content, Smarty_Internal_Template $templat
 	if($repeat) { //open tag
 		$out = '<title>';
 	}else {//close tag
-        $content =  \team\Filter::apply('\team\tag\title', $content);
+        $content =  \team\data\Filter::apply('\team\tag\title', $content);
 		$out = trim($content).'</title>';
 	}
 

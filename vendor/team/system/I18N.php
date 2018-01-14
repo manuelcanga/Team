@@ -11,7 +11,7 @@ namespace team\system;
 abstract class I18N
 {
     public static function setTimezone($timezone = null) {
-        $timezone = \team\Context::get('TIMEZONE', $timezone, '\team\system\I18N');
+        $timezone = \team\system\Context::get('TIMEZONE', $timezone, '\team\system\I18N');
 
         date_default_timezone_set($timezone);
         ini_set('date.timezone', $timezone);
@@ -26,8 +26,8 @@ abstract class I18N
             list($lang, $charset) = explode('.', $locale);
         }
 
-        $lang =  \team\Context::get('LANG', $lang, '\team\system\I18N');
-        $charset = \team\Context::get('CHARSET', $charset, '\team\system\I18N');
+        $lang =  \team\system\Context::get('LANG', $lang, '\team\system\I18N');
+        $charset = \team\system\Context::get('CHARSET', $charset, '\team\system\I18N');
 
         $locale = $lang.'.'.$charset;
 

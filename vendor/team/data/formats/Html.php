@@ -52,7 +52,7 @@ final class Html implements \team\interfaces\data\Format  {
 	}
 
 	public function filter($_type, $_default) {
-		return  ucfirst(\team\Check::key($_type, $_default));
+		return  ucfirst(\team\data\Check::key($_type, $_default));
 	}
 
 
@@ -61,7 +61,7 @@ final class Html implements \team\interfaces\data\Format  {
 		if(!isset($type_engine) ) return null;
 
 	
-		$class = \team\Filter::apply('\team\htmlengines\\'.$type_engine, '\team\data\htmlengines\\'.$type_engine);
+		$class = \team\data\Filter::apply('\team\htmlengines\\'.$type_engine, '\team\data\htmlengines\\'.$type_engine);
 
 		return  \team\loader\Classes::factory($class, true);
 	}

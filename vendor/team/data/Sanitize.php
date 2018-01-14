@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-namespace team;
+namespace team\data;
 
 
 /** **********************************************************************************
@@ -65,7 +65,7 @@ class Sanitize {
 		@param string str string to normalize
 	*/
 	static function normalize($str) {
-		$str = 	\team\Sanitize::encoding($str,  'UTF-8//IGNORE'); 
+		$str = 	\team\data\Sanitize::encoding($str,  'UTF-8//IGNORE'); 
 
 		$normalization_map = array(
 		   "\xC2\x80" => "€",			 
@@ -433,13 +433,13 @@ class Sanitize {
         de no tener esa longitud la rellena con ceros.
     */
     static function zerofill($number, $zeros = 12) {
-        $number = \team\Check::real($number);
+        $number = \team\data\Check::real($number);
 
         return str_pad($number, $zeros, "0", STR_PAD_LEFT);
     }
 
 
     static function __callStatic($name, $arguments) {
-        return \team\Filter::apply('\team\Sanitize\\'.$name, ...$arguments );
+        return \team\data\Filter::apply('\team\data\Sanitize\\'.$name, ...$arguments );
     }
 } /* Fin de clase */

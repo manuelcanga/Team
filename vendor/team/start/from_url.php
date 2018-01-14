@@ -9,7 +9,7 @@ if(!defined('_TEAM_') ) die("Hello,  World");
 /**
 	 Tratamos la url del agente de usuario para extraer todo los argumentos establecido por el usuario
 */
-\team\Task::join('\team\url', function(& $url) {
+\team\system\Task::join('\team\url', function(& $url) {
 
 
 		 \team\Debug::trace("Vamos a procesar la url pedida", $url );
@@ -24,8 +24,8 @@ if(!defined('_TEAM_') ) die("Hello,  World");
 
         $package = setUpPackage($package, $url);
 
-        $url = \team\Filter::apply('\team\url', $url);
-        $_POST = \team\Filter::apply('\team\parse_post', $_POST);
+        $url = \team\data\Filter::apply('\team\url', $url);
+        $_POST = \team\data\Filter::apply('\team\parse_post', $_POST);
 
         //Parseamos la url en busca de los parámetros de la web, los argumentos base serán los de post
 		$args = new \team\datatype\Url($url, [], $_POST +((array)$this->area_params) + $defaults);
@@ -60,7 +60,7 @@ if(!defined('_TEAM_') ) die("Hello,  World");
             $args->filters_list = [];
         }else {
             //Le damos la opción al programador de que implemente su propio sistema de parseo de urls
-		  $args = \team\Task('\team\parse_url', $args)->with($args, $url, $package );
+		  $args = \team\system\Task('\team\parse_url', $args)->with($args, $url, $package );
 		}
 
         //Creamos el path de sólo los filtros
@@ -70,7 +70,7 @@ if(!defined('_TEAM_') ) die("Hello,  World");
         }
 
 
-        $default_response = \team\Filter::apply('\team\default_response', 'index');
+        $default_response = \team\data\Filter::apply('\team\default_response', 'index');
         //Si no se especificó un default response se coge el del sistema( index  );
         $defaults['response'] = $defaults['response']?: $default_response;
         //Si se especifico un default component para el area, debemos de coger también el default response que se escogiera
@@ -84,12 +84,12 @@ if(!defined('_TEAM_') ) die("Hello,  World");
 
 
         $args->base_url = $args->location; //retrocompatibilidad. @deprecated
-        $args = \team\Filter::apply('\team\url\args', $args);
+        $args = \team\data\Filter::apply('\team\url\args', $args);
 
         //Reseteamos las variables superglobales porque ya la hemos procesado
 		$_GET = $_POST = array();
 
-        \team\Config::set('_SELF_',  \team\Context::get('_AREA_').$args->location);
+        \team\Config::set('_SELF_',  \team\system\Context::get('_AREA_').$args->location);
         \team\Config::set('URL',  $args);
 
         \team\Debug::trace("Acabado el proceso de analisis de url", $args);
@@ -105,8 +105,8 @@ if(!defined('_TEAM_') ) die("Hello,  World");
 
 function setUpPackage($package, $url) {
 
-    $package = \team\Sanitize::identifier($package);
-    $package =  \team\Filter::apply('\team\package',  $package, $url );
+    $package = \team\data\Sanitize::identifier($package);
+    $package =  \team\data\Filter::apply('\team\package',  $package, $url );
 
     \team\Config::set('PACKAGE', $package);
     \team\Config::set('_PACKAGE_', _SCRIPT_.'/'.$package);
@@ -136,7 +136,7 @@ function parse_action($request) {
         case 'OPTIONS': $action = 'help'; break;
         case 'TRACE': $action = 'debug'; break;
         case 'CONNECT': $action = 'login'; break;
-        default: $action =  \team\Check::key($request, 'undefined'); break;
+        default: $action =  \team\data\Check::key($request, 'undefined'); break;
     }
 
     return  $action;
