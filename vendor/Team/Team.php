@@ -38,7 +38,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 
-require(_TEAM_ . "/system/exception/System_Error.php");
+require(_TEAM_ . "/System/exception/System_Error.php");
 
 class Team
 {
@@ -66,7 +66,7 @@ class Team
 		// Report all PHP errors
 		error_reporting(\team\Config::get('GENERAL_ERROR_LEVEL', E_ALL ) );
 
-		$errors = new \Team\notices\Errors();
+		$errors = new \Team\Notices\Errors();
 
 		set_error_handler( array($errors , 'PHPError' ), \Team\Config::get('GENERAL_ERROR_LEVEL', E_ALL) );
 
@@ -99,7 +99,7 @@ class Team
 	public static function up() {
 
 		self::$index++;
-		self::$notices[self::$index] = new \Team\notices\Notice();
+		self::$notices[self::$index] = new \Team\Notices\Notice();
 		self::$current =  self::$notices[self::$index];
 
 	}
@@ -152,7 +152,7 @@ class Team
 	public static function addListener($event, $listener, $order = 65) {
 		$event = rtrim($event, '\\');
 
-		$order = \Team\data\Check::id($order);
+		$order = \Team\Data\Check::id($order);
 
 		//Si no habia listeners asociados al evento, ahora si
 		self::$listeners[$event] =  self::$listeners[$event]??  [];
@@ -185,7 +185,7 @@ class Team
 		    foreach(self::$listeners[$namespace] as $listener) {
 
                 //Si el listener es una ruta a un archivo, entonces se carga ese archivo si existe
-                $not_file = !is_string($listener) || '/' != $listener[0] ||  !\team\system\FileSystem::load($listener);
+                $not_file = !is_string($listener) || '/' != $listener[0] ||  !\Team\System\FileSystem::load($listener);
 
 		        if( $not_file  && is_callable($listener,  $syntax_only = true)) {
                     //mandamos el trabajo al listener

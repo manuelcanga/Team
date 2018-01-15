@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 define('_SCRIPT_', 			__DIR__);
 define('TRASWEB', 			'dev');
 
-include('../vendor/Team/start/bootstrap.php');
+include('../vendor/Team/bootstrap.php');
 
 //Se lanza el MVC del sistema
 echo \Team\up();

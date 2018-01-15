@@ -93,9 +93,9 @@ final  class Debug
 
 		if(!\team\Config::get('SHOW_ERRORS', false)  ) return ;
 
-		if(\team\system\Context::get('CLI_MODE') ) {
+		if(\Team\System\Context::get('CLI_MODE') ) {
 			self::output($var, $label, $file, $line);
-		}else if(false === \Team\Config::get('SHOW_IN_NAVIGATOR', false)  ||  \Team\system\Context::main("AJAX")  ) {
+		}else if(false === \Team\Config::get('SHOW_IN_NAVIGATOR', false)  ||  \Team\System\Context::main("AJAX")  ) {
 			self::log($var, $label, $file, $line);
 		}else {
             self::log($var, $label, $file, $line);
@@ -156,7 +156,7 @@ final  class Debug
 			$key = str_replace('*', '', $key);
 
 			if(is_object($value) )  {
-				if (!($value instanceof \Team\data\Data ) )
+				if (!($value instanceof \Team\Data\Data ) )
 					$value = "Object of ".get_class($value)." ";
 				else {
 					$key = "{$key} [ ".get_class($value)." ] ";
@@ -184,7 +184,7 @@ final  class Debug
 	private static function normalizeScalar($var, $out = 'html') {
 			 if(is_string($var) ){
 				if('html' == $out) {
-                    return htmlentities($var, ENT_NOQUOTES | ENT_HTML5, \Team\system\Context::get('CHARSET'));
+                    return htmlentities($var, ENT_NOQUOTES | ENT_HTML5, \Team\System\Context::get('CHARSET'));
                 }else {
 					return $var;
                 }
@@ -200,7 +200,7 @@ final  class Debug
 	*/
 	private static function formatDisplay( $var, $label, $file, $line) {
 	
-        if("string" != \Team\system\Context::get('ERRORS')  && class_exists('\team\Data', false) ) {
+        if("string" != \Team\System\Context::get('ERRORS')  && class_exists('\team\Data', false) ) {
             return self::withData( $var, $label, $file, $line);
         }else {
             return self::withString( $var, $label, $file, $line);
@@ -209,7 +209,7 @@ final  class Debug
 	
    private static function withData($var, $label, $file, $line) {
 
-		$data = new \Team\data\Data();
+		$data = new \Team\Data\Data();
 		$data->file = $file;
 		$data->line = $line;
 		$data->label = $label;
@@ -286,7 +286,7 @@ final  class Debug
 	public static  function log($var, $label = false, $file = null, $line = null) {
 		self::getFileLine($file, $line);
 
-		\team\notices\Log::insertLog("debug", $var, "$label", $file, $line );
+		\Team\Notices\Log::insertLog("debug", $var, "$label", $file, $line );
 	}
 
 
@@ -498,7 +498,7 @@ de $jumps saltos hacia atrás  */
 	{
 		self::getFileLine($file, $line,  $level);
 
-		$query = \Team\db\DB::getLastQuery();
+		$query = \Team\Db\DB::getLastQuery();
 
 		self::me($query, $label,  $file,  $line);
 
@@ -510,7 +510,7 @@ de $jumps saltos hacia atrás  */
     public static function filter($label='Last Filtered', $file = null, $line = null, $level = 1) {
         self::getFileLine($file, $line,  $level);
 
-        $filtered = \Team\data\Filter::getLast();
+        $filtered = \Team\Data\Filter::getLast();
 
         $label .= ': '.$filtered['name'];
         unset($filtered['name']);
@@ -525,7 +525,7 @@ de $jumps saltos hacia atrás  */
 	static function  memory($title = 'Memory', $real = true){
 
 		 $size =  memory_get_usage($real);
-		 $overall = \Team\system\FileSystem::toUnits($size);
+		 $overall = \Team\System\FileSystem::toUnits($size);
 	   	\team\Debug::me(  $overall ,$title);
 		return  $size;
 	}

@@ -37,7 +37,7 @@ namespace Team;
  *
  */
 abstract class Config{
-    use \Team\data\Vars;
+    use \Team\Data\Vars;
 
     protected static $vars = [];
     protected static $modifiers = [];
