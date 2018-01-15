@@ -1,5 +1,5 @@
 <?php
 
-namespace team;
+namespace Team;
 
 if(!defined('_TEAM_')) die("Hello, World!");

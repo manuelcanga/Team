@@ -9,7 +9,7 @@
 namespace demo\welcome;
 
 
-class Gui extends \team\controller\Gui
+class Gui extends \Team\controller\Gui
 {
     public function index() {
         return 'Hello, World';
