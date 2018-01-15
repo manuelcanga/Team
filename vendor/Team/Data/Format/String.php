@@ -28,11 +28,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-namespace Team\Data\formats;
 
+namespace Team\Data\Format;
 
-class Arrayformat implements \Team\Data\formats\interfaces\Format {
+class String implements \Team\Data\Format\IFormat   {
 	public function renderer(Array $_data) {
-		return  $_data;
+		return  print_r($_data,true);
 	}
 }

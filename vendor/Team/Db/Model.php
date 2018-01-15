@@ -34,7 +34,7 @@ namespace Team\Db;
 /**
     Simple Model skel
 
-    Models are useful in order to create queries for lists in only a table( for more table check Finds
+    Models are useful in order to create Queries for lists in only a table( for more table check Finds
     ActiveRecords are useful in order to create/update/remove rows in a table
     Traits are useful in order to manager fields or attributes
 */

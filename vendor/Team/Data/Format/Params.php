@@ -28,15 +28,27 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-/**
-	Hacer para que se muestre en los logs(quizas usando la clase logs
-*/
-namespace Team\Data\formats;
 
-class Log implements \Team\Data\formats\interfaces\Format   {
+namespace Team\Data\Format;
 
 
-	public function renderer(Array $_data) {
+class Params  implements \Team\Data\Format\IFormat   {
+	public function renderer(Array $_data, $options = []) {
+		$separator_fields = $options['fields']?? '="';
+		$separator_params = $options['params']?? ' ';
+		$end = $options['end']?? '"';
+		$prefix = $options['prefix']?? 'param_';
 
+		$result = '';
+		foreach($_data as $field => $value) {
+			if(is_numeric($field) ) {
+				$name = $prefix.$field;
+			}else {
+				$name = $field;
+			}
+
+			$result .= "{$separator_params}{$name}{$separator_fields}{$end}";
+		}
+		return ltrim($result, $separator_params);
 	}
 }

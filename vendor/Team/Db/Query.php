@@ -34,10 +34,10 @@ namespace Team\Db;
 require_once(__DIR__.'/DB.php');
 class Query implements \ArrayAccess{
     use \Team\Data\Box; //En data guardamos las sentencias sql
-    use \Team\Db\queries\Select;
-    use \Team\Db\queries\Update;
-    use \Team\Db\queries\Delete;
-    use \Team\Db\queries\Insert;
+    use \Team\Db\Queries\Select;
+    use \Team\Db\Queries\Update;
+    use \Team\Db\Queries\Delete;
+    use \Team\Db\Queries\Insert;
 
     /**
         guarda los campos y valores a reemplazar. Es decir, los valores.

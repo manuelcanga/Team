@@ -28,27 +28,22 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
+namespace Team\Data\Format;
 
-namespace Team\Data\formats;
 
-
-class Params  implements \Team\Data\formats\interfaces\Format   {
-	public function renderer(Array $_data, $options = []) {
-		$separator_fields = $options['fields']?? '="';
-		$separator_params = $options['params']?? ' ';
-		$end = $options['end']?? '"';
-		$prefix = $options['prefix']?? 'param_';
-
-		$result = '';
-		foreach($_data as $field => $value) {
-			if(is_numeric($field) ) {
-				$name = $prefix.$field;
-			}else {
-				$name = $field;
-			}
-
-			$result .= "{$separator_params}{$name}{$separator_fields}{$end}";
-		}
-		return ltrim($result, $separator_params);
+class Xml  implements \Team\Data\Format\IFormat  {
+	public function renderer(Array $_data) {
+	  return  $this->array_to_xml($_data, new \SimpleXMLElement('<root/>'))->asXML();
 	}
+
+	function array_to_xml(array $arr,  $xml)
+	{
+		foreach ($arr as $k => $v) {
+		    is_array($v)
+		        ? $this->array_to_xml($v, $xml->addChild($k))
+		        : $xml->addChild($k, $v);
+		}
+		return $xml;
+	}
+
 }

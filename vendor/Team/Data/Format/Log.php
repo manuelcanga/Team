@@ -28,8 +28,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-namespace Team\Data\formats\interfaces;
+/**
+	Hacer para que se muestre en los logs(quizas usando la clase logs
+*/
+namespace Team\Data\Format;
 
-interface Format {
-	public function renderer(Array $_data);
+class Log implements \Team\Data\Format\IFormat   {
+
+
+	public function renderer(Array $_data) {
+
+	}
 }

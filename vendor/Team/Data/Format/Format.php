@@ -28,33 +28,36 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-namespace Team\Data\formats;
+namespace Team\Data\Format;
 
-class Json implements \Team\Data\formats\interfaces\Format  {
-	public function renderer(Array $_data) {
+\Team\Loader\Classes::add('Team\Data\Format\IFormat', "/Data/Format/IFormat.php", _TEAM_);
 
-		$data = $this->convert_entities($_data);
+\Team\Loader\Classes::add('\Team\Data\Format\Arrayformat', "/Data/Format/Arrayformat.php", _TEAM_);
+\Team\Loader\Classes::add('\Team\Data\Format\Html', "/Data/Format/Html.php", _TEAM_);
+\Team\Loader\Classes::add('\Team\Data\Format\Json', "/Data/Format/Json.php", _TEAM_);
+\Team\Loader\Classes::add('\Team\Data\Format\Log', "/Data/Format/Log.php, _TEAM_");
+\Team\Loader\Classes::add('\Team\Data\Format\Object', "/Data/Format/Object.php", _TEAM_);
+\Team\Loader\Classes::add('\Team\Data\Format\String', "/Data/Format/String.php", _TEAM_);
+\Team\Loader\Classes::add('\Team\Data\Format\Terminal', "/Data/Format/Terminal.php", _TEAM_);
+\Team\Loader\Classes::add('\Team\Data\Format\Url', "/Data/Format/Url.php", _TEAM_);
+\Team\Loader\Classes::add('\Team\Data\Format\Xml', "/Data/Format/Xml.php", _TEAM_);
 
-		return json_encode($data);
+
+
+class Format {
+	final function filter($_type, $_default = null) {
+		$type =  ucfirst(strtolower(\team\data\Check::key($_type, $_default)));
+		return ('Array' == $_type)? 'Arrayformat' : $type;
 	}
 
-	protected function  convert_entities($_data) {
+	final function get($_type) {
+		$type = $this->filter($_type);
+		if(!isset($type) ) return null;
+	
+		$class = \Team\Data\Filter::apply('\team\format\\'.$type, '\Team\Data\Format\\'.$type);
 
-      if (is_array($_data)) {
-        return array_map([$this, 'convert_entities'],$_data);
-      }
-
-      if (is_numeric($_data)) {
-        return (strpos('.', $_data)===false)? (float)$_data : (int)$_data;
-      }
+		return \Team\Loader\Classes::factory($class, true);
+	}
 
 
-		if('UTF-8' != \Team\Config::get('CHARSET') ) {
-            $data = \Team\Data\Sanitize::toJs((string)$_data);
-            return utf8_encode($data);
-		}else {
-			return (string)$_data;
-		}
-
-    }
 }

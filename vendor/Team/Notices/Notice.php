@@ -100,7 +100,7 @@ class Notice {
         if($file == null || $line == null)
             \Team\Debug::getFileLine($file, $line, $level);
 
-        $e = new \Team\System\exception\System_Error($this->msg, $code);
+        $e = new \Team\System\Exception\System_Error($this->msg, $code);
         $e->setFile($file);
         $e->setLine($line);
         $e->setType("SYSTEM");

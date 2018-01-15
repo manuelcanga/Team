@@ -28,36 +28,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-namespace Team\Data\formats;
+namespace Team\Data\Format;
 
-\Team\Loader\Classes::add('Team\Data\formats\interfaces\Format', "/Data/formats/interfaces/Format.php", _TEAM_);
-
-\Team\Loader\Classes::add('\Team\Data\formats\Arrayformat', "/Data/formats/Arrayformat.php", _TEAM_);
-\Team\Loader\Classes::add('\Team\Data\formats\Html', "/Data/formats/Html.php", _TEAM_);
-\Team\Loader\Classes::add('\Team\Data\formats\Json', "/Data/formats/Json.php", _TEAM_);
-\Team\Loader\Classes::add('\Team\Data\formats\Log', "/Data/formats/Log.php, _TEAM_");
-\Team\Loader\Classes::add('\Team\Data\formats\Object', "/Data/formats/Object.php", _TEAM_);
-\Team\Loader\Classes::add('\Team\Data\formats\String', "/Data/formats/String.php", _TEAM_);
-\Team\Loader\Classes::add('\Team\Data\formats\Terminal', "/Data/formats/Terminal.php", _TEAM_);
-\Team\Loader\Classes::add('\Team\Data\formats\Url', "/Data/formats/Url.php", _TEAM_);
-\Team\Loader\Classes::add('\Team\Data\formats\Xml', "/Data/formats/Xml.php", _TEAM_);
-
-
-
-class Format {
-	final function filter($_type, $_default = null) {
-		$type =  ucfirst(strtolower(\team\data\Check::key($_type, $_default)));
-		return ('Array' == $_type)? 'Arrayformat' : $type;
-	}
-
-	final function get($_type) {
-		$type = $this->filter($_type);
-		if(!isset($type) ) return null;
-	
-		$class = \Team\Data\Filter::apply('\team\formats\\'.$type, '\Team\Data\formats\\'.$type);
-
-		return \Team\Loader\Classes::factory($class, true);
-	}
-
-
+interface IFormat {
+	public function renderer(Array $_data);
 }

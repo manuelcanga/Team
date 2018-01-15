@@ -28,15 +28,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
+namespace Team\Data\Format;
 
-namespace Team\Data\htmlengines;
-
-
-class HtmlEngine {
-
-
-    public function transform(array $data = []) {
-		
-    }
+class Terminal implements \Team\Data\Format\IFormat   {
+	public function renderer(Array $_data) {
+		if(!empty($_data) ) {
+			foreach($_data as $_key => $_value) {
+				if(!is_array($_value) && !is_object($_value) ) 
+					echo "{$_key} => {$_value}\n";
+			}
+		}
+		return "";
+	}
 }
- 

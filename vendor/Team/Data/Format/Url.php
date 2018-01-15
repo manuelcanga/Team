@@ -28,11 +28,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-namespace Team\Data\htmlengines;
 
-class PhpEngine {
+namespace Team\Data\Format;
 
-	function transform(Array $_data) {
-		/** @TODO */
+
+class Url  implements \Team\Data\Format\IFormat   {
+	public function renderer(Array $_data) {
+		return http_build_query($_data);
 	}
 }

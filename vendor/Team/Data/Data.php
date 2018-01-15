@@ -30,9 +30,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace Team\Data;
 
 \Team\Loader\Classes::add('Team\Datatype\Store', "/Datatype/Store.php", _TEAM_);
-\Team\Loader\Classes::add('Team\Data\formats\Format', "/Data/formats/Format.php", _TEAM_);
-\Team\Loader\Classes::add('Team\Data\formats\interfaces\Format', "/Data/interfaces/Format.php", _TEAM_);
-\Team\Loader\Classes::add('Team\Data\interfaces\HtmlEngine', "/Data/interfaces/HtmlEngine.php", _TEAM_);
+\Team\Loader\Classes::add('Team\Data\Format\Format', "/Data/Format/Format.php", _TEAM_);
+\Team\Loader\Classes::add('Team\Data\Format\IFormat', "/Data/Interface/Format.php", _TEAM_);
 
 require(_TEAM_ . '/Datatype/Base.php');
 

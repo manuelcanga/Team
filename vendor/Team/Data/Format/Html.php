@@ -28,12 +28,43 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
+/**
+	TODO Que se le llame al engine de Smarty(Otros posibles PHP y XML ) segun configuración módulo
+*/
 
-namespace Team\Data\formats;
+namespace Team\Data\Format;
+
+\Team\Loader\Classes::add('Team\Data\Format\IFormat', "/Data/Format/IFormat.php", _TEAM_);
+
+\Team\Loader\Classes::add('Team\Data\Htmlengine\TemplateEngine', "/Data/Htmlengine/TemplateEngine.php", _TEAM_);
+\Team\Loader\Classes::add('Team\Data\Htmlengine\HtmlEngine', "/Data/Htmlengine/HtmlEngine.php", _TEAM_);
+\Team\Loader\Classes::add('Team\Data\Htmlengine\PhpEngine', "/Data/Htmlengine/PhpEngine.php", _TEAM_);
+\Team\Loader\Classes::add('Team\Data\Htmlengine\XmlEngine', "/Data/Htmlengine/XmlEngine.php", _TEAM_);
 
 
-class Url  implements \Team\Data\formats\interfaces\Format   {
+final class Html implements \Team\Data\Format\IFormat  {
 	public function renderer(Array $_data) {
-		return http_build_query($_data);
+		$type_engine = $_data["HTML_ENGINE"]?? \Team\Config::get("HTML_ENGINE");
+
+        $engine = $this->get($type_engine);
+
+		return $engine->transform($_data);
 	}
+
+	public function filter($_type, $_default) {
+		return  ucfirst(\team\data\Check::key($_type, $_default));
+	}
+
+
+	 function get($type_engine) {
+		$type_engine = $this->filter($type_engine, "TemplateEngine");
+		if(!isset($type_engine) ) return null;
+
+	
+		$class = \Team\Data\Filter::apply('\team\htmlengine\\'.$type_engine, '\Team\Data\Htmlengine\\'.$type_engine);
+
+		return  \Team\Loader\Classes::factory($class, true);
+	}
+
+
 }

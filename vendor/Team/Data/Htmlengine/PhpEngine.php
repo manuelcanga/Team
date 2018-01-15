@@ -28,22 +28,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-namespace Team\Data\formats;
+namespace Team\Data\Htmlengine;
 
+class PhpEngine {
 
-class Xml  implements \Team\Data\formats\interfaces\Format  {
-	public function renderer(Array $_data) {
-	  return  $this->array_to_xml($_data, new \SimpleXMLElement('<root/>'))->asXML();
+	function transform(Array $_data) {
+		/** @TODO */
 	}
-
-	function array_to_xml(array $arr,  $xml)
-	{
-		foreach ($arr as $k => $v) {
-		    is_array($v)
-		        ? $this->array_to_xml($v, $xml->addChild($k))
-		        : $xml->addChild($k, $v);
-		}
-		return $xml;
-	}
-
 }

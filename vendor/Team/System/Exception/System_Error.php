@@ -28,7 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
-namespace Team\System\exception;
+namespace Team\System\Exception;
 
 /**
 	Error de sistema. 

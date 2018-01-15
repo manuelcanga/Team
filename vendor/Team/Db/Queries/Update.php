@@ -1,6 +1,6 @@
 <?php
 
-namespace Team\Db\queries;
+namespace Team\Db\Queries;
 
 trait Update {
   

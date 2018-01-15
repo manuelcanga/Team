@@ -28,11 +28,33 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
+namespace Team\Data\Format;
 
-namespace Team\Data\formats;
-
-class String implements \Team\Data\formats\interfaces\Format   {
+class Json implements \Team\Data\Format\IFormat  {
 	public function renderer(Array $_data) {
-		return  print_r($_data,true);
+
+		$data = $this->convert_entities($_data);
+
+		return json_encode($data);
 	}
+
+	protected function  convert_entities($_data) {
+
+      if (is_array($_data)) {
+        return array_map([$this, 'convert_entities'],$_data);
+      }
+
+      if (is_numeric($_data)) {
+        return (strpos('.', $_data)===false)? (float)$_data : (int)$_data;
+      }
+
+
+		if('UTF-8' != \Team\Config::get('CHARSET') ) {
+            $data = \Team\Data\Sanitize::toJs((string)$_data);
+            return utf8_encode($data);
+		}else {
+			return (string)$_data;
+		}
+
+    }
 }

@@ -5,7 +5,7 @@
  * Time: 16:51
  */
 
-namespace Team\Data\htmlengines;
+namespace Team\Data\Htmlengine\Helper;
 
 
 class Config  implements \ArrayAccess

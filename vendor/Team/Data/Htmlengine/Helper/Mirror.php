@@ -1,6 +1,6 @@
 <?php
 
-namespace Team\Data\htmlengines;
+namespace Team\Data\Htmlengine\Helper;
 
 /**
 Se encarga de llamar a un método del Controller actual.

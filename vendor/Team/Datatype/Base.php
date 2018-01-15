@@ -35,7 +35,7 @@ abstract class Base implements \ArrayAccess
 
         \Team\System\Context::set($this->contexts);
 
-        $format_class = new \Team\Data\formats\Format();
+        $format_class = new \Team\Data\Format\Format();
 
         $type = $_type?? $format_class->filter($_type);
 

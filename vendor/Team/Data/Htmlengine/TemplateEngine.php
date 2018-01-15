@@ -27,19 +27,19 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
-namespace Team\Data\htmlengines;
+namespace Team\Data\Htmlengine;
 
 
 
-require_once(__DIR__."/helpers/Mirror.php");
-require_once(__DIR__."/helpers/Config.php");
+require_once(__DIR__."/Helper/Mirror.php");
+require_once(__DIR__."/Helper/Config.php");
 
 /** TODO: Optimized */
 //ini_set('zlib.output_compression', '1');
 
 /**
 Notas:
-En archivo: lib/data/htmlengines/Smarty/sysplugins/smarty_internal_templatecompilerbase.php
+En archivo: lib/data/Htmlengine/Smarty/sysplugins/smarty_internal_templatecompilerbase.php
 Método: getPluginFromDefaultHandler
 Se lanza el callback: registerDefaultPluginHandler
 Para la busqueda de tags que no han sido definidos. 
@@ -155,7 +155,7 @@ class TemplateEngine {
 					return true;
 				}
 
-				$callback = array( '\team\data\htmlengines\Mirror',  'mirror_'.$name);
+				$callback = array( '\Team\Data\Htmlengine\Helper\Mirror',  'mirror_'.$name);
 				return true;
 
 			case \Smarty::PLUGIN_COMPILER: 
@@ -182,7 +182,7 @@ class TemplateEngine {
 		$found_type = false;
         switch($type) {
             case 'team':
-              $template =  _TEAM_."/Gui/views/{$name}";
+              $template =  _TEAM_."/Gui/Views/{$name}";
               $found_type =  true;
             break;
             case 'theme':
@@ -234,7 +234,7 @@ class TemplateEngine {
 		$_engine->addPluginsDir(_SCRIPT_.'/'.$package.'/'.$component.'/views/plugins');
 		$_engine->addPluginsDir(_SCRIPT_.'/'.$package.'/commons/views/plugins');
 		$_engine->addPluginsDir(_SCRIPT_.'/commons/views/plugins');
-		$_engine->addPluginsDir(_TEAM_.'/Data/htmlengines/plugins');
+		$_engine->addPluginsDir(_TEAM_.'/Data/Htmlengine/plugins');
 
 		//Si aún asi no se encuentran los elementos, se añade una funcion buscadora de elementos
 		$_engine->registerDefaultPluginHandler(array($this, "customElements") );
@@ -346,7 +346,7 @@ class TemplateEngine {
 		//Definimos las que seran las constantes de configuracion de smarty
 		$data = new \Smarty_Data();
 		//Añadimos a la plantilla todas las constantes de configuracion
-		$data->config_vars = new Config();
+		$data->config_vars = new Helper\Config();
 		if(\Team\System\Context::get("TRACE_CONFIG") ) {
 			\team\Debug::me($data->config_vars, "Variables de configuracion smarty");
 		}

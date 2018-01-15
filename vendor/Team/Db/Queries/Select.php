@@ -29,7 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-namespace Team\Db\queries;
+namespace Team\Db\Queries;
 
 trait Select {
     /** Devuelve todos los registros para la consulta realizada
