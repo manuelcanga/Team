@@ -102,7 +102,7 @@ abstract class Model implements \ArrayAccess{
 		@param array $sentences list of params to query. Excepcionally, you can pass a 'order' params(ASC or DESC)
 		@param array $data   list of data to query
 	*/
-    public function findAll( array $sentences = [], array $data = [], $result_type = null) {
+    public static function findAll( array $sentences = [], array $data = [], $result_type = null) {
 		$sentences = $sentences?? [];
 
 		$order = 'DESC';
@@ -115,7 +115,7 @@ abstract class Model implements \ArrayAccess{
 
 		$sentences = $sentences + $default;
 
-        $query =  $this->newQuery($data, $sentences );
+        $query =  self::getNewQuery($data, $sentences );
 
         $records = $query->getAll(static::TABLE);
 
@@ -124,7 +124,7 @@ abstract class Model implements \ArrayAccess{
         }
 
         if(!isset($result_type)) {
-            $result_type = get_class($this);
+            $result_type = static::CLASS;
         }
 
         return new \Team\Db\Collection($records , $result_type);
