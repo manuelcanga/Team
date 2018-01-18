@@ -214,7 +214,7 @@ class TemplateEngine {
 			\Debug::me("Not found view {$template} of type {$type} and name {$name}");
 		}
 
-		$template = _TEAM_."/views/layouts/void.tpl";
+		$template = _TEAM_."/Gui/Views/layouts/void.tpl";
 	} 
 
 
