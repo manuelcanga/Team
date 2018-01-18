@@ -130,7 +130,7 @@ abstract class Builder implements \ArrayAccess {
         $this->setContext('COMPONENT', $component);
         $this->setContext('_COMPONENT_', _SCRIPT_.$this->path);
         $this->setContext('BASE', '/'.$this->package.'/'.$component);
-        $this->setContext('BASE_URL',  \Team\System\Context::get('_AREA_').'/'.$this->package.'/'.$component.'/');
+        $this->setContext('BASE_URL',  \Team\System\Context::get('_AREA_').'/'.$component.'/');
 
         $this->component = $component;
     }
