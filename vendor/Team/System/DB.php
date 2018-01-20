@@ -23,7 +23,7 @@ abstract class DB
     public static function get($new_conection_name = null, $place = null){
         $new_conection_name = self::getConnection($new_conection_name, $place);
 
-        $DB_class = \Team\System\Context::get('\team\DB', '\team\db\DB',  $new_conection_name);
+        $DB_class = \Team\System\Context::get('\team\DB', '\Team\Db\DB',  $new_conection_name);
 
         return new $DB_class($new_conection_name);
     }
