@@ -29,10 +29,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace Team\Data;
 
-\Team\Loader\Classes::add('Team\Datatype\Store', "/Datatype/Store.php", _TEAM_);
-\Team\Loader\Classes::add('Team\Data\Format\Format', "/Data/Format/Formatter.php", _TEAM_);
-\Team\Loader\Classes::add('Team\Data\Format\IFormat', "/Data/Interface/Formatter.php", _TEAM_);
-
 require(_TEAM_ . '/Datatype/Base.php');
 
 class Data extends \Team\Datatype\Base
