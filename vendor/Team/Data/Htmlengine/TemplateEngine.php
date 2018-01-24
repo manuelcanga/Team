@@ -61,7 +61,9 @@ class TemplateEngine {
 
 		if(!defined('SMARTY_RESOURCE_CHAR_SET') ) {
 			define('SMARTY_RESOURCE_CHAR_SET', \Team\Config::get('CHARSET') );
-		}
+		}else {
+		    return ;
+        }
 
 
         require_once(\team\_VENDOR_."/Smarty/Smarty.class.php");
@@ -100,6 +102,7 @@ class TemplateEngine {
     }
 
 	public function transform(Array $_data) {	
+
 
 			$_data['_']["USER"] = \Team\User::getCurrent();
 			$_data['_']['notices'] = \Team::getCurrent();

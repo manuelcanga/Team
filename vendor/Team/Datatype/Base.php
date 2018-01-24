@@ -30,33 +30,22 @@ abstract class Base implements \ArrayAccess
 
 
 
-    public function out($_type = NULL, $options = [], $isolate = true) {
+    public function out($type = NULL, $options = [], $isolate = true) {
         \Team\System\Context::open($isolate);
 
         \Team\System\Context::set($this->contexts);
 
-        $format_class = new \Team\Data\Format\Format();
-
-        $type = $_type?? $format_class->filter($_type);
-
+        $type = \Team\Data\Check::key($type);
         if( !isset($type) &&  isset($this->out) ) {
             $type = \Team\Data\Check::key($this->get("out"), "Array");
 
             unset($this->out);
         }
 
-        //Factory de vistas
-        $obj = $format_class->get($type);
-
-
-
-        if(!isset($obj) ) {
-            \Team::system("Not found Data format  for {$type}", '\team\Dataformat_Not_Found');
-        }
-
-        $out =  $obj->renderer($this->data, $options);
+        $out = \Team\Data\Filter::apply('\team\data\format\\'.$type, $this->data, $options);
 
         \Team\System\Context::close();
+
 
         return $out;
     }
