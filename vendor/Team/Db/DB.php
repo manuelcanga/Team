@@ -599,7 +599,9 @@ class DB {
 		                    $where[] = $value; 	//ej: $where[] = 'id = 10';
 							$value = null;
 		                }else {
-							list($field, $value ) = each($value);  //ej: $where[] = ['id' => 10]; <transform> $where['id'] = 10;
+                            //ej: $where[] = ['id' => 10]; <transform> $where['id'] = 10;
+						    $field = array_keys($value)[0];
+							$value = $value[$field];
 						}
 					}
 
