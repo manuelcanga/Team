@@ -31,6 +31,8 @@ namespace Team\Data\Htmlengine;
 
 
 
+use const Team\_SERVER_;
+
 require_once(__DIR__."/Helper/Mirror.php");
 require_once(__DIR__."/Helper/Config.php");
 
@@ -73,15 +75,16 @@ class TemplateEngine {
         class_alias('Smarty_Internal_Resource_File', 'Smarty_Resource_Custom', true);
         class_alias('Smarty_Internal_Resource_File', 'Smarty_Resource_Team', true);
 
+        $temporary_dir = self::getTemporaryTemplatesDir();
 
         //Creamos un directorio temporal que evite las posibles colisiones de temporales smarty entre sitios
-        if(!file_exists(_TEMPORARY_."/smarty/compile") ) {
-            mkdir(_TEMPORARY_."/smarty/compile", 0777, true);
+        if(!file_exists($temporary_dir."/smarty/compile") ) {
+            mkdir($temporary_dir."/smarty/compile", 0777, true);
         }
 
         //Si no existe, habra que crearlo
-        if(!file_exists(_TEMPORARY_."/smarty/cache") ) {
-            mkdir(_TEMPORARY_."/smarty/cache", 0777, true);
+        if(!file_exists($temporary_dir."/smarty/cache") ) {
+            mkdir($temporary_dir."/smarty/cache", 0777, true);
         }
 
     }
@@ -90,6 +93,10 @@ class TemplateEngine {
 		//Le añadimos una referencia a la GUI Actual.
         $this->gui = \Team\System\Context::get("CONTROLLER");
 
+    }
+
+    public static function getTemporaryTemplatesDir() {
+        return \Team\System\context::get('_TEMPORARY_', _SERVER_, 'templates');
     }
 
 	public function transform(Array $_data) {	
@@ -259,8 +266,9 @@ class TemplateEngine {
 		
 		//Un componente sólo vería sus cosas, aún así puede usar root: package: etc
 		$_engine->template_dir = _SCRIPT_.'/';
-		$_engine->setCompileDir(_TEMPORARY_."/smarty/compile");
-		$_engine->setCacheDir(_TEMPORARY_."/smarty/cache");
+        $temporary_dir = self::getTemporaryTemplatesDir();
+        $_engine->setCompileDir($temporary_dir."/smarty/compile");
+		$_engine->setCacheDir($temporary_dir."/smarty/cache");
 
 			/** Usamos un filtro para que no haya espacio en blanco  */
         if((bool)\Team\System\Context::get('MINIMIZE_VIEW', true)) {

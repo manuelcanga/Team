@@ -232,6 +232,10 @@ final  class Filesystem
 		return filesize($base.$file);
 	}
 
+	public static function getUploadsDir() {
+        return \Team\System\Context::get('_UPLOADS_', \team\System\Context::get('_TEMPORARY_'));
+    }
+
     /**
      * Sube un archivo enviado por formulario al sistema de archivo
      * @param $identifier
@@ -277,7 +281,7 @@ final  class Filesystem
         }
 
         $base_upload = $options['dir']?? \Team\System\Context::get('BASE_UPLOAD', \Team\System\Date::current('base_upload'));
-        $uploads_path =  $options['path']?? \Team\System\Context::get('_UPLOADS_', _TEMPORARY_);
+        $uploads_path =  $options['path']?? self::getUploadsDir();
 
         self::mkdirRecursive($uploads_path.$base_upload);
 
@@ -313,7 +317,7 @@ final  class Filesystem
     }
 
     public static function rmUploaded($file, $path = null) {
-       $_UPLOADS_ = $path??  \Team\System\Context::get('_UPLOADS_', _TEMPORARY_);
+       $_UPLOADS_ = $path??  self::getUploadsDir();
 
         return unlink($_UPLOADS_.$file);
     }
@@ -321,7 +325,7 @@ final  class Filesystem
     public static function download($file, $name = null, $isUploaded = true) {
 
 	    if($isUploaded) {
-            $path = \Team\System\Context::get('_UPLOADS_', _TEMPORARY_);
+            $path = self::getUploadsDir();
             $file = $path.$file;
         }
 

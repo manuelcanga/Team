@@ -29,6 +29,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 namespace Team\Notices;
+use const Team\_SERVER_;
 
 
 /**
@@ -91,7 +92,7 @@ class Log {
     static function _option_files() { return  print_r($_FILES, true); }
     static function _option_session() { return  print_r($_SESSION, true); }
     static function _option_classes() { return  print_r(get_declared_classes(), true); }
-	static function _option_color($_color="reset") { return \Team\Log::$_colors[$_color]; }
+	static function _option_color($_color="reset") { return \Team\Notices\Log::$_colors[$_color]; }
 	static function _option_break($_num = 1) { return str_pad(" ", $_num+1, "\n\t\r");  }
 	static function _option_split($_char = "*") { return "\n\t\r".str_pad(" ", 80, $_char)."\n\t\r"; }
 	 
@@ -206,16 +207,24 @@ class Log {
 		@param String $_msg texto que se grabara
 	*/
    public static function saveLog($_file, $msg) {
+       static $directory = null;
 
 		if( "apache" == $_file || \Team\System\Context::get("ERROR_LOG") ) {
 			error_log($msg);
 		}else {
 
-			if(!file_exists(_TEMPORARY_."/logs") ) {
-				mkdir(_TEMPORARY_."/logs");
+		    if(!isset($directory)) {
+		         $temporary_dir = \Team\System\Context::get('_TEMPORARY_', _SERVER_, 'logs');
+
+		         if( !file_exists($temporary_dir."/logs")) {
+			    	mkdir($temporary_dir."/logs");
+		         }
+
+                $directory = $temporary_dir;
             }
 
-			$file = _TEMPORARY_."/logs/{$_file}.log";
+
+			$file = $directory."/logs/{$_file}.log";
 
             file_put_contents($file, $msg, FILE_APPEND | LOCK_EX);
 		}
@@ -259,13 +268,5 @@ class Log {
 		return $val;
 	}
 
-	/**
-		Creamos el directorio de logs sino estuviera creado
-	*/
-	public static function __initialize() {
-		if(!\Team\System\FileSystem::exists("/logs/", _TEMPORARY_) ) {
-			mkdir( _TEMPORARY_."/logs/", 0777, true);
-		}
-    }
 
 }

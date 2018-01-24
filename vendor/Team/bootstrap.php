@@ -29,82 +29,11 @@ namespace Team;
 
 
 /**
-  Information about current team version
-  @since 0.1
-*/
-define('TEAM_VERSION', '0.1');
-
-/**
-  Es el path relativo desde _SCRIPT_ dónde se encuentra realizándose la ejecución.
-  En un principio es /, cuando estamos procesando un paquete es /:paquete:
-  y cuando estamos en un componente /:paquete:/:componente:
-  @since 0.1
-*/  
-define('BASE', '/');
-
-/** 
-  Filesystem absolute path until root directory of Team Framework 
-  ( always without / end )
-  @since 0.1
-*/
+Filesystem absolute path until root directory of Team Framework
+( always without / end )
+@since 0.1
+ */
 define('_TEAM_', __DIR__);
-
-
-
-define('team\_SERVER_', dirname(\_SCRIPT_));
-
-
-if(!defined('_SCRIPT_') ) {
-    define('_SCRIPT_', _SERVER_.'/project' );
-}
-
-if(!defined('team\_VENDOR_') ) {
-    define('team\_VENDOR_', _SERVER_.'/vendor');
-}
-
-/**
-	Team\SCRIPT_ID is usted as key in cookies, sessions, template cache, tokens, ...
-	Team\SCRIPT_ID must be [a-Z|_ ]
-	
-	@since 0.1
-*/
-if(!defined('team\SCRIPT_ID') ) {
-	define('team\SCRIPT_ID', basename(_SERVER_) );
-}
-
-/**
-  TEAM looking for config for path to enviroments
-  You can change it in order to improve your system f
-  @since 0.1
-*/
-if(!defined('team\_CONFIG_') ) {
-	define('team\_CONFIG_', _SERVER_.'/config');
-}
-
-
-/**
-  Directory used to save temporary files: logs, caches, etc
-   @since 0.1
-*/
-if(!defined('_TEMPORARY_') ) {
-	define('_TEMPORARY_', _SERVER_.'/tmp/'.SCRIPT_ID);
-
-    if(!file_exists(_SERVER_.'/tmp/') ) {
-        mkdir(_SERVER_.'/tmp/', 0777, true);
-    }
-}
-
-if(!file_exists(_TEMPORARY_) ) {
-    mkdir(_TEMPORARY_, 0777, true);
-}
-
-
-
-/**
-  Errors is handled for Debug and Team classes
-*/
-ini_set('display_errors', 0);
-
 
 //Utilidades sobre el sistema de archivos
 require(\_TEAM_ . '/System/FileSystem.php');
@@ -157,20 +86,17 @@ require(\_TEAM_ . '/Client/Http.php');
 require(\_TEAM_ . '/System/DB.php');
 
 
-
-
 try {
-    //Clase que configura el sistema
-    require(\_TEAM_ . '/Start/Configure.php');
 
-    $configure = new \Team\Start\Configure;
-    $configure->preconfigure();
-    $configure->launchConfigScripts();
-    $configure->registerAutoload();
-    $configure->cachingSystem();
-    $configure->system();
+    require \_TEAM_. '/Predefined/config.inc.php';
+    require \_TEAM_. '/Predefined/tasks.inc.php';
+    require \_TEAM_. '/Predefined/filters.inc.php';
 
-    //El sistema se inicia externamente llamando a la función \Team\up() definida abajo
+    //Llamamos para que el proyecto inicie sus config, tasks, filters, ...
+    \Team\System\FileSystem::load('/config/setup.php', \Team\_SERVER_);
+    \Team\System\FileSystem::load('/'. \Team\Config::get('TRASWEB').'/setup.php', \Team\_CONFIG_);
+
+    require \_TEAM_. '/Predefined/system.inc.php';
 
 
 //Evitamos a toda costa que se quede congelado el sistema

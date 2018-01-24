@@ -37,7 +37,7 @@ ini_set('session.use_trans_sid',      0);
 class Session  extends Base
 {
     /** Identificador que se le dará a la cookie de sessión */
-    const ID_COOKIE = \Team\SCRIPT_ID;
+    protected $session_id = null;
     protected static $active = false;
 
 
@@ -48,9 +48,12 @@ class Session  extends Base
      *
      */
     public function  __construct( $data = null, Array $_options = []) {
+
+        $this->session_id = \Team\System\Context::get('SCRIPT_ID');
+
         $this->initialize();
 
-        $with_previous_session = isset($_COOKIE[self::ID_COOKIE]);
+        $with_previous_session = isset($_COOKIE[$this->session_id]);
         $force_activation =  isset($_options['force']) && $_options['force'];
 
         if ( $with_previous_session || $force_activation ) {
@@ -64,8 +67,8 @@ class Session  extends Base
     }
 
     protected function initialize() {
-        if(!isset($_SESSION[self::ID_COOKIE])) {
-            $_SESSION[self::ID_COOKIE] = [];
+        if(!isset($_SESSION[$this->session_id])) {
+            $_SESSION[$this->session_id] = [];
         }
     }
 
@@ -89,12 +92,12 @@ class Session  extends Base
      */
     protected function & session($defaults = [], $overwrite = false) {
         if($overwrite) {
-            $_SESSION[self::ID_COOKIE] = (array)$defaults;
+            $_SESSION[$this->session_id] = (array)$defaults;
         }else if(!empty($defaults)) {
-           $_SESSION[self::ID_COOKIE] = (array)$defaults + (array)$_SESSION[self::ID_COOKIE];
+           $_SESSION[$this->session_id] = (array)$defaults + (array)$_SESSION[$this->session_id];
         }
 
-        return $_SESSION[self::ID_COOKIE];
+        return $_SESSION[$this->session_id];
     }
 
     /**
@@ -111,7 +114,7 @@ class Session  extends Base
 
          if(!$this->isActive() || $force_activation ) {
              $data = $_SESSION;
-            session_name(self::ID_COOKIE);
+            session_name($this->session_id);
             session_start();
             static::$active = true;
             //Recolocamos cualquier dato que hubiera antes de iniciar sesión
@@ -126,8 +129,8 @@ class Session  extends Base
     public function close() {
         session_commit();
         $this->data = array();
-        if(isset($_SESSION[self::ID_COOKIE])) {
-            unset($_SESSION[self::ID_COOKIE]);
+        if(isset($_SESSION[$this->session_id])) {
+            unset($_SESSION[$this->session_id]);
         }
 
         static::$active = false;
