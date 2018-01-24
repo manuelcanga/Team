@@ -91,7 +91,7 @@ abstract class Builder implements \ArrayAccess {
         //Preparamos los datos para filtrar
         $data = new \Team\Data\Data($this->data);
         if($this['is_main']) {
-            $data = new \Team\Datatype\Url(null, [], $data->get());
+            $data = new \Team\Data\Type\Url(null, [], $data->get());
         }
 
         //Vamos a mandar un filtro de personalización de argumentos. Por si un package quiere personalizar sus argumentos( por ejemplo, acorde a la url de entrada )

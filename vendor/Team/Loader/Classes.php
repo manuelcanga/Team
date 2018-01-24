@@ -162,6 +162,8 @@ class  Classes{
 
         /* new mode on */
         $filename = "/".str_replace('\\', '/', $class_name_full).".php";
+
+
         if(self::load($class_name_full, $filename, \Team\_VENDOR_) || self::load($class_name_full, $filename, \Team\_SERVER_)) {
             return self::newClass($class_name_full, $instance);
         }

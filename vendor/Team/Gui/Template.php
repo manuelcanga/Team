@@ -8,7 +8,7 @@
 namespace Team\Gui;
 
 
-class Template extends \Team\Datatype\Type
+class Template extends \Team\Data\Type\Type
 {
     use \Team\Gui\View;
 

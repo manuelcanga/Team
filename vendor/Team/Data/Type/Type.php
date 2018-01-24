@@ -5,7 +5,7 @@
  * Time: 9:11
  */
 
-namespace Team\Datatype;
+namespace Team\Data\Type;
 
 abstract class Type extends Base
 {
@@ -14,7 +14,7 @@ abstract class Type extends Base
     public function __construct($_origin = NULL, array $_options = [], $_defaults = []) {
 
         //Check if implements Box instead
-        if($_defaults instanceof \Team\Datatype\Base ) {
+        if($_defaults instanceof \Team\Data\Type\Base ) {
             $this->data = $_defaults->get();
         }else if(is_array($_defaults) ) {
             $this->data = $_defaults;

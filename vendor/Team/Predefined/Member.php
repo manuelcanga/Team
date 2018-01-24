@@ -39,7 +39,7 @@ class Member implements \ArrayAccess {
 		$user_data = ['active' => 0, 'level' => \Team\User::GUEST];
 	
 		$this->data = \Team\System\Task('\team\member', function($data) {
-            return new \Team\Datatype\Session($data, []);
+            return new \Team\Data\Type\Session($data, []);
 		})->with($user_data);
 
 	}

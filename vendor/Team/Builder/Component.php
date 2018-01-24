@@ -111,7 +111,7 @@ class Component   implements \ArrayAccess{
 		Ademśa, realizamos las tareas rutinarias de inicialización del componente( se esté abriendo como main o no ).
 	*/
 	function __construct($params=[]) {
-		if($params instanceof \Team\Datatype\Base ) {
+		if($params instanceof \Team\Data\Type\Base ) {
             $params = $params->get();
 
 		}

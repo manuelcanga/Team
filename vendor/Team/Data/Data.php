@@ -29,15 +29,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace Team\Data;
 
-require(_TEAM_ . '/Datatype/Base.php');
+require_once(__DIR__.'/Type/Base.php');
 
-class Data extends \Team\Datatype\Base
+class Data extends \Team\Data\Type\Base
 {
 
     public function __construct($data = []) {
 
         //Check if implements Box instead
-        if($data instanceof  \Team\Datatype\Base) {
+        if($data instanceof  \Team\Data\Type\Base) {
             $this->data = $data->get();
         }else if(is_array($data) ) {
             $this->data = $data;

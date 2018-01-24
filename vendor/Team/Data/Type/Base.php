@@ -5,7 +5,7 @@
  * Time: 9:11
  */
 
-namespace Team\Datatype;
+namespace Team\Data\Type;
 
 abstract class Base implements \ArrayAccess
 {
