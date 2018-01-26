@@ -128,20 +128,20 @@ class Session  extends Base
      }
 
     public function close() {
-        session_commit();
         $this->data = array();
         if(isset($_SESSION[$this->session_id])) {
             unset($_SESSION[$this->session_id]);
         }
 
         static::$active = false;
-        if(!empty($_SESSION)) {
-
-            return session_destroy();
+        if(empty($_SESSION)) {
+            $result =  session_destroy();
         }else {
-            return true;
+            $result = true;
         }
-    }
 
+        session_commit();
+        return $result;
+    }
 
 }

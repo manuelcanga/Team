@@ -57,9 +57,9 @@ class User {
     public static function __initialize() {
 		if(isset(self::$current) ) return  ;
 
-        class_alias('\team\client\User', '\team\User', false);
+        class_alias('\Team\Client\User', '\Team\User', false);
 
-        $user_class =\Team\System\Context::get('\team\User', '\Team\Predefined\Member');
+        $user_class =\Team\System\Context::get('\Team\User', '\Team\Predefined\Member');
 
         if(isset($user_class) && class_exists($user_class )  ) {
 		 self::$current  = new  $user_class();
