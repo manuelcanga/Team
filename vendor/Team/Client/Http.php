@@ -160,6 +160,22 @@ abstract class Http
     }
 
 
+    public static function getReferer() {
+        $ref =  \Team\Data\Check::url(  self::getRawReferer(), false );
+
+        if($ref && $ref != $_SERVER['REQUEST_URI'] && $ref != \Team\System\Context::get('WEB').$_SERVER['REQUEST_URI'] ) {
+            return $ref;
+        }
+        return false;
+    }
+
+    public static function getRawReferer() {
+        if ( ! empty( $_SERVER['HTTP_REFERER'] ) ) {
+            return $_SERVER['HTTP_REFERER'];
+        }
+        return false;
+    }
+
 
     public static function redirect($redirect, $code = 301, $protocol = null) {
         $redirect = \Team\Data\Sanitize::internalUrl($redirect);
