@@ -40,7 +40,7 @@ class Gui extends Controller {
     use \Team\Gui\Assets;
     use \Team\Gui\View;
 
-    const DEPENDENCIES = '/guis/';
+    const TYPE = 'Gui';
 
 
     /* ____________ METHODS DE EVENTOS BASES DEL FRAMEWORK___________ */

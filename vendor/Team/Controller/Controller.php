@@ -44,6 +44,7 @@ Printers -> Generan un pdf
 abstract class Controller  implements \ArrayAccess{
     use \Team\Data\Box;
 
+    const TYPE = 'Controller';
 
     protected $params;
     //parent controller
@@ -223,11 +224,10 @@ abstract class Controller  implements \ArrayAccess{
      * Delegamos el tratamiento del response actual
      *
      * @param array $data datos a pasar al nuevo response si se lanza
+     * @param string nombre del nuevo response a lanzar en el nuevo controlador
      * @return mixed devuelve la respuesta del response
      */
     function delegate(array $params = []) {
-
-        $namefile = ucfirst(\Team\System\Context::get('RESPONSE') );
 
         $params['ref'] = $this->params->id;
         $params['ref_item'] = $this->params->item_id;
@@ -235,10 +235,10 @@ abstract class Controller  implements \ArrayAccess{
         $params['ref_item_ext'] = $this->params->item_ext;
 
 
-        $response = 'index';
+        $new_response = 'index';
         //El nuevo response será el siguiente param alfanumérico en la url
         if(isset( $this->params->url_path_list[0])) {
-            $response = array_shift($this->params->url_path_list);
+            $new_response = array_shift($this->params->url_path_list);
         }
 
         //Se toma como id el primer filtro si lo hubiera
@@ -248,7 +248,7 @@ abstract class Controller  implements \ArrayAccess{
         }
 
 
-        return $this->newController($namefile, $response, $params);
+        return $this->newController($new_response, $params);
     }
 
 
@@ -260,31 +260,31 @@ abstract class Controller  implements \ArrayAccess{
      * @param array $data datos a pasar al nuevo response si se lanza
      * @return mixed devuelve la respuesta del response
      */
-    function newController($name, $_response = null, $data = [],&$new_controller = null) {
-        $classname = \Team\System\Context::get('NAMESPACE').'\\'.$name;
-        $response = $_response?:  \Team\System\Context::get('RESPONSE');
-        $response = \Team\Data\Sanitize::identifier($response);
+    function newController( $new_response = null, $data = [],&$new_controller = null) {
+        $old_response = \Team\System\Context::get('RESPONSE');
+
+        $classname = \Team\System\Context::get('NAMESPACE').'\\'.ucfirst($old_response).'\\'.static::TYPE;
+        $response = \Team\Data\Sanitize::identifier($new_response?:  $old_response );
         $result = null;
 
 
-        if(!class_exists($classname, false)) {
+        $new_controller = $this->getNewController($classname, $response,  $data);
 
-            $pathToController = \Team\System\Context::get('_COMPONENT_').static::DEPENDENCIES;
+        if($new_controller && isset($response) && method_exists($new_controller, $response) ) {
+            \Team\System\Context::set('CHILD_BASE_URL', \Team\System\Context::get('BASE_URL').'\\'.$old_response );
 
-            $new_controller = $this->getNewController($classname, $response, $pathToController , $data);
-
-            if($new_controller && isset($response) && method_exists($new_controller, $response) ) {
-                $new_controller->___load($response);
+            $new_controller->___load($response);
 
 
-                $result = $new_controller->$response($response);
+            $result = $new_controller->$response($response);
 
-                $result = $new_controller->___unload($result, $response);
+            $result = $new_controller->___unload($result, $response);
 
-                \Team\System\Context::set('CONTROLLER',  $this );
-            }
+            \Team\System\Context::set('CONTROLLER',  $this );
+            \Team\System\Context::set('CHILD_BASE_URL', null);
 
         }
+
 
         return $result;
     }
@@ -299,30 +299,11 @@ abstract class Controller  implements \ArrayAccess{
      * @param array $data datos a pasar al nuevo response si se lanza
      * @return mixed devuelve el objeto del controlador
      */
-    function getNewController($classname, $response,  $path, $data = []) {
-        $namefile = \Team\System\NS::basename($classname);
-
-        $fileclass =  $path.$namefile.'.php';
-
-
-        if(file_exists($fileclass)) {
-            require_once($fileclass);
-
-
-            if(!class_exists($classname, false)) {
-                \Debug::me('Not found class['.$classname.'] for  path['.$fileclass.'] ');
-                return false;
-            }
-
-        }else {
-            \Debug::me('Not found path['.$fileclass.'] for class['.$classname.'] ');
-
-            return false;
-        }
+    function getNewController($class, $response,  $data = []) {
 
         $data += $this->params->get();
 
-        $new_controller = new $classname($data, $response, $this);
+        $new_controller = new $class($data, $response, $this);
 
         $new_controller->setRef($this->data);
 
