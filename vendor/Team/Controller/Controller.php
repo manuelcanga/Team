@@ -193,9 +193,10 @@ abstract class Controller  implements \ArrayAccess{
     /* ____________ METHODS UTILES  PARA EL PROGRAMADOR CLIENTE___________ */
 
 
-    function debug($var, $name) {
-        \team\Debug::me($var, $name);
+    function debug($var_name) {
+        \team\Debug::me($this->params[$var_name], $var_name);
     }
+
 
     /**
     Manda un código de estado al exterior.
@@ -263,15 +264,16 @@ abstract class Controller  implements \ArrayAccess{
     function newController( $new_response = null, $data = [],&$new_controller = null) {
         $old_response = \Team\System\Context::get('RESPONSE');
 
+
         $classname = \Team\System\Context::get('NAMESPACE').'\\'.ucfirst($old_response).'\\'.static::TYPE;
-        $response = \Team\Data\Sanitize::identifier($new_response?:  $old_response );
+        $response = $data['response'] = \Team\Data\Sanitize::identifier($new_response?:  $old_response );
         $result = null;
 
 
         $new_controller = $this->getNewController($classname, $response,  $data);
 
         if($new_controller && isset($response) && method_exists($new_controller, $response) ) {
-            \Team\System\Context::set('CHILD_BASE_URL', \Team\System\Context::get('BASE_URL').'\\'.$old_response );
+            \Team\System\Context::set('CHILD_BASE_URL', \Team\System\Context::get('BASE_URL').'\\'.$response );
 
             $new_controller->___load($response);
 
