@@ -48,11 +48,14 @@ class Gui extends Controller {
 
     function ___load($response) {
 
-        //Add Default template and layout
-        $this->setView(\Team\System\Context::get('RESPONSE'));
+        if($this->parent() === null) {
 
-        //Por defecto, no habrá layout
-        $this->noLayout();
+            //Add Default template and layout
+            $this->setView(\Team\System\Context::get('RESPONSE'));
+
+            //Por defecto, no habrá layout
+            $this->noLayout();
+        }
 
 
         return parent::___load($response);

@@ -46,10 +46,13 @@ abstract class Controller  implements \ArrayAccess{
 
 
     protected $params;
+    //parent controller
+    private $parent = null;
 
-    function __construct($params, $response ) {
+    function __construct($params, $response, $parent = null ) {
 
         \Team\System\Context::set('CONTROLLER',  $this );
+        $this->parent = $parent;
 
         if($params instanceof \Team\Data) {
             $this->params = $params;
@@ -271,12 +274,12 @@ abstract class Controller  implements \ArrayAccess{
             $new_controller = $this->getNewController($classname, $response, $pathToController , $data);
 
             if($new_controller && isset($response) && method_exists($new_controller, $response) ) {
-                $new_controller->___load($response, $new_controller);
+                $new_controller->___load($response);
 
 
-                $result = $new_controller->$response($response, $this);
+                $result = $new_controller->$response($response);
 
-                $result = $new_controller->___unload($result, $response, $new_controller);
+                $result = $new_controller->___unload($result, $response);
 
                 \Team\System\Context::set('CONTROLLER',  $this );
             }
@@ -317,10 +320,9 @@ abstract class Controller  implements \ArrayAccess{
             return false;
         }
 
-        $data['parent'] = $this;
         $data += $this->params->get();
 
-        $new_controller = new $classname($data, $response);
+        $new_controller = new $classname($data, $response, $this);
 
         $new_controller->setRef($this->data);
 
@@ -360,6 +362,23 @@ abstract class Controller  implements \ArrayAccess{
 
         return $result;
     }
+
+    /**
+     * Return parent controller
+     * @return null
+     */
+    protected function parent() {
+        return $this->parent;
+    }
+
+    /**
+     * Alias of parent() method
+     * @return null
+     */
+    protected function getParent() {
+        return $this->parent;
+    }
+
 
 
     /**
