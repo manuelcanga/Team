@@ -83,12 +83,18 @@ trait Vars
     }
 
 
-    public static function debug($str = '') {
+    public static function debug($var_name = null, $label = 'values') {
         $backtrace = debug_backtrace();
         $file = $backtrace[0]['file'];
         $line = $backtrace[0]['line'];
 
-        \Team\Debug::me(self::$vars, $str.' log:', $file, $line);
+        $var = self::$vars;
+        if(isset($var_name)) {
+            $label = $var_name;
+            $var = self::get($var_name);
+        }
+
+        \Team\Debug::me($var, $label, $file, $line);
     }
 
 }
