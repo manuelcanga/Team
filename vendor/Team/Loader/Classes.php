@@ -164,10 +164,11 @@ class  Classes{
         $filename = "/".str_replace('\\', '/', $class_name_full).".php";
 
 
-        if(self::load($class_name_full, $filename, \Team\_VENDOR_) || self::load($class_name_full, $filename, \Team\_SERVER_)) {
+        if( self::load($class_name_full, $filename, \_SCRIPT_)
+            || self::load($class_name_full, $filename, \Team\_SERVER_)
+            ||  self::load($class_name_full, $filename, \Team\_VENDOR_ ) ) {
             return self::newClass($class_name_full, $instance);
         }
-
 
         /** ------ old mode ------- */
 
