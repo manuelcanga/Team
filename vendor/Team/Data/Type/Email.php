@@ -73,10 +73,9 @@ class Email extends Type
         if(empty($emails) ) return false;
 
         $view = \Team\Config::get('EMAIL_TEMPLATE',$template , $this->id);
+        $_data = $_data + $this->data;
 
         foreach((array) $emails as $to) {
-
-
             $username = $to['name'];
             $useremail = $to['email'];
             //Tenemos que generar el correo electrónico que tendrá
@@ -88,10 +87,12 @@ class Email extends Type
             $email->setContext('ToEMAIL', $useremail);
             $email->setContext('FromNAME',  $this->from['name']?? '');
             $email->setContext('FromEMAIL',  $this->from['email']?? '');
+            $email->setContext('WEB', \Team\System\Context::get('WEB'));
 
             $body_html = $email->getHtml();
 
             $body =  wordwrap($body_html, 70);
+
 
             $status = mail($this->getTo(), $this->getSubject(), $body, $this->getHeaders() );
             $this->status[] = ['name' => $username, 'email' =>  $useremail, 'status' => $status ];
