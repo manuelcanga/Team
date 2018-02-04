@@ -58,7 +58,7 @@ abstract class ActiveRecord extends \Team\Db\Model{
     public function onNewRecord( array $data = []) {
         $this->onInitialize(null, $data);
 
-        return parent::onNewRecord();
+        return parent::onNewRecord($data);
     }
 
 
