@@ -336,6 +336,8 @@ final  class Debug
 de $jumps saltos hacia atrás  */
 	public static function origin( $jumps = 1, $_label = 'You are ') {
 			$backtrace = debug_backtrace();
+            $file='';
+            $line='';
 
 			if('all' != $jumps && $jumps > 1) {
                 $file = $backtrace[ $jumps - 1 ]["file"]?? '';

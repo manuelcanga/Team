@@ -9,8 +9,19 @@ if(!defined('_TEAM_')) die("Hello, World!");
 
 //Avoid proxys domains
 Filter::add('\team\request_uri', function($url) {
-    return  parse_url($url, PHP_URL_PATH);
+    $url = parse_url($url);
+
+    $path = $url['path']?? '/';
+
+    $query = '';
+    if(isset($url['query'])) {
+        $query = '?'.$url['query'];
+    }
+
+    return $path.$query;
 });
+
+
 
 
 Config::setUp();
