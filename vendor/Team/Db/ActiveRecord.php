@@ -51,7 +51,16 @@ abstract class ActiveRecord extends \Team\Db\Model{
         }
 
         $this->onInitialize($id, $data);
+
+        $this->onLoad( $data);
     }
+
+    public function onNewRecord( array $data = []) {
+        $this->onInitialize(null, $data);
+
+        return parent::onNewRecord();
+    }
+
 
 
     /* ----------------- Checks----------------- */
@@ -126,6 +135,7 @@ abstract class ActiveRecord extends \Team\Db\Model{
 
 
 	public function save( ) {
+
         $this->commons();
 
         if($this->safeId ) {
@@ -177,6 +187,7 @@ abstract class ActiveRecord extends \Team\Db\Model{
 		Si $secure es true, no se podrá hacer un delete sin where y los delete con where estarán limitados a un elemento.
 	*/
 	public function removeIt($secure = true) {
+
 		if(!$this->safeId ) return false;
 
         $query = $this->newQuery([static::ID => $this->safeId] );
@@ -226,23 +237,21 @@ abstract class ActiveRecord extends \Team\Db\Model{
         return $query_result;
     }
 
-    /* ----------------- EVENTS ----------------- */
-
+    /* ____________ METHODS DE EVENTOS PARA EL PROGRAMADOR___________ */
+    //Se lanza sólo la primera vez que se instancia un Controller
+    protected function onInitialize($id, &$data){}
+    //Se lanza cada vez que se importa datos en la inicialización
+    protected function onLoad( $data){
+        if(isset($data)) {
+            return $this->import($data);
+        }
+    }
     //Before updating, creating or removing  register
     protected function commons() {}
 
     //After updating, creating or removing  register
     protected function custom($operation){}
 
-
-    /**
-    Initialize by default
-     */
-    protected function onInitialize($id, & $data){
-        if(isset($data)) {
-            return $this->import($data);
-        }
-    }
 
 
 } 
