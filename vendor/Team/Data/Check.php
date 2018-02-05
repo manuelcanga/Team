@@ -127,6 +127,66 @@ abstract class Check
         return $default;
     }
 
+    /**
+     * Comprueba un CIF español
+     *
+     * @param $cif
+     *
+     */
+    static function CIF($cif, $default = null){
+
+        $cif = strtoupper($cif);
+
+        if(self::DNI($cif)){
+            return $cif;
+        }
+
+        if(!is_string($cif) || strlen($cif) != 9 ) {
+            return $default;
+        }
+
+        //first letter must be an allow letter
+        if(0 === strspn($cif[0], "ABCDEFGHJNPQRSUVW")) {
+            return $default;
+        }
+
+        //Si la parte numérica no es numérica
+        $numeric_part = substr($cif,1, -1);
+        if(!self::id($numeric_part) ) {
+            return $default;
+        }
+
+        $plus_digits_of_a_string=function(string $string, ...$digits) {
+            $total = 0;
+
+            foreach($digits as $digit) {
+                /* -1 is because strings/arrays starts with 0. */
+                $new_value = $string[$digit -1]?? 0;
+                $total = $total + (int)$new_value;
+            }
+
+            return $total;
+        };
+
+        $amount_even = $plus_digits_of_a_string($numeric_part, 2,4,6);
+        $amount_odd = $plus_digits_of_a_string($numeric_part[0]*2, 1, 2);
+        $amount_odd += $plus_digits_of_a_string($numeric_part[2]*2, 1, 2);
+        $amount_odd += $plus_digits_of_a_string($numeric_part[4]*2, 1, 2);
+        $amount_odd += $plus_digits_of_a_string($numeric_part[6]*2, 1, 2);
+
+        $suma_parcial = (string)($amount_even + $amount_odd);
+        $one_from_digito = $suma_parcial[-1];
+        $check_remainder = (0 === $one_from_digito)? 0 : 10 - $one_from_digito;
+        $check_letters = ['J', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
+        $check_digit = $cif[-1];
+
+        if($check_letters[$check_remainder] != $check_digit  && $check_remainder != $check_digit) {
+            return $default;
+        }
+
+        return $cif;
+    }
+
 
     /**
 		 Validamos si $alphameric es un alfanumérico
