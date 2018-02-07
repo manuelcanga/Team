@@ -174,9 +174,9 @@ abstract class Check
         $amount_odd += $plus_digits_of_a_string($numeric_part[4]*2, 1, 2);
         $amount_odd += $plus_digits_of_a_string($numeric_part[6]*2, 1, 2);
 
-        $suma_parcial = (string)($amount_even + $amount_odd);
-        $one_from_digito = $suma_parcial[-1];
-        $check_remainder = (0 === $one_from_digito)? 0 : 10 - $one_from_digito;
+        $partial_amount = (string)($amount_even + $amount_odd);
+        $one_from_digit = $partial_amount[-1];
+        $check_remainder = (0 === $one_from_digit)? 0 : 10 - $one_from_digit;
         $check_letters = ['J', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
         $check_digit = $cif[-1];
 
@@ -369,7 +369,31 @@ abstract class Check
 		( count( $string_keys ) === 0 )?: $default;
 	}
 
-	static function __callStatic($name, $arguments) {
+    /**
+     *  Checks if values of $array is in $keys
+     *  This is useful for checkbox validations in forms
+     * @param $array array
+     * @param $keys array
+     */
+    static function valuesInKeys($values, $keys, $default = null) {
+
+        if(!is_array($values) || !is_array($keys)) {
+            return $default;
+        }
+
+        $keys = array_keys($keys);
+
+        $common_array = array_intersect($values, $keys);
+
+        if($common_array == $values){
+            return $values;
+        }
+
+        return $default;
+    }
+
+
+    static function __callStatic($name, $arguments) {
         return \Team\Data\Filter::apply('\team\data\Check\\'.$name, ...$arguments );
     }
 }
