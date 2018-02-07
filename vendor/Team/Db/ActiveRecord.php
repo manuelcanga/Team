@@ -6,14 +6,14 @@ All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of the trasweb.net nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
+ * Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in the
+documentation and/or other materials provided with the distribution.
+ * Neither the name of the trasweb.net nor the
+names of its contributors may be used to endorse or promote products
+derived from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS IS' AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -26,15 +26,15 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-*/
+ */
 namespace Team\Db;
 
 /**
-		Simple ActiveRecord class for Team Framework
-*/
+Simple ActiveRecord class for Team Framework
+ */
 abstract class ActiveRecord extends \Team\Db\Model{
 
-	const DETAILS_URL = '';
+    const DETAILS_URL = '';
 
     protected $safeId = 0;
 
@@ -51,59 +51,51 @@ abstract class ActiveRecord extends \Team\Db\Model{
         }
 
         $this->onInitialize($id, $data);
-
-        $this->onLoad( $data);
     }
-
-    public function onNewRecord( array $data = []) {
-        $this->onInitialize(null, $data);
-
-        return parent::onNewRecord($data);
-    }
-
 
 
     /* ----------------- Checks----------------- */
 
-	/**
-		Validamos el campo clave ID del activerecord
-		@param $id es el valor a usar como campo clave
-	*/
-	function checkId($id) {
-			return \Team\Data\Check::key($id, 0);
-	}
-
-	function isSafe() {
-		return (bool) $this->safeId;
-	}
-
-
-	public function exists($name = null) {
-		if(!isset($name) ) {
-			return $this->exists(static::ID);
-		}
-
-        return isset($this->data[$name]);
-	}
-
-
-
-	/* ----------------- Geters and Setters ----------------- */
-
-
-	function & getId() {
-		return  $this->safeId;
-	}
-
-	function setSafeId($newId) {
-	    $this->safeId = $this->checkId($newId, 0);
+    /**
+    Validamos el campo clave ID del activerecord
+    @param $id es el valor a usar como campo clave
+     */
+    function checkId($id) {
+        return \Team\Data\Check::key($id, 0);
     }
 
-	public function getGeneratedUrl($data = null, &$matches = null) {
-		if(!isset($data) ) $data = $this->data;
+    function isSafe() {
+        return (bool) $this->safeId;
+    }
 
-		return \Team\Client\Url::to(self::DETAILS_URL, $data, $matches);
-	}
+
+    public function exists($name = null) {
+        if(!isset($name) ) {
+            return $this->exists(static::ID);
+        }
+
+        return isset($this->data[$name]);
+    }
+
+
+
+
+    /* ----------------- Geters and Setters ----------------- */
+
+
+    function & getId() {
+        return  $this->safeId;
+    }
+
+    function setSafeId($newId) {
+        $this->safeId = $this->checkId($newId, 0);
+    }
+
+    public function getGeneratedUrl($data = null, &$matches = null) {
+        if(!isset($data) ) $data = $this->data;
+
+        return \Team\Client\Url::to(self::DETAILS_URL, $data, $matches);
+    }
 
     protected function loadData(array $data = []) {
         if(!empty($data) ) {
@@ -113,58 +105,59 @@ abstract class ActiveRecord extends \Team\Db\Model{
     }
 
 
-	/* ----------------- QUERIES ----------------- */
+
+    /* ----------------- QUERIES ----------------- */
 
 
-	/**
-		Initialize by default
-	*/
+    /**
+    Initialize by default
+     */
     protected function initializeIt($id) {
 
-	    $query = $this->newQuery([static::ID =>  $id]);
-	    $query->where[] = [ static::ID  =>  ':'.static::ID  ];	
-		$record = $query->getRow(static::TABLE);
+        $query = $this->newQuery([static::ID =>  $id]);
+        $query->where[] = [ static::ID  =>  ':'.static::ID  ];
+        $record = $query->getRow(static::TABLE);
 
-		if(!empty($record) ) {
-			 $this->set($record);
-		}
+        if(!empty($record) ) {
+            $this->set($record);
+        }
 
-		$this[static::ID] = $id;
+        $this[static::ID] = $id;
 
-	}
+    }
 
 
-	public function save( ) {
-
-        $this->commons();
+    public function save( ) {
 
         if($this->safeId ) {
             $result =  $this->updateIt($secure = true);
-		}else {
+        }else {
             $result = $this->insertIt();
         }
 
         return $result;
-	}
+    }
 
-	public function updateIt($secure = true) {
+    public function updateIt($secure = true) {
+        $this->commons('update');
 
         $this->data[static::ID] = $this->safeId;
 
         $query = $this->newQuery($this->data);
-		$query->where[] = [ static::ID  =>  ':'.static::ID  ];
+        $query->where[] = [ static::ID  =>  ':'.static::ID  ];
 
-		$result =  $query->update(static::TABLE, $secure);
+        $result =  $query->update(static::TABLE, $secure);
 
         if($result) {
             $this->custom("update");
         }
 
         return $result;
-	}
+    }
 
 
-	public function insertIt() {
+    public function insertIt() {
+        $this->commons('insert');
 
         if(!isset($this[static::ID]) ) {
             $this[static::ID] = null;
@@ -173,35 +166,46 @@ abstract class ActiveRecord extends \Team\Db\Model{
         $query = $this->newQuery($this->data );
         $newId = $query->add(static::TABLE);
 
-		 if($newId) {
+        if($newId) {
             $this->setSafeId($newId);
 
             $this->custom('insert');
-         }
+        }
 
-         return $newId;
+        return $newId;
     }
 
-	/**
-		Realiza el borrado en la base de datos.
-		Si $secure es true, no se podrá hacer un delete sin where y los delete con where estarán limitados a un elemento.
-	*/
-	public function removeIt($secure = true) {
+    public function serializeIt($field) {
+        if(is_array($this[$field])) {
+            $this[$field] = json_encode($this->$field);
+        }
+    }
 
-		if(!$this->safeId ) return false;
+    public function unSerializeIt($field) {
+        if(is_string($this[$field])) {
+            $this->$field = json_decode($this[$field], $assoc = true);
+        }
+    }
+
+    /**
+    Realiza el borrado en la base de datos.
+    Si $secure es true, no se podrá hacer un delete sin where y los delete con where estarán limitados a un elemento.
+     */
+    public function removeIt($secure = true) {
+        if(!$this->safeId ) return false;
 
         $query = $this->newQuery([static::ID => $this->safeId] );
 
-		$query->where[] = [ static::ID  =>  ':'.static::ID  ];
+        $query->where[] = [ static::ID  =>  ':'.static::ID  ];
 
-		$result =  $query->delete(static::TABLE, $secure);
+        $result =  $query->delete(static::TABLE, $secure);
 
-		if($result){
+        if($result){
             $this->custom('remove');
         }
 
         return $result;
-	}
+    }
 
     /**
      * This function changes a value of database field in current record.
@@ -237,21 +241,31 @@ abstract class ActiveRecord extends \Team\Db\Model{
         return $query_result;
     }
 
-    /* ____________ METHODS DE EVENTOS PARA EL PROGRAMADOR___________ */
-    //Se lanza sólo la primera vez que se instancia un Controller
-    protected function onInitialize($id, &$data){}
-    //Se lanza cada vez que se importa datos en la inicialización
-    protected function onLoad( $data){
-        if(isset($data)) {
-            return $this->import($data);
-        }
+    /* ----------------- EVENTS ----------------- */
+
+    //Before updating, creating register
+    protected function commons($operation) {
+        $this->onSerialize($operation);
+
     }
-    //Before updating, creating or removing  register
-    protected function commons() {}
 
     //After updating, creating or removing  register
     protected function custom($operation){}
 
+    protected function onSerialize($operation) { }
+    protected function onUnserialize($id, & $data){}
+
+    /**
+    Initialize by default
+     */
+    protected function onInitialize($id, $data){
+        if(isset($data)) {
+            return $this->import($data);
+        }
+
+
+        $this->onUnserialize($id, $data);
+    }
 
 
 } 
