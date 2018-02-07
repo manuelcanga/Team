@@ -258,7 +258,7 @@ abstract class ActiveRecord extends \Team\Db\Model{
     /**
     Initialize by default
      */
-    protected function onInitialize($id, $data){
+    protected function onInitialize($id, & $data){
         if(isset($data)) {
             return $this->import($data);
         }
