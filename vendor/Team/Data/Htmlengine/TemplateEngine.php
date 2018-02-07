@@ -245,6 +245,7 @@ class TemplateEngine {
 		$_engine->addPluginsDir(_SCRIPT_.'/'.$package.'/commons/views/plugins');
 		$_engine->addPluginsDir(_SCRIPT_.'/commons/views/plugins');
 		$_engine->addPluginsDir(_TEAM_.'/Data/Htmlengine/plugins');
+        $_engine->addPluginsDir(_TEAM_.'/Data/Htmlengine/form');
 
 		//Si aún asi no se encuentran los elementos, se añade una funcion buscadora de elementos
 		$_engine->registerDefaultPluginHandler(array($this, "customElements") );
