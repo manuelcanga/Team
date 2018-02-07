@@ -176,14 +176,22 @@ abstract class ActiveRecord extends \Team\Db\Model{
     }
 
     public function serializeIt($field) {
+        $this[$field] = [];
+
         if(is_array($this[$field])) {
             $this[$field] = json_encode($this->$field);
         }
     }
 
     public function unSerializeIt($field) {
+        $this->$field = '';
+
         if(is_string($this[$field])) {
-            $this->$field = json_decode($this[$field], $assoc = true);
+            $array_with_values = json_decode($this[$field], $assoc = true);
+
+            if(json_last_error() != JSON_ERROR_NONE){
+                $this->$field  = $array_with_values;
+            }
         }
     }
 
