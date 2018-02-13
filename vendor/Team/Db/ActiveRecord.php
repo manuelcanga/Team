@@ -118,14 +118,7 @@ abstract class ActiveRecord extends \Team\Db\Model{
         $query->where[] = [ static::ID  =>  ':'.static::ID  ];
         $record = $query->getRow(static::TABLE);
 
-        if(!empty($record) ) {
-            $this->set($record);
-        }
-
-        $this[static::ID] = $id;
-
-        $this->onInitialize($id);
-        $this->onUnserialize();
+        $this->onInitialize($id, $record);
     }
 
 
@@ -256,7 +249,10 @@ abstract class ActiveRecord extends \Team\Db\Model{
     }
 
     /* ----------------- EVENTS ----------------- */
-    protected function onInitialize($id){}
+    protected function onInitialize($id, $data = []){
+        $this->loadData($data);
+        $this->onUnserialize();
+    }
 
 
     //Before updating, creating register
@@ -266,12 +262,12 @@ abstract class ActiveRecord extends \Team\Db\Model{
     protected function custom($operation){}
 
     protected function onSerialize($operation) { }
-    protected function onUnserialize($operation){}
+    protected function onUnserialize(){}
 
     /**
     Initialize by default
      */
-    protected function onImport($data, $id){
+    protected function onImport($data){
         if(is_array($data)) {
              $this->import($data);
         }
