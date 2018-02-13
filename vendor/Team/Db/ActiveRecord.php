@@ -50,7 +50,7 @@ abstract class ActiveRecord extends \Team\Db\Model{
             $this->initializeIt($this->safeId);
         }
 
-        $this->onInitialize($id, $data);
+        $this->onImport($data, $id);
     }
 
 
@@ -60,8 +60,8 @@ abstract class ActiveRecord extends \Team\Db\Model{
     Validamos el campo clave ID del activerecord
     @param $id es el valor a usar como campo clave
      */
-    function checkId($id) {
-        return \Team\Data\Check::key($id, 0);
+    function checkId($id, $default = 0) {
+        return \Team\Data\Check::key($id, $default);
     }
 
     function isSafe() {
@@ -124,6 +124,8 @@ abstract class ActiveRecord extends \Team\Db\Model{
 
         $this[static::ID] = $id;
 
+        $this->onInitialize($id);
+        $this->onUnserialize();
     }
 
 
@@ -139,6 +141,7 @@ abstract class ActiveRecord extends \Team\Db\Model{
     }
 
     public function updateIt($secure = true) {
+        $this->onSerialize('update');
         $this->commons('update');
 
         $this->data[static::ID] = $this->safeId;
@@ -157,6 +160,7 @@ abstract class ActiveRecord extends \Team\Db\Model{
 
 
     public function insertIt() {
+        $this->onSerialize('insert');
         $this->commons('insert');
 
         if(!isset($this[static::ID]) ) {
@@ -252,31 +256,25 @@ abstract class ActiveRecord extends \Team\Db\Model{
     }
 
     /* ----------------- EVENTS ----------------- */
+    protected function onInitialize($id){}
 
 
     //Before updating, creating register
-    protected function commons($operation) {
-        $this->onSerialize($operation);
-
-    }
+    protected function commons($operation) { }
 
     //After updating, creating or removing  register
     protected function custom($operation){}
 
     protected function onSerialize($operation) { }
-    protected function onUnserialize($id, & $data){}
+    protected function onUnserialize($operation){}
 
     /**
     Initialize by default
      */
-    protected function onInitialize($id, & $data){
-        $this->onUnserialize($id, $data);
-
-        if(isset($data)) {
-             return $this->import($data);
+    protected function onImport($data, $id){
+        if(is_array($data)) {
+             $this->import($data);
         }
-
-        return ;
     }
 
 
