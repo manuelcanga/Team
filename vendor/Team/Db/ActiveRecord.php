@@ -253,6 +253,7 @@ abstract class ActiveRecord extends \Team\Db\Model{
 
     /* ----------------- EVENTS ----------------- */
 
+
     //Before updating, creating register
     protected function commons($operation) {
         $this->onSerialize($operation);
@@ -269,12 +270,13 @@ abstract class ActiveRecord extends \Team\Db\Model{
     Initialize by default
      */
     protected function onInitialize($id, & $data){
+        $this->onUnserialize($id, $data);
+
         if(isset($data)) {
-            return $this->import($data);
+             return $this->import($data);
         }
 
-
-        $this->onUnserialize($id, $data);
+        return ;
     }
 
 
