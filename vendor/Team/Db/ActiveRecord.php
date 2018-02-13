@@ -32,9 +32,12 @@ namespace Team\Db;
 /**
 Simple ActiveRecord class for Team Framework
  */
-abstract class ActiveRecord extends \Team\Db\Model{
+abstract class ActiveRecord  implements \ArrayAccess{
+    use \Team\Data\Storage, \Team\Db\Database;
 
     const DETAILS_URL = '';
+    const ID = '';
+    const TABLE = '';
 
     protected $safeId = 0;
 
@@ -104,6 +107,28 @@ abstract class ActiveRecord extends \Team\Db\Model{
         }
     }
 
+    /* ----------------- Results----------------- */
+    public function pagination(int $elements_for_page = 10, $current_page = 1 ,string $base_url = null) {
+        $pagination = new \Team\Gui\Pagination($elements_for_page, $current_page,  $this->data);
+
+        $pagination->setModel($this);
+
+        if(isset($base_url) ) {
+            $pagination->setBaseUrl($base_url);
+        }
+
+        $pagination->setFrom(static::TABLE)
+            ->setOrderBy(static::ID);
+
+        return $pagination;
+    }
+
+    /**
+    Create a iterator for registers
+     */
+    public function newCollection(array $registers,  array $defaults = []) {
+        return new \Team\Db\Collection($registers , get_class($this), $defaults );
+    }
 
 
     /* ----------------- QUERIES ----------------- */
@@ -248,6 +273,51 @@ abstract class ActiveRecord extends \Team\Db\Model{
         return $query_result;
     }
 
+
+
+    /**
+    Count all rows in table
+     */
+    public function countAll(array $sentences = [], array $data = []) {
+        $query =  $this->newQuery($data, $sentences );
+        return $query->getVar('total', static::TABLE, 'count('.static::ID.') as total');
+    }
+
+
+    /**
+    Retrieve all rows from table TABLE
+    @param array $sentences list of params to query. Excepcionally, you can pass a 'order' params(ASC or DESC)
+    @param array $data   list of data to query
+     */
+    public static function findAll( array $sentences = [], array $data = [], $result_type = null) {
+        $sentences = $sentences?? [];
+
+        $order = 'DESC';
+        if(isset($sentences['order']) ) {
+            $order = $sentences['order'];
+            unset($sentences['order']);
+        }
+
+        $default = ['select'=> '*', 'limit' => -1, 'order_by' =>  [static::ID  =>  $order] ];
+
+        $sentences = $sentences + $default;
+
+        $query =  self::getNewQuery($data, $sentences );
+
+        $records = $query->getAll(static::TABLE);
+
+        if(is_string($result_type) && "array" == $result_type) {
+            return $records;
+        }
+
+        if(!isset($result_type)) {
+            $result_type = static::CLASS;
+        }
+
+        return new \Team\Db\Collection($records , $result_type);
+    }
+
+
     /* ----------------- EVENTS ----------------- */
     protected function onInitialize($id, $data = []){
         $this->loadData($data);
@@ -273,5 +343,9 @@ abstract class ActiveRecord extends \Team\Db\Model{
         }
     }
 
+    //This function from Collection for everytime a newRecord is created
+    function onNewRecord(array $data = []){
+        $this->loadData($data);
+    }
 
 } 
