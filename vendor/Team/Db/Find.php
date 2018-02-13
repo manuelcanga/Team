@@ -62,17 +62,22 @@ class Find implements \ArrayAccess{
     public function setModel( $model = null) {
         $this->model = is_object($model)? get_class($model) : $model;
 
-        $this->setTableFromModel();
-        $this->setOrderByFromModel();
+        if(!$this->from) {
+             $this->setTableFromModel();
+        }
 
+        if(!$this->orderBy) {
+             $this->setOrderByFromModel();
+        }
 
         return $this;
     }
 
     public function setTableFromModel($alias = '') {
-        if(!$this->from && ($this->model)::TABLE) {
-            $this->from = ($this->model)::TABLE.' '.$alias;
+        if(($this->model)::TABLE) {
+            $this->from = (($this->model)::TABLE.' '.$alias);
         }
+
     }
 
     public function setOrderByFromModel() {
@@ -81,7 +86,7 @@ class Find implements \ArrayAccess{
             $table = ($this->model)::TABLE;
         }
 
-        if(!$this->orderBy && ($this->model)::ID) {
+        if(($this->model)::ID) {
             $this->orderBy = $table.' '.($this->model)::ID;
         }
     }
