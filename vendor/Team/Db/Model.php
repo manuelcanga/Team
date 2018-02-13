@@ -44,18 +44,17 @@ abstract class Model implements \ArrayAccess{
 
     const ID = '';
     const TABLE = '';
-	protected  $listUrl = null;
-
 
 
 	/* ----------------- Results----------------- */
-	public function pagination(int $_elements_for_page = 10, $current_page = 1 ,string $pagination='\Team\Gui\Pagination') {
-        $pagination = new $pagination($_elements_for_page, $current_page,  $this->data);
+	public function pagination(int $elements_for_page = 10, $current_page = 1 ,string $base_url = null) {
+        $pagination = new \Team\Gui\Pagination($elements_for_page, $current_page,  $this->data);
 
         $pagination->setModel($this);
 
-		if(isset($this->listUrl) )
-			$pagination->setBaseUrl($this->getListUrl());
+		if(isset($base_url) ) {
+			$pagination->setBaseUrl($base_url);
+        }
 
 		$pagination->setFrom(static::TABLE)
   		    	   ->setOrderBy(static::ID);
@@ -80,9 +79,7 @@ abstract class Model implements \ArrayAccess{
 		}
 	}
 
-	public function getListUrl() {
-		return $this->listUrl;
-	}
+
 
 
 	/* ------------------ QUERIES ___________________ */

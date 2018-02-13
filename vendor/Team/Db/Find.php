@@ -43,7 +43,7 @@ class Find implements \ArrayAccess{
 
 
     /** 					*/
-    public function onInitialize($data) {
+    public function onImport($data) {
         $this->import($data);
     }
 

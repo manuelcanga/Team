@@ -61,12 +61,14 @@ class Pagination extends \Team\Db\Find{
 	public $urlToCheck = null;
 
 	 function __construct( $_elements_for_page = 10,  $current_page = 1, $data = [] ) {
+         $this->data = [];
+
+         $this->onImport($data);
 
         if(\team\client\Http::checkUserAgent('mobile')) {
             $this->range = 2;
         }
 
-		 $this->data = [];
          $this->url = new \Team\Data\Data($data);
 		 $this->GUI = \Team\System\Context::get('CONTROLLER');
 
@@ -82,16 +84,10 @@ class Pagination extends \Team\Db\Find{
 		$current_url = \Team\System\Context::get('URL');
         $this->setUrlToCheck($current_url['location']);
 
-		$this->onInitialize($data);
+        $this->onInitialize($data);
 	}
 
 
-
-	/** After build and when create pagination */
-	public function onBuild($data, $collection) { 
-			$this->collection=$collection;
-			return new \Team\Gui\PageIterator($data);
-	}
 
 
 
@@ -236,15 +232,6 @@ class Pagination extends \Team\Db\Find{
 
 
 	/** -------------------- SETTERS / GETTERS PAGES ------------------ */
-
-	public function setModel($model = null) {
-        parent::setModel($model);
-
-        if($model && is_object($model) )  {
-            $this->baseUrl = $model->getListUrl();
-        }
-
-    }
 
 	public function putPage($_currentPage) {
 		$this->setCurrentPage($_currentPage);
@@ -419,12 +406,19 @@ class Pagination extends \Team\Db\Find{
 	}
 
 
-
-
-
-
 	public function getPagedUrl($vars = []) {
 		return \Team\Client\Url::to($this->baseUrl, $vars + $this->url->get() );
 	}
+
+    /* ------------------ Events ___________________ */
+
+    //After __construct
+    public function onInitialize() {}
+
+    /** After build and when create pagination */
+    public function onBuild($data, $collection) {
+        $this->collection=$collection;
+        return new \Team\Gui\PageIterator($data);
+    }
 
 }
