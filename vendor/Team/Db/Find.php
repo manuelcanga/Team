@@ -139,6 +139,14 @@ class Find implements \ArrayAccess{
         return $this;
     }
 
+    public function setNumElements($num_elements) {
+        $this->setLimit($num_elements);
+    }
+
+    public function setLimit($limit) {
+        $this->limit = $limit;
+    }
+
     public function getLimit() { return $this->limit; }
     public function getOffset() { return $this->offset; }
 
