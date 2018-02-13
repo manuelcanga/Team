@@ -187,16 +187,8 @@ class Pagination extends \Team\Db\Find{
 		return $this;
 
 	}
-	public function search($customizer = null,  ...$args)  {
+	public function search()  {
 		if(!$this->pagination) {
-            $this->commons($customizer, $args);
-
-            if($customizer && method_exists($this,  $customizer) ) {
-                $this->$customizer(...$args);
-            }
-
-            $this->custom($customizer, $args);
-
             $this->elements = $this->buildElements();
 
             $this->createPagination();
@@ -311,7 +303,9 @@ class Pagination extends \Team\Db\Find{
 
 	/** -------------------- BUILDING Elements ------------------ */
 	protected function buildElements() {
-		/** Obtenemos el número de elementos que queremos paginar */
+        $this->commons();
+
+        /** Obtenemos el número de elementos que queremos paginar */
 
    		 $this->count = $this->buildCount();
 
@@ -357,9 +351,14 @@ class Pagination extends \Team\Db\Find{
 			}
 
 		}
-        return $this->elements = $this->findElements();
 
-	}
+
+        $this->elements = $this->findElements();
+
+        $this->custom();
+
+        return $this->elements;
+    }
 
 
 	/** Obtenemos el número de elementos */
@@ -415,7 +414,15 @@ class Pagination extends \Team\Db\Find{
     //After __construct
     public function onInitialize() {}
 
-    /** After build and when create pagination */
+    /** Before build query elements of pagination */
+    public function commons() {
+
+    }
+
+    /** After query elements but before getElements */
+    public function custom() { }
+
+    /** when pagination is been created*/
     public function onBuild($data, $collection) {
         $this->collection=$collection;
         return new \Team\Gui\PageIterator($data);

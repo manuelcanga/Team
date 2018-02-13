@@ -27,15 +27,7 @@ class Find implements \ArrayAccess{
 
 
 
-    public function search($customizer = null, ...$args) {
-        $this->commons($customizer, $args);
-
-        if($customizer && method_exists($this,  $customizer) ) {
-            $this->$customizer(...$args);
-        }
-
-        $this->custom($customizer, $args);
-
+    public function search() {
         return $this->elements = $this->findElements();
     }
 
@@ -47,13 +39,6 @@ class Find implements \ArrayAccess{
         $this->import($data);
     }
 
-    /** Before Customizer */
-    public function commons() {
-
-    }
-
-    /** After customizer but before build */
-    public function custom() { }
 
     /** When elements are found */
     protected function onFound($elements){
