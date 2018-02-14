@@ -222,6 +222,11 @@ class Collection implements \Iterator, \Countable{
 
 	/***** Iterator implements ******/
 	function toModel($data) {
+	    //data is an activerecord?
+	    if(!is_array($data)) {
+	         return $data;
+        }
+
 		$class = $this->model;
 
         $model =  new $class();
