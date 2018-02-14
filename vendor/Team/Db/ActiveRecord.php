@@ -105,6 +105,8 @@ abstract class ActiveRecord  implements \ArrayAccess{
             $this->set($data);
             $this->safeId = $this[static::ID];
         }
+
+        $this->onUnserialize();
     }
 
     /* ----------------- Results----------------- */
@@ -321,7 +323,6 @@ abstract class ActiveRecord  implements \ArrayAccess{
     /* ----------------- EVENTS ----------------- */
     protected function onInitialize($id, $data = []){
         $this->loadData($data);
-        $this->onUnserialize();
     }
 
 
