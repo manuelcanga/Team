@@ -46,7 +46,7 @@ abstract class ActiveRecord  implements \ArrayAccess{
     @param mixed $id :  primary key or key used in order to initialize
     @param array $data : data for initializing
      */
-    function __construct($id = 0,  array $data = null) {
+    function __construct($id = 0,  array $data = []) {
         $this->setSafeId($id);
 
         if( $this->safeId) {
@@ -143,7 +143,7 @@ abstract class ActiveRecord  implements \ArrayAccess{
         $query->where[] = [ static::ID  =>  ':'.static::ID  ];
         $record = $query->getRow(static::TABLE);
 
-        $this->onInitialize($id, $record);
+        $this->onInitialize($id, (array) $record);
     }
 
 
