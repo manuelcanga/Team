@@ -132,7 +132,7 @@ Config::set('DOMAIN',  trim($_SERVER["SERVER_NAME"], '/') );
 Config::set('PORT', $port);
 
 Config::addModifier('WEB', function($url){
-    if(isset($url)) return $url;
+    if(!empty($url)) return $url;
 
     $domain = \Team\System\Context::get('DOMAIN');
 
