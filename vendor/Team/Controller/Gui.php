@@ -57,7 +57,7 @@ class Gui extends Controller {
             $this->noLayout();
 
             if($this->isMain() ) {
-                \Team\System\Filesystem::ping('/commons.php', \Team\Config::set('_THEME_'));
+                $this->includeFile(\Team\Config::set('_THEME_').'/commons.php');
             }
         }
 
@@ -65,7 +65,7 @@ class Gui extends Controller {
         parent::___load($response);
 
         if($this->isMain() && $this->parent() === null) {
-            \Team\System\Filesystem::ping( '/' . $this->getPackage() . '/commons.php', \Team\Config::set('_THEME_'));
+            $this->includeFile(\Team\Config::set('_THEME_').'/' . $this->getPackage() . '/commons.php');
         }
 
     }

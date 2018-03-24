@@ -219,6 +219,14 @@ abstract class Controller  implements \ArrayAccess{
 
 
 
+   protected function includeFile($file) {
+        $file_exists = file_exists($file);
+
+        if($file_exists){
+            include_once($file);
+        }
+    }
+
 
     /**
      * Delegamos el tratamiento del response actual
@@ -227,7 +235,7 @@ abstract class Controller  implements \ArrayAccess{
      * @param string nombre del nuevo response a lanzar en el nuevo controlador
      * @return mixed devuelve la respuesta del response
      */
-    function delegate(array $params = []) {
+    protected function delegate(array $params = []) {
 
         $params['ref'] = $this->params->id;
         $params['ref_item'] = $this->params->item_id;
@@ -260,7 +268,7 @@ abstract class Controller  implements \ArrayAccess{
      * @param array $data datos a pasar al nuevo response si se lanza
      * @return mixed devuelve la respuesta del response
      */
-    function newController( $new_response = null, $data = [],&$new_controller = null) {
+     protected function newController( $new_response = null, $data = [],&$new_controller = null) {
         $old_response = \Team\System\Context::get('RESPONSE');
 
 
@@ -300,7 +308,7 @@ abstract class Controller  implements \ArrayAccess{
      * @param array $data datos a pasar al nuevo response si se lanza
      * @return mixed devuelve el objeto del controlador
      */
-    function getNewController($class, $response,  $data = []) {
+      protected function getNewController($class, $response,  $data = []) {
 
         $data += $this->params->get();
 
