@@ -23,7 +23,7 @@
 
 
 	{wrapper class='content' wrapper='template_content'}
-		{place name='template_top_content'}
+		{place name='template_top_page'}
 
 
 		{if ( $without_content)}

@@ -76,8 +76,7 @@ final  class Filesystem
     public static function ping($file, $base = _SCRIPT_) {
         //\team\Debug::out("LOADING...".$file);
         if(self::exists($file, $base) ) {
-             include_once($base.$file);
-            return true;
+            return include_once($base.$file);
         }
         return false;
     }

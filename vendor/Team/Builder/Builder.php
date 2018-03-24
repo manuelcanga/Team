@@ -55,17 +55,11 @@ abstract class Builder implements \ArrayAccess {
         \Team\System\Context::set('CONTROLLER_BUILDER', $this);
         \Team\System\Context::set('CONTROLLER_TYPE', $this->getTypeController() );
 
-        if(\Team\System\Context::isMain() && "Gui" == $this->getTypeController() ){
+        if(\Team\System\Context::isMain()  ){
             $PACKAGE = \Team\System\Context::get('PACKAGE');
 
             if($PACKAGE ) {
-                \Team\System\FileSystem::load("/{$PACKAGE}/commons.php",  \Team\System\Context::get('_THEME_') );
-            }
-
-            $COMPONENT = \Team\System\Context::get('COMPONENT');
-
-            if($COMPONENT ) {
-                \Team\System\FileSystem::load("/{$PACKAGE}/{$COMPONENT}.php", \Team\System\Context::get('_THEME_'));
+                \Team\System\FileSystem::ping('/'. \Team\Config::get('TRASWEB').'/setup-'.$PACKAGE.'.php', \Team\_CONFIG_);
             }
         }
     }

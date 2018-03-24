@@ -128,7 +128,6 @@ abstract class Controller  implements \ArrayAccess{
     Evento de configuración del Controller
      */
     function ___load($response) {
-
         //El "evento" initialize se lanza sólo cuando un controlador se instancia por primera vez
         if($this->isFirstTime() ) {
             $this->onInitialize($response);

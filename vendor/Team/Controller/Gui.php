@@ -55,10 +55,19 @@ class Gui extends Controller {
 
             //Por defecto, no habrá layout
             $this->noLayout();
+
+            if($this->isMain() ) {
+                \Team\System\Filesystem::ping('/commons.php', \Team\Config::set('_THEME_'));
+            }
         }
 
 
-        return parent::___load($response);
+        parent::___load($response);
+
+        if($this->isMain() && $this->parent() === null) {
+            \Team\System\Filesystem::ping( '/' . $this->getPackage() . '/commons.php', \Team\Config::set('_THEME_'));
+        }
+
     }
 
 
