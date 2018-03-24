@@ -60,16 +60,21 @@ class Cache {
     public  static function checkIds(...$ids) {
       if(empty($ids)) return null;
 
-      foreach($ids as $cacheid) {
-          if(!is_string($cacheid)) continue;
+      foreach($ids as $cache_id) {
+          if(!is_string($cache_id)) continue;
 
-          $new_id = \Team\Data\Sanitize::identifier($cacheid);
+          $new_id = \Team\Data\Sanitize::identifier($cache_id);
           $new_id = trim(trim($new_id,'_'));
 
           if(!empty($new_id)) return $new_id;
       }
 
         return null;
+    }
+
+    public static function wrapperId($cache_id){
+       $script_id = \Team\System\Context::get('SCRIPT_ID');
+       return $script_id.'_'.$cache_id;
     }
 
     /**
@@ -79,14 +84,16 @@ class Cache {
      * - [int]: número de segundos que durará.
      * - [string]: cadena con tiempo en forma humana: 3 hours, 1 week, 10 minutes, ...
      * - null: se toma por filtro el valor por defecto de tiempo
-     * @param $cacheid: Es el identificador de caché sobre el que se aplicará la duración de tiempo( $time )
+     * @param $cache_id: Es el identificador de caché sobre el que se aplicará la duración de tiempo( $time )
      * @return array|int|string
      */
-    public  static function checkTime($time, $cacheid) {
+    public  static function checkTime($time, $cache_id) {
+        $cache_id = self::wrapperId($cache_id);
+
 		$time = \Team\System\Date::strToTime($time);
 
         if(is_null($time)){
-            return \Team\Data\Filter::apply('\team\cache\default_time', \Team\System\Date::AN_HOUR, $cacheid);
+            return \Team\Data\Filter::apply('\team\cache\default_time', \Team\System\Date::AN_HOUR, $cache_id);
         }
 
         return $time;
@@ -94,29 +101,39 @@ class Cache {
 
 
 	//Borramos un elemento de la caché
-	public static function delete($cacheid) {
-		return self::$current->delete($cacheid);
+	public static function delete($cache_id) {
+        $cache_id = self::wrapperId($cache_id);
+
+        return self::$current->delete($cache_id);
 	}
 
     public  static function clear() {
 		return self::$current->clear();
 	}
 
-    public  static  function save($cacheid, $value, $time = 0) {
-		return self::$current->save($cacheid, $value, self::checkTime($time, $cacheid));
+    public  static  function save($cache_id, $value, $time = 0) {
+        $cache_id = self::wrapperId($cache_id);
+
+        return self::$current->save($cache_id, $value, self::checkTime($time, $cache_id));
 	}
 
-    public  static  function overwrite($cacheid, $value, $time = 0) {
-		return self::$current->overwrite($cacheid, $value, self::checkTime($time, $cacheid));
+    public  static  function overwrite($cache_id, $value, $time = 0) {
+        $cache_id = self::wrapperId($cache_id);
+
+        return self::$current->overwrite($cache_id, $value, self::checkTime($time, $cache_id));
 	}
 
 
-    public  static function exists($cacheid) {
-		return self::$current->exists($cacheid);
+    public  static function exists($cache_id) {
+        $cache_id = self::wrapperId($cache_id);
+
+        return self::$current->exists($cache_id);
 	}
 
-    public  static  function get($cacheid, $default = null) {
-        return \Team\Data\Filter::apply('\team\cache\\'.$cacheid, self::$current->get($cacheid, $default) );
+    public  static  function get($cache_id, $default = null) {
+        $cache_id = self::wrapperId($cache_id);
+
+        return \Team\Data\Filter::apply('\team\cache\\'.$cache_id, self::$current->get($cache_id, $default) );
     }
 
     public  static function debug($msg = null) {
