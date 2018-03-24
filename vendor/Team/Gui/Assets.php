@@ -34,66 +34,54 @@ trait Assets {
 
 
     /**
-    Guardamos el path de Css para su posterior uso en una vista
-    @param String $_file Fichero Css a añadir
-    @param String $component especifica el componente donde se encuentra el recurso( usa "internet", si no es parte del proyecto )
-    @param String position lugar del html en que se incrustara la carga del CSS: top( para el head) o bottom( para el pie )
+     * Enqueue a css file in order to include it in views
+     * @param string $file it is a file css or url to file css
+     * @param string $position place where css file will be included
+     * @param string $idfile indentifier for css file
+     *
      */
-    public function addCss($_file, $component = null, $position = 'top', $package = null) {
-        if(empty($_file) )return false;
+    public function addCss(string $file,  string $position = 'top', string $idfile = null) {
+        $file = str_replace('.css','',$file);
 
-        $_file = str_replace('.css','',$_file);
+        // maybe double slash(//) is used  => '//file.css'
+        $is_external_css = strpos(':/', $file) !== null || '/' == $file[1];
 
-        $component = $component?? \Team\System\Context::get('COMPONENT');
+        $idfile = $idfile??  \Team\Data\Sanitize::identifier($file);
 
-        if("internet" === $component)
-            $file = $_file;
-        else {
-            $file = "/".\Team\System\FileSystem::getPath("css", $component, $package )."{$_file}";
+        //normalize
+        $file = $file.'.css';
 
-        }
-
-        $idfile =    \Team\Data\Sanitize::identifier($file);
-        $file .= '.css';
-
-
-        if( "internet" == $component || \Team\System\FileSystem::exists($file) ) {
+        if($is_external_css || \Team\System\FileSystem::exists($file) ) {
             \Team\Config::add("\\team\\css\\{$position}", $idfile, $file);
 
         }else if(\team\Config::get('SHOW_RESOURCES_WARNINGS', false) ) {
-            \Team\Debug::me("Css file[$position] $file not found in {$package}/{$component}", 3);
+            \Team\Debug::me("Css file[$position] $file not found", 3);
         }
     }
 
 
-
-
     /**
-    Guardamos el path de js para su posterior uso en una vista
-    @param String $_file Fichero js a añadir
-    @param String $component especifica el componente donde se encuentra el recurso( usa "internet", si no es parte del proyecto )
-    @param String position lugar del html en que se incrustara la carga del JS: top( para el head) o bottom( para el pie )
+     * Enqueue a js file in order to include it in views
+     * @param string $file it is a file js or url to file js
+     * @param string $position place where js file will be included
+     * @param string $idfile indentifier for js file
+     *
      */
-    public function addJs($_file, $component = null, $position = 'bottom', $package = null)  {
-        if(empty($_file) )return false;
+    public function addJs($file,  $position = 'bottom', $idfile = null)  {
+        $file = str_replace('.js','',$file);
 
-        $_file = str_replace('.js','',$_file);
+        // maybe double slash(//) is used  => '//file.js'
+        $is_external_js = strpos(':/', $file) !== null || '/' == $file[1];
 
-        $component = $component?? \Team\System\Context::get('COMPONENT');
+        $idfile = $idfile??  \Team\Data\Sanitize::identifier($file);
 
-        if("internet" === $component)
-            $file = $_file;
-        else
-            $file = "/".\Team\System\FileSystem::getPath("js", $component, $package)."{$_file}";
+        //normalize
+        $file = $file.'.js';
 
-        $idfile =    \Team\Data\Sanitize::identifier($file);
-        $file .= '.js';
-
-
-        if('internet' == $component || \Team\System\FileSystem::exists($file) ) {
+        if($is_external_js || \Team\System\FileSystem::exists($file) ) {
             \Team\Config::add("\\team\\js\\{$position}", $idfile, $file);
         }else if(\team\Config::get('SHOW_RESOURCES_WARNINGS', false) ) {
-            \Team\Debug::me("Javascript file[$position] $file not found in {$package}/$component", 3);
+            \Team\Debug::me("Javascript file[$position] $file not found", 3);
         }
 
     }
