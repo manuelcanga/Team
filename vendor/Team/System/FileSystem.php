@@ -155,12 +155,12 @@ final  class Filesystem
 	public static function getDirs($_dir = '/', $cache=true, $path = _SCRIPT_)
 	{
 		$dir = rtrim($_dir, '//');
-		static $cache = [];
+		static $dirs_cache = [];
 		$location = $path.$dir;
 
 		//Si tenemos los directorios en "caché", devolvemos estos
-		if(isset($cache[$location]) && $cache) {
-			return $cache[$location];
+		if(isset($dirs_cache[$location]) && $cache) {
+			return $dirs_cache[$location];
 		}
 
 		//No los teniamos en cache, hemos de ir reiterando para comprobar cuales de los archivos bajo la ubicación pedida
@@ -186,7 +186,7 @@ final  class Filesystem
 				closedir($dhandle);
 			}
 			asort($dirs);
-			$cache[$location] = $dirs;
+            $dirs_cache[$location] = $dirs;
 		}
 		return $dirs;
 	}
@@ -242,7 +242,7 @@ final  class Filesystem
      * @return array|bool
      */
 	public static function upload($identifier, $options = null) {
-        if(!isset($_FILES[$identifier]) || empty($_FILES[$identifier]['name'])) {
+        if(empty($_FILES[$identifier]['name'])) {
             return false;
         }
 
@@ -284,7 +284,7 @@ final  class Filesystem
 
         self::mkdirRecursive($uploads_path.$base_upload);
 
-        if( isset($options['keep_name']) && $options['keep_name']) {
+        if( !empty($options['keep_name'])) {
             $new_name = \Team\Data\Sanitize::identifier(\team\data\Sanitize::chars($name) );
         }else {
             $new_name = md5(\Team\System\Date::current('timestamp').'_'.$tmp_name);
