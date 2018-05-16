@@ -70,13 +70,14 @@ abstract class Builder implements \ArrayAccess {
      */
     protected function setPackage($package) {
 
+        $this->base = \Team\Config::get(strtoupper($package).'_APP_PATH', _APPS_.'/'.$package);
+
         if('theme' == $package){
             $this->base = _SCRIPTS_.\Team\Config::get('_THEME_');
-        }else  if('tests' == $package){
-            $this->base = \Team\Config::get('_TESTS_');
-        }else if(\Team\System\FileSystem::exists('/'.$package) ) {
-            $this->base = _APPS_.'/'.$package;
-        }else {
+        }
+
+
+        if(!file_exists($this->base) ) {
             \Team::system("Package '{$package}' not found", '\team\responses\Response_Not_Found');
         }
 
@@ -196,17 +197,8 @@ abstract class Builder implements \ArrayAccess {
         if(!$class_exists) {
 
             $class_file = '/'.$this->component.'/'.$this->getTypeController().'.php';
-            if('theme' == $this->package) {
-                $base = _SCRIPTS_.\Team\Config::get('_THEME_');
-            }else  if('tests' == $this->package) {
-                $base = \Team\Config::get('_TESTS_');
-            }else {
-                $base = _APPS_;
-                $class_file = str_replace('\\', '/', $this->controller).'.php';
-            }
 
-
-            if( ! \Team\Loader\Classes::load($this->controller, $class_file, $base)  )  {
+            if( ! \Team\Loader\Classes::load($this->controller, $class_file, $this->base)  )  {
                 return \Team::system("Controller class file {$class_file} not found", '\team\responses\Response_Not_Found');
             }
         }

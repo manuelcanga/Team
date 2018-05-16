@@ -16,3 +16,4 @@ if(!defined('_TEAM_')) die("Hello, World!");
     ]
 );
 
+\team\Config::set('TESTS_APP_PATH', _SERVER_.'/tests');

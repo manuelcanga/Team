@@ -181,11 +181,8 @@ class  Classes{
 
         $filename = implode("/",  $namespace) ."/{$name}.php";
 
-
         if('theme' == $package) {
             $direct_mode = self::load($class_name_full, $filename, _SCRIPTS_.\Team\Config::get('_THEME_'));
-        }else if('tests' == $package) {
-            $direct_mode = self::load($class_name_full, $filename, \Team\Config::get('_TESTS_'));
         }
 
         $filename = "/".str_replace('\\', '/', $class_name_full).".php";
@@ -195,7 +192,7 @@ class  Classes{
             $direct_mode  = true;
         }
 
-        if(  $direct_mode ){
+        if( $direct_mode ){
             return self::newClass($class_name_full, $instance);
         }
 
@@ -349,13 +346,13 @@ class  Classes{
 	*/
 	public static  function isPseudoClass($package, $component) {
 
-        if('theme' === $package ){
-            $is_pseudo_class =  \Team\System\FileSystem::exists("/{$component}", _SCRIPTS_.\Team\Config::get('_THEME_') );
-        }else if('tests' === $package ){
-            $is_pseudo_class = \Team\System\FileSystem::exists("/{$component}", \Team\Config::get('_TESTS_') );
-        }else {
-            $is_pseudo_class = \Team\System\FileSystem::exists("/{$package}/{$component}");
+        $base = \Team\Config::get(strtoupper($package).'_APP_PATH', _APPS_.'/'.$package);
+
+        if('theme' == $package){
+            $base = _SCRIPTS_.\Team\Config::get('_THEME_');
         }
+
+        $is_pseudo_class = \Team\System\FileSystem::exists("/{$component}", $base);
 
 
 		if($is_pseudo_class ) {
