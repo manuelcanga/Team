@@ -81,7 +81,7 @@ class Component   implements \ArrayAccess{
             $params['out'] = 'html';
         }
 
-        $class_name = '\\'.$params['package'].'\\'.$params['component'];
+        $class_name = '\\'.$params['app'].'\\'.$params['component'];
 
 
         if(!class_exists($class_name) ) {
@@ -129,9 +129,9 @@ class Component   implements \ArrayAccess{
         if(!$is_component) { 
             //Queremos la clase ( si \Team\users -> Team\users, si \Component -> component )
             $this->namespace = trim(strtolower(get_class($this)), '/' );
-            list($this->package, $this->component) = explode('\\', trim($this->namespace, '\\'));
+            list($this->app, $this->component) = explode('\\', trim($this->namespace, '\\'));
         }else {
-            $this->namespace = "\\{$this->package}\\{$this->component}";
+            $this->namespace = "\\{$this->app}\\{$this->component}";
         }
 
         $this->path = str_replace("\\", "/", $this->namespace);

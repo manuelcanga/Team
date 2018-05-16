@@ -71,7 +71,7 @@ class TemplateEngine {
         //Resources propioos
         class_alias('Smarty_Internal_Resource_File', 'Smarty_Resource_Component', true);
         class_alias('Smarty_Internal_Resource_File', 'Smarty_Resource_Commons', true);
-        class_alias('Smarty_Internal_Resource_File', 'Smarty_Resource_Package', true);
+        class_alias('Smarty_Internal_Resource_File', 'Smarty_Resource_App', true);
         class_alias('Smarty_Internal_Resource_File', 'Smarty_Resource_Root', true);
         class_alias('Smarty_Internal_Resource_File', 'Smarty_Resource_Theme', true);
         class_alias('Smarty_Internal_Resource_File', 'Smarty_Resource_Custom', true);
@@ -203,9 +203,9 @@ class TemplateEngine {
                 $found_type =  true;
                 break;
             case 'commons':
-            case 'package':
+            case 'app':
  				 $found_type =  true;
-              	  $template =  \Team\System\Context::get('_PACKAGE_')."/commons/views/{$name}";
+              	  $template =  \Team\System\Context::get('_APP_')."/commons/views/{$name}";
 				break;
             case 'root':
   				 $found_type =  true;
@@ -237,13 +237,13 @@ class TemplateEngine {
 	*/
 	function initializeEngine(\Smarty  $_engine, $_data, $_template) {
 
-		$package = \Team\System\Context::get('PACKAGE');
+		$app = \Team\System\Context::get('APP');
 		$component =  \Team\System\Context::get('COMPONENT');
 		$response = \Team\System\Context::get('RESPONSE');
 		$theme = _SCRIPTS_.\Team\System\Context::get('_THEME_');
 
         $_engine->addPluginsDir($theme.'/commons/views/plugins');
-		$_engine->addPluginsDir(_APPS_.'/'.$package.'/commons/views/plugins');
+		$_engine->addPluginsDir(_APPS_.'/'.$app.'/commons/views/plugins');
 		$_engine->addPluginsDir(_SCRIPTS_.'/commons/views/plugins');
 		$_engine->addPluginsDir(_TEAM_.'/Data/Htmlengine/plugins');
         $_engine->addPluginsDir(_TEAM_.'/Data/Htmlengine/form');
@@ -265,7 +265,7 @@ class TemplateEngine {
 
 		 $_engine->compile_check = !$view_cache;
 		 $_engine->caching = $view_cache;
-		 $compile_id = $package.\Team\System\Context::get('AREA').\Team\System\Context::get('LAYOUT');
+		 $compile_id = $app.\Team\System\Context::get('AREA').\Team\System\Context::get('LAYOUT');
 		 $_engine->compile_id =  \Team\Data\Filter::apply('\team\smarty\compile_id',$compile_id );
 
 		

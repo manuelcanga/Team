@@ -138,7 +138,7 @@ class NS {
 	   $namespace = array_filter($namespace, function($value) { return \Team\Data\Check::key($value, false); });
 
 		//Obtenemos el paquete, componente y acción del namespace
-		list($package, $component) = array_pad($namespace, 3, null);
+		list($app, $component) = array_pad($namespace, 3, null);
 
 		$others = array_slice($namespace, 2);
 
@@ -149,6 +149,6 @@ class NS {
 		$path = '/'.implode('/', $namespace);
 		
 
-		return array('namespace'=> $namespace, 'package' => $package, 'component' => $component,   'name' =>$name , 'others' => $others, 'path' => $path);
+		return array('namespace'=> $namespace, 'app' => $app, 'component' => $component,   'name' =>$name , 'others' => $others, 'path' => $path);
 	}
 }

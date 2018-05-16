@@ -20,9 +20,9 @@ if(!defined('_TEAM_') ) die("Hello,  World");
 
         $defaults = [];
 
-        list($package, $defaults['component'], $defaults['response'], $defaults['out']) = array_pad(explode('/',trim($this->main,'/') ), 4, null);
+        list($app, $defaults['component'], $defaults['response'], $defaults['out']) = array_pad(explode('/',trim($this->main,'/') ), 4, null);
 
-        $package = setUpPackage($package, $url);
+        $app = setUpApp($app, $url);
 
         $url = \Team\Data\Filter::apply('\team\url', $url);
         $_POST = \Team\Data\Filter::apply('\team\parse_post', $_POST);
@@ -33,7 +33,7 @@ if(!defined('_TEAM_') ) die("Hello,  World");
 
         //*** Evitamos que desde el exterior se creen parámetros propios del framework y que no se deberían de modificar directamente ***
         //El package ya se determinó
-        $args->package = $package;
+        $args->app = $app;
         $args->component = null;
 
 
@@ -60,7 +60,7 @@ if(!defined('_TEAM_') ) die("Hello,  World");
             $args->filters_list = [];
         }else {
             //Le damos la opción al programador de que implemente su propio sistema de parseo de urls
-		  $args = \Team\System\Task('\team\parse_url', $args)->with($args, $url, $package );
+		  $args = \Team\System\Task('\team\parse_url', $args)->with($args, $url, $app );
 		}
 
         //Creamos el path de sólo los filtros
@@ -94,7 +94,7 @@ if(!defined('_TEAM_') ) die("Hello,  World");
 
         \Team\Debug::trace("Acabado el proceso de analisis de url", $args);
 
-        \team::event("\\Team\\conponent", $package, $args->component, $url, $args );
+        \team::event("\\Team\\conponent", $app, $args->component, $url, $args );
 
 
 		return $args;
@@ -103,20 +103,20 @@ if(!defined('_TEAM_') ) die("Hello,  World");
 
 
 
-function setUpPackage($package, $url) {
+function setUpApp($app, $url) {
 
-    $package = \Team\Data\Sanitize::identifier($package);
-    $package =  \Team\Data\Filter::apply('\team\package',  $package, $url );
+    $app = \Team\Data\Sanitize::identifier($app);
+    $app =  \Team\Data\Filter::apply('\team\app',  $app, $url );
 
-    \Team\Config::set('PACKAGE', $package);
-    \Team\Config::set('_PACKAGE_', _APPS_.'/'.$package);
-    \Team\Config::set('BASE', '/'.$package);
+    \Team\Config::set('APP', $app);
+    \Team\Config::set('_APP_', _APPS_.'/'.$app);
+    \Team\Config::set('BASE', '/'.$app);
 
     //Aquí ya sabemos el package del main, así que le mandamos un Start
     //Así pueden añadir filtros o tasks dependientes del package( por ejemplo, para parseos de urls dependiendo del paquete )
-    \Team\System\FileSystem::load("/{$package}/commons/config/Start.php");
+    \Team\System\FileSystem::load("/{$app}/commons/config/Start.php");
 
-    return $package;
+    return $app;
 }
 
 

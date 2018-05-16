@@ -54,13 +54,13 @@ function smarty_block_body($params, $content, Smarty_Internal_Template $template
 
 
 		//Atributos del body
-		$package = \Team\System\Context::get('PACKAGE');
+		$app = \Team\System\Context::get('APP');
 		$component = \Team\System\Context::get('COMPONENT');
 		$response = \Team\System\Context::get('RESPONSE');
 
 		$default = [
-			 'id' =>  $package.'_'.$component,
-			 'data-package' => $package,
+			 'id' =>  $app.'_'.$component,
+			 'data-app' => $app,
 			 'data-response' => $response,
 		];
 

@@ -102,8 +102,8 @@ abstract class Controller  implements \ArrayAccess{
     /*
         Devuelve el nombre del paquete al que pertenece este controlador
     */
-    function getPackage() {
-        return \Team\System\Context::get('PACKAGE');
+    function getApp() {
+        return \Team\System\Context::get('APP');
     }
 
 
@@ -171,7 +171,7 @@ abstract class Controller  implements \ArrayAccess{
     function using($name, $component = null) {
         $trait = '';
 
-        $trait .= $this->getPackage();
+        $trait .= $this->getApp();
         if(isset($component) ) {
             $trait .= '\\'.$component;
         }

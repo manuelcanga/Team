@@ -11,7 +11,7 @@ if(!defined('_TEAM_') ) die("Hello,  World");
  Aquí se encuentra el código de parseo de url de TEAM. 
 
 */
-\Team\System\Task::join('\team\parse_url', function($args, $url, $package) {
+\Team\System\Task::join('\team\parse_url', function($args, $url, $app) {
     $others_characters = \Team\System\Context::get('URL_EXTRA_CHARS', '');
 
 

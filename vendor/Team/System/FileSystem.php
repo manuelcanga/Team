@@ -410,17 +410,17 @@ final  class Filesystem
     @param $component componente en el que se encuentra el recurso ( por defecto el actual )
     @param $package paquete dónde se encuentra el recurso ( por defecto el actual )
      */
-    public static function getPath($subpath, $component = null, $package = null) {
+    public static function getPath($subpath, $component = null, $app = null) {
 
         $subpath = trim($subpath, '/');
         $component = $component?? \Team\System\Context::get('COMPONENT');
-        $package = $package?? \Team\System\Context::get('PACKAGE');
+        $app = $app?? \Team\System\Context::get('APP');
 
-        if ('root' === $package || 'root' === $component) {
+        if ('root' === $app || 'root' === $component) {
             return "commons/{$subpath}/";
         }
 
-        return "{$package}/{$component}/{$subpath}/";
+        return "{$app}/{$component}/{$subpath}/";
     }
 
 

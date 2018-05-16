@@ -170,9 +170,9 @@ class  Classes{
         }
 
 
-        $package = null;
+        $app = null;
         if(!empty($namespace) ) {
-            $package = array_shift($namespace);
+            $app = array_shift($namespace);
         }
 
 
@@ -181,7 +181,7 @@ class  Classes{
 
         $filename = implode("/",  $namespace) ."/{$name}.php";
 
-        if('theme' == $package) {
+        if('theme' == $app) {
             $direct_mode = self::load($class_name_full, $filename, _SCRIPTS_.\Team\Config::get('_THEME_'));
         }
 
@@ -209,7 +209,7 @@ class  Classes{
 
 		if(!isset($component) ) {
 				//Comprobamos si es una pseudo clase
-				if(self::isPseudoClass($package, $name) ) {
+				if(self::isPseudoClass($app, $name) ) {
 				    return self::newClass($class_name_full, $instance);
 				}
 
@@ -217,26 +217,26 @@ class  Classes{
 
 
 		//Comprobamos si es una clase de common pero con un subnamespace a partir de este.
-		 if(isset($package) && !isset($component) && ! \Team\System\FileSystem::exists("/{$package}/{$component}")  )  {
+		 if(isset($app) && !isset($component) && ! \Team\System\FileSystem::exists("/{$app}/{$component}")  )  {
 			$subpath = '/';
 			if(!empty($namespace) ) {
 				$subpath = '/'.implode('/', $namespace).'/';
 			}
 
 
-			if( self::findClass($name,"/{$package}/commons/" , $subpath, $class_name_full, self::$base ) ) {
+			if( self::findClass($name,"/{$app}/commons/" , $subpath, $class_name_full, self::$base ) ) {
 		        return self::newClass($class_name_full, $instance);
 	   	   }
 		}
 
-		if(isset($component) &&  \Team\System\FileSystem::exists("/{$package}/{$component}") ) {
+		if(isset($component) &&  \Team\System\FileSystem::exists("/{$app}/{$component}") ) {
 			$subpath = '/';
 			if(!empty($namespace) ) {
 				$subpath = '/'.implode('/', $namespace).'/';
 			}
 
 
-			if( self::findClass($name, "/{$package}/{$component}/", $subpath, $class_name_full ) ) {
+			if( self::findClass($name, "/{$app}/{$component}/", $subpath, $class_name_full ) ) {
 				    return self::newClass($class_name_full, $instance);
 		   	}
 
@@ -344,11 +344,11 @@ class  Classes{
 		@param $paquete es el nombre del paquete al que pertenece el componente
 		@param $component es el nombre del componente que se cargará virtualmente, este será también el nombre de la nueva clase.
 	*/
-	public static  function isPseudoClass($package, $component) {
+	public static  function isPseudoClass($app, $component) {
 
-        $base = \Team\Config::get(strtoupper($package).'_APP_PATH', _APPS_.'/'.$package);
+        $base = \Team\Config::get(strtoupper($app).'_APP_PATH', _APPS_.'/'.$app);
 
-        if('theme' == $package){
+        if('theme' == $app){
             $base = _SCRIPTS_.\Team\Config::get('_THEME_');
         }
 
@@ -357,7 +357,7 @@ class  Classes{
 
 		if($is_pseudo_class ) {
 			//Creamos una clase de componente
-			$new_class = "Namespace {$package}; class {$component} extends \\team\\Builder\\Component { }";
+			$new_class = "Namespace {$app}; class {$component} extends \\team\\Builder\\Component { }";
 
 			eval($new_class);
 			return true;

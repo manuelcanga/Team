@@ -57,10 +57,10 @@ abstract class Builder implements \ArrayAccess {
 
 
         if(\Team\System\Context::isMain()  ){
-            $PACKAGE = \Team\System\Context::get('PACKAGE');
+            $APP = \Team\System\Context::get('APP');
 
-            if($PACKAGE ) {
-                \Team\System\FileSystem::ping('/'.$PACKAGE.'.php', \Team\_CONFIG_);
+            if($APP ) {
+                \Team\System\FileSystem::ping('/'.$APP.'.php', \Team\_CONFIG_);
             }
         }
     }
@@ -68,27 +68,27 @@ abstract class Builder implements \ArrayAccess {
     /**
     Asignamos el paquete
      */
-    protected function setPackage($package) {
+    protected function setApp($app) {
 
-        $this->base = \Team\Config::get(strtoupper($package).'_APP_PATH', _APPS_.'/'.$package);
+        $this->base = \Team\Config::get(strtoupper($app).'_APP_PATH', _APPS_.'/'.$app);
 
-        if('theme' == $package){
+        if('theme' == $app){
             $this->base = _SCRIPTS_.\Team\Config::get('_THEME_');
         }
 
 
         if(!file_exists($this->base) ) {
-            \Team::system("Package '{$package}' not found", '\team\responses\Response_Not_Found');
+            \Team::system("App '{$app}' not found", '\team\responses\Response_Not_Found');
         }
 
-        \Team\System\Context::set('NAMESPACE', '\\'.$package);
+        \Team\System\Context::set('NAMESPACE', '\\'.$app);
         $this->namespace = '\\';
 
-        $this->setContext('PACKAGE', $package);
-        $this->setContext('_PACKAGE_', $this->base);
-        $this->setContext('BASE','/'.$package);
+        $this->setContext('APP', $app);
+        $this->setContext('_APP_', $this->base);
+        $this->setContext('BASE','/'.$app);
 
-        $this->package = $package;
+        $this->app = $app;
 
 
         //Preparamos los datos para filtrar
@@ -110,12 +110,12 @@ abstract class Builder implements \ArrayAccess {
         $component = \Team\Data\Sanitize::identifier($component);
 
         if(empty($component)) {
-            \Team::system("Component in package '{$this->package}' not specified", '\team\responses\Response_Not_Found', $this->get(), $level = 5);
+            \Team::system("Component in app '{$this->app}' not specified", '\team\responses\Response_Not_Found', $this->get(), $level = 5);
 
         }
 
         //Pasamos al namespace actual
-        $this->namespace = "\\{$this->package}\\{$component}";
+        $this->namespace = "\\{$this->app}\\{$component}";
         //Guardamos el path a la acción tanto absoluta como relativamente
         $this->path = str_replace("\\", "/", $this->namespace);
 
@@ -123,11 +123,11 @@ abstract class Builder implements \ArrayAccess {
         \Team\System\Context::set('NAMESPACE', $this->namespace);
 
         //Guardamos los datos de componente
-        $this->setContext('PACKAGE', $this->package);
-        $this->setContext('_PACKAGE_', $this->base);
+        $this->setContext('APP', $this->app);
+        $this->setContext('_APP_', $this->base);
         $this->setContext('COMPONENT', $component);
         $this->setContext('_COMPONENT_', $this->base.'/'.$component);
-        $this->setContext('BASE', '/'.$this->package.'/'.$component);
+        $this->setContext('BASE', '/'.$this->app.'/'.$component);
         $this->setContext('BASE_URL',  \Team\System\Context::get('_AREA_').'/'.$component.'/');
 
         $this->component = $component;
@@ -184,7 +184,7 @@ abstract class Builder implements \ArrayAccess {
     protected function checkController() {
 
         //Añadimos y filtramos los datos de la acción
-        $this->setPackage($this->package );
+        $this->setApp($this->app );
         $this->setComponent($this->component);
         $this->setResponse($this->response);
 
@@ -252,7 +252,7 @@ abstract class Builder implements \ArrayAccess {
             //Protected methods of Controllers only can be acccesible for same package
             if($response_exists)
 
-                if( $this->package == \Team\System\Context::before('PACKAGE') && $method->isProtected() ) {
+                if( $this->app == \Team\System\Context::before('APP') && $method->isProtected() ) {
                     //Supuestamente ya se ha lanzado el response de main, por tanto, no hay peligro de hacer el método accesible
                     //No hay dos peticiones main diferenes.
                     $method->setAccessible( true );

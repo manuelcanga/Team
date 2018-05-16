@@ -11,7 +11,7 @@ namespace Team\Gui;
 trait View
 {
 
-    public function getView($_file, $component = null, $package = null ) {
+    public function getView($_file, $component = null, $app = null ) {
 
         //Eliminamos la extensión( ya que eso depende del sistema de render escogido )
         $file = \Team\System\FileSystem::stripExtension($_file);
@@ -24,12 +24,12 @@ trait View
         if(empty($file) )
             $file = $this->getContext('RESPONSE');
 
-        $file = \Team\System\FileSystem::getPath("views", $component, $package)."{$file}";
+        $file = \Team\System\FileSystem::getPath("views", $component, $app)."{$file}";
 
         if(\Team\System\FileSystem::filename('/'.$file)) {
             return $file;
         }else if(\team\Config::get('SHOW_RESOURCES_WARNINGS', false) ) {
-            \Team\Debug::me("View {$file}[{$_file}] not found in {$package}/{$component}", 3);
+            \Team\Debug::me("View {$file}[{$_file}] not found in {$app}/{$component}", 3);
             return null;
         }
 
@@ -45,7 +45,7 @@ trait View
         $this->setLayout();
     }
 
-    public function setLayout($layout = null, $place = 'package') {
+    public function setLayout($layout = null, $place = 'app') {
         if(!isset($layout)) {
             $this->setContext('LAYOUT', null);
         }else {
