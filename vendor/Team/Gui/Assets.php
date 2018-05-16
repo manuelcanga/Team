@@ -61,7 +61,7 @@ trait Assets {
         if($is_external_css || \Team\System\FileSystem::exists($file, _SCRIPTS_) ) {
             \Team\Config::add("\\team\\css\\{$position}", $idfile, $file);
 
-        }else if(\team\Config::get('SHOW_RESOURCES_WARNINGS', false) ) {
+        }else {
             \Team\Debug::me("Css file[$position] $file not found", 3);
         }
     }
@@ -91,7 +91,7 @@ trait Assets {
 
         if($is_external_js || \Team\System\FileSystem::exists($file, _SCRIPTS_) ) {
             \Team\Config::add("\\team\\js\\{$position}", $idfile, $file);
-        }else if(\team\Config::get('SHOW_RESOURCES_WARNINGS', false) ) {
+        }else  {
             \Team\Debug::me("Javascript file[$position] $file not found", 3);
         }
 
