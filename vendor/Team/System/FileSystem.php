@@ -177,7 +177,7 @@ final  class Filesystem
 
 					//No consideraremos directorios validos los que
 					//empiecen por "." o por "_" . Tampoco los llamados commons
-					if( '.' == $fname[0] || '_' == $fname[0] || 'commons' == $fname  ) continue;
+					if( '.' == $fname[0] || '_' == $fname[0]  ) continue;
 
 					//Si es un directorio, como esto es un listado de directorio lo agregamos a la lista
 					if(is_dir($location.'/'.$fname ) ) array_push($dirs, $fname);
