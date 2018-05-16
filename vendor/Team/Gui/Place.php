@@ -102,7 +102,7 @@ abstract class Place
         return self::add($place, $order, 'content', function($content, $params, $engine) use ($file_with_content, $position) {
             $new_content = '';
 
-            $theme = \Team\System\Context::get('_THEME_');
+            $theme = _SCRIPTS_.\Team\System\Context::get('_THEME_');
 
             if(\Team\System\FileSystem::exists($file_with_content, $theme) ){
                 $new_content = file_get_contents($theme.$file_with_content);

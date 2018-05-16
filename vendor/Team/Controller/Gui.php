@@ -61,7 +61,7 @@ class Gui extends Controller {
         }
 
         if($this->isMain() ) {
-            $this->includeFile(\Team\Config::get('_THEME_').'/setup.php');
+            $this->includeFile(_SCRIPTS_.\Team\Config::get('_THEME_').'/setup.php');
         }
 
 
@@ -76,7 +76,7 @@ class Gui extends Controller {
 
 
         if($this->isMain() && $this->parent() === null) {
-            $this->includeFile(\Team\Config::get('_THEME_').'/' . $this->getComponent() . '/setup.php');
+            $this->includeFile(_SCRIPTS_.\Team\Config::get('_THEME_').'/' . $this->getComponent() . '/setup.php');
         }
 
         return $result;

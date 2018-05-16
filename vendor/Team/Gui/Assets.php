@@ -44,14 +44,21 @@ trait Assets {
         $file = str_replace('.css','',$file);
 
         // maybe double slash(//) is used  => '//file.css'
-        $is_external_css = strpos(':/', $file) !== null || '/' == $file[1];
+        $is_external_css = strpos('//', $file) !== false;
 
         $idfile = $idfile??  \Team\Data\Sanitize::identifier($file);
+
+        if(!$is_external_css) {
+
+            $file = \Team\System\Context::get('_THEME_').'/'.ltrim($file, '/');
+
+        }
 
         //normalize
         $file = $file.'.css';
 
-        if($is_external_css || \Team\System\FileSystem::exists($file) ) {
+
+        if($is_external_css || \Team\System\FileSystem::exists($file, _SCRIPTS_) ) {
             \Team\Config::add("\\team\\css\\{$position}", $idfile, $file);
 
         }else if(\team\Config::get('SHOW_RESOURCES_WARNINGS', false) ) {
@@ -71,14 +78,18 @@ trait Assets {
         $file = str_replace('.js','',$file);
 
         // maybe double slash(//) is used  => '//file.js'
-        $is_external_js = strpos(':/', $file) !== null || '/' == $file[1];
-
+        $is_external_js = strpos('//', $file) !== false;
         $idfile = $idfile??  \Team\Data\Sanitize::identifier($file);
+
+        if(!$is_external_js) {
+            $file = \Team\System\Context::get('_THEME_').'/'.ltrim($file, '/');
+        }
+        
 
         //normalize
         $file = $file.'.js';
 
-        if($is_external_js || \Team\System\FileSystem::exists($file) ) {
+        if($is_external_js || \Team\System\FileSystem::exists($file, _SCRIPTS_) ) {
             \Team\Config::add("\\team\\js\\{$position}", $idfile, $file);
         }else if(\team\Config::get('SHOW_RESOURCES_WARNINGS', false) ) {
             \Team\Debug::me("Javascript file[$position] $file not found", 3);

@@ -71,7 +71,7 @@ abstract class Builder implements \ArrayAccess {
     protected function setPackage($package) {
 
         if('theme' == $package){
-            $this->base = \Team\Config::get('_THEME_');
+            $this->base = _SCRIPTS_.\Team\Config::get('_THEME_');
         }else  if('tests' == $package){
             $this->base = \Team\Config::get('_TESTS_');
         }else if(\Team\System\FileSystem::exists('/'.$package) ) {
@@ -197,7 +197,7 @@ abstract class Builder implements \ArrayAccess {
 
             $class_file = '/'.$this->component.'/'.$this->getTypeController().'.php';
             if('theme' == $this->package) {
-                $base = \Team\Config::get('_THEME_');
+                $base = _SCRIPTS_.\Team\Config::get('_THEME_');
             }else  if('tests' == $this->package) {
                 $base = \Team\Config::get('_TESTS_');
             }else {

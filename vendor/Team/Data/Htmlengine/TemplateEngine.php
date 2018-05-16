@@ -186,7 +186,6 @@ class TemplateEngine {
         $name = str_replace('.tpl', '', $name).'.tpl';
 
   	   $component = \Team\System\Context::get('COMPONENT');
-       $package = '/'.\Team\System\Context::get('PACKAGE');
 
         $template = $name;
 		$found_type = false;
@@ -196,11 +195,11 @@ class TemplateEngine {
               $found_type =  true;
             break;
             case 'theme':
-                $template =  \Team\System\Context::get('_THEME_')."/{$name}";
+                $template =  _SCRIPTS_.\Team\System\Context::get('_THEME_')."/{$name}";
                 $found_type =  true;
                 break;
             case 'custom':
-                $template =  \Team\System\Context::get('_THEME_')."/{$component}/views/{$name}";
+                $template =  _SCRIPTS_.\Team\System\Context::get('_THEME_')."/{$component}/views/{$name}";
                 $found_type =  true;
                 break;
             case 'commons':
@@ -241,9 +240,7 @@ class TemplateEngine {
 		$package = \Team\System\Context::get('PACKAGE');
 		$component =  \Team\System\Context::get('COMPONENT');
 		$response = \Team\System\Context::get('RESPONSE');
-		$theme = \Team\System\Context::get('_THEME_');
-
-		error_log(_SCRIPTS_.'/commons/views/plugins');
+		$theme = _SCRIPTS_.\Team\System\Context::get('_THEME_');
 
         $_engine->addPluginsDir($theme.'/commons/views/plugins');
 		$_engine->addPluginsDir(_APPS_.'/'.$package.'/commons/views/plugins');

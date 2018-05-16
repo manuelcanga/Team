@@ -183,7 +183,7 @@ class  Classes{
 
 
         if('theme' == $package) {
-            $direct_mode = self::load($class_name_full, $filename, \Team\Config::get('_THEME_'));
+            $direct_mode = self::load($class_name_full, $filename, _SCRIPTS_.\Team\Config::get('_THEME_'));
         }else if('tests' == $package) {
             $direct_mode = self::load($class_name_full, $filename, \Team\Config::get('_TESTS_'));
         }
@@ -350,7 +350,7 @@ class  Classes{
 	public static  function isPseudoClass($package, $component) {
 
         if('theme' === $package ){
-            $is_pseudo_class =  \Team\System\FileSystem::exists("/{$component}", \Team\Config::get('_THEME_') );
+            $is_pseudo_class =  \Team\System\FileSystem::exists("/{$component}", _SCRIPTS_.\Team\Config::get('_THEME_') );
         }else if('tests' === $package ){
             $is_pseudo_class = \Team\System\FileSystem::exists("/{$component}", \Team\Config::get('_TESTS_') );
         }else {
