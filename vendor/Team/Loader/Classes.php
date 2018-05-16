@@ -221,10 +221,6 @@ class  Classes{
 				    return self::newClass($class_name_full, $instance);
 				}
 
-				//Comprobamos si es una clase en el common del paquete
-				if( self::findClass($name,"/{$package}/commons/" , '/', $class_name_full ) ) {
-				    return self::newClass($class_name_full, $instance);
-		   	   }
 		}
 
 
