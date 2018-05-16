@@ -12,8 +12,8 @@ if(!defined('_TEAM_')) die("Hello, World!");
 
 \team\Config::set('AREAS',  [
          '/' =>  '/demo/welcome',
-        '/tests' =>  '/tests/demo/welcome',
+        '/checks' =>  '/tests/demo/welcome',
     ]
 );
 
-\team\Config::set('TESTS_APP_PATH', _SERVER_.'/tests');
+\team\Config::set('TESTS_APP_PATH', _APPS_.'/tests');
