@@ -85,7 +85,7 @@ Config::set('_TEMPORARY_',\Team\_SERVER_.'/tmp/'.Config::get('SCRIPT_ID'));
 
 
 Config::set('ENVIROMENT', 'dev');
-Config::set('_THEME_', \_SCRIPTS_.'/themes/default');
+Config::set('_THEME_', \_SCRIPTS_.'/theme');
 Config::set('_TESTS_', \Team\_SERVER_.'/tests');
 Config::set('LANG', 'es_ES');
 Config::set('CHARSET', 'UTF-8');
