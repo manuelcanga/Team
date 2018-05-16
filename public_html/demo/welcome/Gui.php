@@ -12,6 +12,5 @@ namespace demo\welcome;
 class Gui extends \Team\Controller\Gui
 {
     public function index() {
-        return 'Hello, World';
     }
 }

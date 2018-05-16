@@ -35,9 +35,8 @@ trait View
 
     }
 
-    public function setView($_file, $component = null, $package = null) {
-        $view =  $this->getView($_file, $component, $package);
-        $this->setContext('VIEW', $view);
+    public function setView($view, $place = 'component') {
+        $this->setContext('VIEW', $place.":".$view);
 
         return $view;
     }
@@ -46,13 +45,12 @@ trait View
         $this->setLayout();
     }
 
-    public function setLayout($_file = null, $component = null, $package = null) {
-        if(!isset($_file)) {
+    public function setLayout($layout = null, $place = 'package') {
+        if(!isset($layout)) {
             $this->setContext('LAYOUT', null);
         }else {
-            //para layout el component por defecto siempre será commons
-            $component = $component?: 'commons';
-            $this->setContext('LAYOUT', $this->getView($_file, $component, $package));
+            $this->setContext('LAYOUT', $place.":".$layout);
+
         }
     }
 

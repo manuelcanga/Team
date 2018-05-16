@@ -200,13 +200,13 @@ class TemplateEngine {
                 $found_type =  true;
                 break;
             case 'custom':
-                $template =  \Team\System\Context::get('_THEME_')."/{$package}/{$component}/views/{$name}";
+                $template =  \Team\System\Context::get('_THEME_')."/{$component}/views/{$name}";
                 $found_type =  true;
                 break;
             case 'commons':
             case 'package':
  				 $found_type =  true;
-              	  $template =  _SCRIPT_."/{$package}/commons/views/{$name}";
+              	  $template =  \Team\System\Context::get('_PACKAGE_')."/commons/views/{$name}";
 				break;
             case 'root':
   				 $found_type =  true;
@@ -214,10 +214,11 @@ class TemplateEngine {
                 break;
          	case 'component':
   				  $found_type =  true;
-	               $template =  _SCRIPT_."/{$package}/{$component}/views/{$name}";
+	               $template =  \Team\System\Context::get('_COMPONENT_')."/views/{$name}";
             break;
 
         }
+
 
 	if($found_type && !file_exists($template) ) {
 		if(\Team\System\Context::get('SHOW_RESOURCES_WARNINGS', false) ) {
@@ -300,6 +301,7 @@ class TemplateEngine {
 	    $layout = \Team\System\Context::get('LAYOUT');
         $view = \Team\System\Context::get('VIEW');
 
+
         if(isset($view) ) {
             $view = \Team\System\FileSystem::stripExtension($view);
         }
@@ -322,27 +324,7 @@ class TemplateEngine {
 		$template = '';
 		if($is_string) {
 			 $template = "eval:".$view;
-		}else if($is_layout) {
-			$template = _SCRIPT_."/".$layout.".tpl";
-            if(!file_exists($template)) {
-                \Team::system("Not found layout in {$template}",  "\\team\\gui\\ViewNotFound");
-                $template = '';
-            }
-		}else {
-            $is_view =  $view_exists &&  \Team\System\FileSystem::exists("/".$view.".tpl");
-
-            if (!$is_layout && $is_view ) {
-                $template = _SCRIPT_."/".$view.".tpl";
-                if(!file_exists($template)) {
-                    \Team::system("Not found view in {$template}",  "\\team\\gui\\ViewNotFound");
-                    $template = '';
-                }
-            }else if (isset($_data["response"])  )  {
-                \Team::system("Not assign view for [{$_data["package"]}, {$_data["component"]}, {$_data["response"]}]", "\\team\\gui\\ViewNotFound");
-            }else {
-                \Team::system("Not assign, or not found, either view or layout",  "\\team\\gui\\ViewNotFound");
-            }
-        }
+		}
 
 
 		return $template;

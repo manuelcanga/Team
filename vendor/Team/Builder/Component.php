@@ -45,24 +45,6 @@ class Component   implements \ArrayAccess{
 
     static function call($widget_name, $params, $cache = null) {
 
-        //A partir del nombre tenemos que obtener el paquete y el componente al que pertenece el widget
-        $namespace =  \Team\System\NS::explode($widget_name);
-
-        if(isset($namespace['name'])) {
-            $namespace['response'] = $namespace['name'];
-            unset($namespace['name']);
-        }
-
-        $params =  $namespace + $params;
-
-
-        //No se ha pasado un componente correcto
-        $base_component = "/".$params['package'].'/'.$params['component'];
-        if(!\Team\System\FileSystem::exists($base_component) ) {
-            \Team::warning("$widget_name not found. Review widget name or change \" to \' in your widget name param, please", 'WIDGET_NAME');
-            return '';
-        }
-
         $cache_id = null;
         if(isset($cache) ) {
             $cache_id =  \Team\System\Cache::checkIds($cache, $widget_name);
@@ -72,8 +54,23 @@ class Component   implements \ArrayAccess{
             if(!empty($cache)) {
                 return $cache;
             }
-
         }
+
+
+        //A partir del nombre tenemos que obtener el paquete y el componente al que pertenece el widget
+        $namespace =  \Team\System\NS::explode($widget_name);
+
+
+        if(isset($namespace['name'])) {
+            $namespace['response'] = $namespace['name'];
+            unset($namespace['name']);
+        }
+
+        if(empty($namespace['namespace'])) {
+            \Team::warning("Review widget name or change \" to ' in your widget name param, please ", 'WIDGET_NAME');
+        }
+
+        $params =  $namespace + $params;
 
 
         //No es una llamada main
@@ -86,8 +83,9 @@ class Component   implements \ArrayAccess{
 
         $class_name = '\\'.$params['package'].'\\'.$params['component'];
 
+
         if(!class_exists($class_name) ) {
-            \Team::warning("widget class $class_name not found", 'NO_WIDGET');
+            \Team::warning("widget class $class_name not found.  Review widget name or change \" to \' in your widget name param, please ", 'NO_WIDGET');
 
             return '';
         }
@@ -200,17 +198,11 @@ class Component   implements \ArrayAccess{
 			'action' => '\Team\Builder\Api'
 		 );
 
-        $sub_builders = array(
-            'command' => '\Team\Builder\Commands',
-            'html' 	  => '\Team\Builder\Widgets',
-            'action' => '\Team\Builder\Actions'
-        );
-
 
         //Filtramos por el tipo de salida
-	  if(\Team\System\Context::get('CLI_MODE')) {
+	 if(\Team\System\Context::get('CLI_MODE')) {
        $params->out = \Team\Data\Check::key($params->out, 'command');
-	  }else if($params->is_main) {
+	 }else if($params->is_main) {
        $params->out = \Team\Data\Check::key($params->out, 'html');
      }else {
        $params->out = \Team\Data\Check::key( $params->out, 'array');
@@ -219,21 +211,21 @@ class Component   implements \ArrayAccess{
 
         if($params->is_main) {
             //Cogemos dependiendo del tipo de salida. Sino el predeterminado será el de acciones
-		    $class = isset($builders[$params->out])?  $builders[$params->out] : $builders['action'];
+		    $builder = isset($builders[$params->out])?  $builders[$params->out] : $builders['action'];
         }else {
-            $class = isset($sub_builders[$params->out])?  $sub_builders[$params->out] : $sub_builders['action'];
+            $builder = isset($builders[$params->out])?  $builders[$params->out] : $builders['action'];
         }
 
 
 		\Team\System\Context::set("out", $params->out);
         \Team\System\Context::set("AJAX",  $params->out != 'html' && $params->out != 'array');
 
-		if(class_exists($class) ) {
-			\team\Debug::trace("Se usará el siguiente Builder para crear una respuesta con salida {$params->out} ", $class);
-			return new $class($params);		
+		if(class_exists($builder) ) {
+			\team\Debug::trace("Se usará el siguiente Builder para crear una respuesta con salida {$params->out} ", $builder);
+			return new $builder($params);
 		}else {
-			\Team::error("Not found Builder {$class}", '\team\builders\__get_builder');
-			\team\Debug::me("Not found Builder {$class}", '\team\builders\__get_builder');
+			\Team::error("Not found Builder {$builder}", '\team\builders\__get_builder');
+			\team\Debug::me("Not found Builder {$builder}", '\team\builders\__get_builder');
 			return ;
 		}
 

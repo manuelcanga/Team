@@ -35,6 +35,7 @@ namespace Team\Loader;
 	Gestiona de la autocarga de clases.
 */
 class  Classes{
+    protected static $base;
 
 	/**
 		Others es una lista de otros autoloaders que se pueden anexar, mediante el método addLoader,
@@ -159,22 +160,8 @@ class  Classes{
             return new $class_name_full();
         }
 
-
-        /* new mode on */
-        $filename = "/".str_replace('\\', '/', $class_name_full).".php";
-
-
-        if( self::load($class_name_full, $filename, \_SCRIPT_)
-            || self::load($class_name_full, $filename, \Team\_SERVER_)
-            ||  self::load($class_name_full, $filename, \Team\_VENDOR_ ) ) {
-            return self::newClass($class_name_full, $instance);
-        }
-
-        /** ------ old mode ------- */
-
-
         $namespace = explode('\\', $class_name_full);
-		$name = array_pop($namespace);
+        $name = array_pop($namespace);
 
 
         //Optimización: es una clase smarty salimos
@@ -183,10 +170,39 @@ class  Classes{
         }
 
 
-		$package = null;
-		if(!empty($namespace) ) {
-			$package = array_shift($namespace);
-		}
+        $package = null;
+        if(!empty($namespace) ) {
+            $package = array_shift($namespace);
+        }
+
+
+        /* direct mode  */
+        $direct_mode = false;
+
+        $filename = implode("/",  $namespace) ."/{$name}.php";
+
+
+        if('theme' == $package) {
+            $direct_mode = self::load($class_name_full, $filename, \Team\Config::get('_THEME_'));
+        }else if('tests' == $package) {
+            $direct_mode = self::load($class_name_full, $filename, \Team\Config::get('_TESTS_'));
+        }
+
+        $filename = "/".str_replace('\\', '/', $class_name_full).".php";
+
+        if( self::load($class_name_full, $filename, \_SCRIPT_)
+            ||  self::load($class_name_full, $filename, \Team\_VENDOR_ ) ) {
+            $direct_mode  = true;
+        }
+
+        if(  $direct_mode ){
+            return self::newClass($class_name_full, $instance);
+        }
+
+        /** ------ framework mode on------- */
+
+
+
 
 
 		$component = null;
@@ -211,7 +227,7 @@ class  Classes{
 			}
 
 
-			if( self::findClass($name,"/{$package}/commons/" , $subpath, $class_name_full ) ) {
+			if( self::findClass($name,"/{$package}/commons/" , $subpath, $class_name_full, self::$base ) ) {
 		        return self::newClass($class_name_full, $instance);
 	   	   }
 		}
@@ -333,7 +349,16 @@ class  Classes{
 	*/
 	public static  function isPseudoClass($package, $component) {
 
-		if(\Team\System\FileSystem::exists("/{$package}/{$component}") ) {
+        if('theme' === $package ){
+            $is_pseudo_class =  \Team\System\FileSystem::exists("/{$component}", \Team\Config::get('_THEME_') );
+        }else if('tests' === $package ){
+            $is_pseudo_class = \Team\System\FileSystem::exists("/{$component}", \Team\Config::get('_TESTS_') );
+        }else {
+            $is_pseudo_class = \Team\System\FileSystem::exists("/{$package}/{$component}");
+        }
+
+
+		if($is_pseudo_class ) {
 			//Creamos una clase de componente
 			$new_class = "Namespace {$package}; class {$component} extends \\team\\Builder\\Component { }";
 

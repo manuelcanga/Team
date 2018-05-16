@@ -43,7 +43,7 @@ Usamos el patrón Template Method un poco adaptado a lo que necesitamos
 abstract class Builder implements \ArrayAccess {
     use \Team\Data\Box;
 
-
+    protected $base;
 
     abstract protected function getTypeController();
     abstract protected function checkParent($class);
@@ -55,11 +55,12 @@ abstract class Builder implements \ArrayAccess {
         \Team\System\Context::set('CONTROLLER_BUILDER', $this);
         \Team\System\Context::set('CONTROLLER_TYPE', $this->getTypeController() );
 
+
         if(\Team\System\Context::isMain()  ){
             $PACKAGE = \Team\System\Context::get('PACKAGE');
 
             if($PACKAGE ) {
-                \Team\System\FileSystem::ping('/'. \Team\Config::get('TRASWEB').'/setup-'.$PACKAGE.'.php', \Team\_CONFIG_);
+                \Team\System\FileSystem::ping('/'.$PACKAGE.'.php', \Team\_CONFIG_);
             }
         }
     }
@@ -68,7 +69,14 @@ abstract class Builder implements \ArrayAccess {
     Asignamos el paquete
      */
     protected function setPackage($package) {
-        if(!\Team\System\FileSystem::exists('/'.$package) ) {
+
+        if('theme' == $package){
+            $this->base = \Team\Config::get('_THEME_');
+        }else  if('tests' == $package){
+            $this->base = \Team\Config::get('_TESTS_');
+        }else if(\Team\System\FileSystem::exists('/'.$package) ) {
+            $this->base = _SCRIPT_.'/'.$package;
+        }else {
             \Team::system("Package '{$package}' not found", '\team\responses\Response_Not_Found');
         }
 
@@ -76,7 +84,7 @@ abstract class Builder implements \ArrayAccess {
         $this->namespace = '\\';
 
         $this->setContext('PACKAGE', $package);
-        $this->setContext('_PACKAGE_', _SCRIPT_.'/'.$package);
+        $this->setContext('_PACKAGE_', $this->base);
         $this->setContext('BASE','/'.$package);
 
         $this->package = $package;
@@ -110,19 +118,14 @@ abstract class Builder implements \ArrayAccess {
         //Guardamos el path a la acción tanto absoluta como relativamente
         $this->path = str_replace("\\", "/", $this->namespace);
 
-        if(empty($component) || !\Team\System\FileSystem::exists($this->path) ) {
-            \Team::system("Component '{$this->package}/{$component}' not found", '\team\responses\Response_Not_Found', $this->get(), $level = 5);
-        }
-
-
         //Tendriamos que comprobar que existe el directorio del componente
         \Team\System\Context::set('NAMESPACE', $this->namespace);
 
         //Guardamos los datos de componente
         $this->setContext('PACKAGE', $this->package);
-        $this->setContext('_PACKAGE_', _SCRIPT_.'/'.$this->package);
+        $this->setContext('_PACKAGE_', $this->base);
         $this->setContext('COMPONENT', $component);
-        $this->setContext('_COMPONENT_', _SCRIPT_.$this->path);
+        $this->setContext('_COMPONENT_', $this->base.'/'.$component);
         $this->setContext('BASE', '/'.$this->package.'/'.$component);
         $this->setContext('BASE_URL',  \Team\System\Context::get('_AREA_').'/'.$component.'/');
 
@@ -188,12 +191,22 @@ abstract class Builder implements \ArrayAccess {
         $this->controller = $this->getController($this->response);
         $this->controller = \Team\Data\Filter::apply('\team\builder\controller', $this->controller);
 
-        $class_exists = class_exists($this->controller, false);
+        $class_exists = class_exists($this->controller);
 
         if(!$class_exists) {
-            $class_file = str_replace('\\', '/', $this->controller).'.php';
 
-            if( ! \Team\Loader\Classes::load($this->controller, $class_file )  )  {
+            $class_file = '/'.$this->component.'/'.$this->getTypeController().'.php';
+            if('theme' == $this->package) {
+                $base = \Team\Config::get('_THEME_');
+            }else  if('tests' == $this->package) {
+                $base = \Team\Config::get('_TESTS_');
+            }else {
+                $base = _SCRIPT_;
+                $class_file = str_replace('\\', '/', $this->controller).'.php';
+            }
+
+
+            if( ! \Team\Loader\Classes::load($this->controller, $class_file, $base)  )  {
                 return \Team::system("Controller class file {$class_file} not found", '\team\responses\Response_Not_Found');
             }
         }

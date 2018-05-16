@@ -1,0 +1,1 @@
+Demo/welcome/index: {if ('Hello, Word!' === $msg)}OK!{else}NOK!{/if}

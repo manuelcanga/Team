@@ -176,7 +176,6 @@ abstract class Place
         //y llamaremos al evento \Team\widget\{id_widget}
         $namespace =  \Team\System\NS::explode($widget_name);
 
-        \Team\System\FileSystem::ping("/{$namespace['package']}/{$namespace['component']}/config/placed.php");
         \Team::event('\team\placed\\'.$idwidget, $place, $_options, $order);
 
         //Comprobamos si se quiere caché o no

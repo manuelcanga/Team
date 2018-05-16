@@ -12,6 +12,7 @@ if(!defined('_TEAM_')) die("Hello, World!");
 
 \team\Config::set('AREAS',  [
          '/' =>  '/demo/welcome',
-     ]
+        '/tests' =>  '/tests/demo/welcome',
+    ]
 );
 
