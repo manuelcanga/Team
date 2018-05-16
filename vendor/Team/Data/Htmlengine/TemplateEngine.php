@@ -220,9 +220,7 @@ class TemplateEngine {
 
 
 	if($found_type && !file_exists($template) ) {
-		if(\Team\System\Context::get('SHOW_RESOURCES_WARNINGS', false) ) {
-			\Debug::me("Not found view {$template} of type {$type} and name {$name}");
-		}
+		\Debug::me("Not found view {$template} of type {$type} and name {$name}");
 
 		$template = _TEAM_."/Gui/Views/layouts/void.tpl";
 	} 
