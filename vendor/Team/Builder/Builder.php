@@ -244,9 +244,10 @@ abstract class Builder implements \ArrayAccess {
             //No se permite tampoco métodos estáticos o no públicos
             $response_exists = $not_team !== 0 && !$method->isStatic();
 
-            //Si no es main, puede acceder tanto a los métodos publicos como protected.
+            //Protected methods of Controllers only can be acccesible for same package
             if($response_exists)
-                if( !$this->is_main && $method->isProtected() ) {
+
+                if( $this->package == \Team\System\Context::before('PACKAGE') && $method->isProtected() ) {
                     //Supuestamente ya se ha lanzado el response de main, por tanto, no hay peligro de hacer el método accesible
                     //No hay dos peticiones main diferenes.
                     $method->setAccessible( true );
