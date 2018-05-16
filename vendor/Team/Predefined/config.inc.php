@@ -19,7 +19,7 @@ ini_set('display_errors', 0);
 define('TEAM_VERSION', '0.1');
 
 /**
- * Es el path relativo desde _SCRIPT_ dónde se encuentra realizándose la ejecución.
+ * Es el path relativo desde _SCRIPTS_ dónde se encuentra realizándose la ejecución.
  * En un principio es /, cuando estamos procesando un paquete es /:paquete:
  * y cuando estamos en un componente /:paquete:/:componente:
  * @since 0.1
@@ -27,11 +27,15 @@ define('TEAM_VERSION', '0.1');
 
 define('BASE', '/');
 
-define('Team\_SERVER_', dirname(\_SCRIPT_));
+define('Team\_SERVER_', dirname(\_SCRIPTS_));
 
 
-if(!defined('_SCRIPT_') ) {
-    define('_SCRIPT_', \Team\_SERVER_.'/project' );
+if(!defined('_SCRIPTS_') ) {
+    define('_SCRIPTS_', \Team\_SERVER_.'/public_html' );
+}
+
+if(!defined('_APPS_') ) {
+    define('_APPS_', \Team\_SERVER_.'/apps' );
 }
 
 if(!defined('Team\_VENDOR_') ) {
@@ -81,7 +85,7 @@ Config::set('_TEMPORARY_',\Team\_SERVER_.'/tmp/'.Config::get('SCRIPT_ID'));
 
 
 Config::set('ENVIROMENT', 'dev');
-Config::set('_THEME_', \_SCRIPT_.'/themes/default');
+Config::set('_THEME_', \_SCRIPTS_.'/themes/default');
 Config::set('_TESTS_', \Team\_SERVER_.'/tests');
 Config::set('LANG', 'es_ES');
 Config::set('CHARSET', 'UTF-8');

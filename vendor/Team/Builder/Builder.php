@@ -75,7 +75,7 @@ abstract class Builder implements \ArrayAccess {
         }else  if('tests' == $package){
             $this->base = \Team\Config::get('_TESTS_');
         }else if(\Team\System\FileSystem::exists('/'.$package) ) {
-            $this->base = _SCRIPT_.'/'.$package;
+            $this->base = _APPS_.'/'.$package;
         }else {
             \Team::system("Package '{$package}' not found", '\team\responses\Response_Not_Found');
         }
@@ -201,7 +201,7 @@ abstract class Builder implements \ArrayAccess {
             }else  if('tests' == $this->package) {
                 $base = \Team\Config::get('_TESTS_');
             }else {
-                $base = _SCRIPT_;
+                $base = _APPS_;
                 $class_file = str_replace('\\', '/', $this->controller).'.php';
             }
 

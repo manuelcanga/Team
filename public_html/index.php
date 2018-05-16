@@ -30,7 +30,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
 /** Ruta absoluta de ssoo al directorio de la web. */
-define('_SCRIPT_', 			__DIR__);
+define('_SCRIPTS_', 			__DIR__);
 define('ENVIROMENT', 			'dev');
 
 include('../vendor/Team/bootstrap.php');

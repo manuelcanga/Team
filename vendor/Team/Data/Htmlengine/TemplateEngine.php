@@ -210,7 +210,7 @@ class TemplateEngine {
 				break;
             case 'root':
   				 $found_type =  true;
-              	  $template =  _SCRIPT_."/commons/views/{$name}";
+              	  $template =  _APPS_."/commons/views/{$name}";
                 break;
          	case 'component':
   				  $found_type =  true;
@@ -241,10 +241,13 @@ class TemplateEngine {
 		$package = \Team\System\Context::get('PACKAGE');
 		$component =  \Team\System\Context::get('COMPONENT');
 		$response = \Team\System\Context::get('RESPONSE');
+		$theme = \Team\System\Context::get('_THEME_');
 
-		$_engine->addPluginsDir(_SCRIPT_.'/'.$package.'/'.$component.'/views/plugins');
-		$_engine->addPluginsDir(_SCRIPT_.'/'.$package.'/commons/views/plugins');
-		$_engine->addPluginsDir(_SCRIPT_.'/commons/views/plugins');
+		error_log(_SCRIPTS_.'/commons/views/plugins');
+
+        $_engine->addPluginsDir($theme.'/commons/views/plugins');
+		$_engine->addPluginsDir(_APPS_.'/'.$package.'/commons/views/plugins');
+		$_engine->addPluginsDir(_SCRIPTS_.'/commons/views/plugins');
 		$_engine->addPluginsDir(_TEAM_.'/Data/Htmlengine/plugins');
         $_engine->addPluginsDir(_TEAM_.'/Data/Htmlengine/form');
 
@@ -270,7 +273,7 @@ class TemplateEngine {
 
 		
 		//Un componente sólo vería sus cosas, aún así puede usar root: package: etc
-		$_engine->template_dir = _SCRIPT_.'/';
+		$_engine->template_dir = _APPS_.'/';
         $temporary_dir = self::getTemporaryTemplatesDir();
         $_engine->setCompileDir($temporary_dir."/smarty/compile");
 		$_engine->setCacheDir($temporary_dir."/smarty/cache");

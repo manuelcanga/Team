@@ -109,7 +109,7 @@ function setUpPackage($package, $url) {
     $package =  \Team\Data\Filter::apply('\team\package',  $package, $url );
 
     \Team\Config::set('PACKAGE', $package);
-    \Team\Config::set('_PACKAGE_', _SCRIPT_.'/'.$package);
+    \Team\Config::set('_PACKAGE_', _APPS_.'/'.$package);
     \Team\Config::set('BASE', '/'.$package);
 
     //Aquí ya sabemos el package del main, así que le mandamos un Start

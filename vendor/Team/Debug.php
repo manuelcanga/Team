@@ -463,7 +463,7 @@ de $jumps saltos hacia atrás  */
 
 		$label = "Grep {$_text} ";
 		
-		exec("grep -iR ".escapeshellarg($_text)." "._SCRIPT_, $_out);
+		exec("grep -iR ".escapeshellarg($_text)." "._SCRIPTS_, $_out);
 		self::me($_out, $label, $backtrace[0]["file"],   $backtrace[0]["line"]);
 	}
 

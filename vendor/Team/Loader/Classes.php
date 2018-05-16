@@ -80,7 +80,7 @@ class  Classes{
 		@param String $class: Nombre de la clase con namespace completo
 		@param $path: Path relativo desde el raiz del framework del archivo donde se encuentra la clase.
 	*/
-	public static function add($class, $path = null, $base = _SCRIPT_) {
+	public static function add($class, $path = null, $base = _APPS_) {
 
 
         $class = ltrim($class, '\\');;
@@ -104,7 +104,7 @@ class  Classes{
 	    return self::factory($class_name_full, $instance = true, $with_alias = true);
     }
 
-    public static function alias($_alias, $class, $path = null, $base = _SCRIPT_) {
+    public static function alias($_alias, $class, $path = null, $base = _APPS_) {
         $_alias = ltrim($_alias,'\\');
         $class = ltrim($class,'\\');
 
@@ -190,7 +190,7 @@ class  Classes{
 
         $filename = "/".str_replace('\\', '/', $class_name_full).".php";
 
-        if( self::load($class_name_full, $filename, \_SCRIPT_)
+        if( self::load($class_name_full, $filename, \_APPS_)
             ||  self::load($class_name_full, $filename, \Team\_VENDOR_ ) ) {
             $direct_mode  = true;
         }
@@ -259,7 +259,7 @@ class  Classes{
 		@param $file es el fichero que contiene la clase
 		@param $path es el path que nos servirá de base para encontrar la clase
 	*/
-	public static function classExists($file, $path = _SCRIPT_, $className = null) {
+	public static function classExists($file, $path = _APPS_, $className = null) {
 
 	    $class_exists = false;
 
@@ -331,7 +331,7 @@ class  Classes{
 		@param $file es el fichero, con path relativo, a donde se encuentra
 	*/
 
-	public static function load($class_name, $file, $base = _SCRIPT_) {
+	public static function load($class_name, $file, $base = _APPS_) {
 		if(self::classExists($file, $base) ) {
 			if(self::newClass($class_name, false) ) {
 				return true;
@@ -378,7 +378,7 @@ class  Classes{
 		@param $subpath es el path hacia la clases tomando como base el parámetro anterior y quitando los directorios comunes intermedios
 		@TOOD: ¿Añadir los modelos?
 	*/
-	public static  function findClass($name, $path = "", $subpath = "/",  $class_name = null, $root = _SCRIPT_) {
+	public static  function findClass($name, $path = "", $subpath = "/",  $class_name = null, $root = _APPS_) {
 
 		if(!isset($class_name) ) {
 			$class_name = $name;

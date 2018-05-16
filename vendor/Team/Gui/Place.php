@@ -88,14 +88,29 @@ abstract class Place
         return self::add($place, $order, 'content', function($content, $params, $engine) use ($file_with_content, $position) {
             $new_content = '';
 
+
             if(\Team\System\FileSystem::exists($file_with_content) ){
-                $new_content = file_get_contents(_SCRIPT_.$file_with_content);
+                $new_content = file_get_contents(_APPS_.$file_with_content);
             }
 
             return self::addContentInPosition($new_content, $position, $content);
         });
     }
 
+    public static function resource(string $place, $file_with_content, $position = "end", $order = 40) {
+
+        return self::add($place, $order, 'content', function($content, $params, $engine) use ($file_with_content, $position) {
+            $new_content = '';
+
+            $theme = \Team\System\Context::get('_THEME_');
+
+            if(\Team\System\FileSystem::exists($file_with_content, $theme) ){
+                $new_content = file_get_contents($theme.$file_with_content);
+            }
+
+            return self::addContentInPosition($new_content, $position, $content);
+        });
+    }
 
     public function wrap(string $place, $wrapper_start, $wrapper_end, $order = 40) {
 

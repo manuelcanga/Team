@@ -50,7 +50,7 @@ final  class Filesystem
 		@param String $file archivo que se quiere comprobar su existencia
 		@return booleean si existe(true) o no existe(false)
 	*/
-	public static function exists($file, $base = _SCRIPT_) {
+	public static function exists($file, $base = _APPS_) {
 	    if(!is_string($file) ||  '/' !== $file[0]) return false;
 
 		return file_exists($base.$file);
@@ -61,7 +61,7 @@ final  class Filesystem
 		lo carga
 		@param String $file archivo del que se quiere comprobar su existencia y si existe, cargar )
 	*/
-	public static function load($file, $base = _SCRIPT_) {
+	public static function load($file, $base = _APPS_) {
 		//\team\Debug::out("LOADING...".$file);
 		if(self::exists($file, $base) ) {
 			return include($base.$file);
@@ -73,7 +73,7 @@ final  class Filesystem
     lo carga sólo una vez
     @param String $file archivo del que se quiere comprobar su existencia y si existe, cargar )
 */
-    public static function ping($file, $base = _SCRIPT_) {
+    public static function ping($file, $base = _APPS_) {
         //\team\Debug::out("LOADING...".$file);
         if(self::exists($file, $base) ) {
             return include_once($base.$file);
@@ -86,7 +86,7 @@ final  class Filesystem
 		lo incluye pasándole todos los argumentos
 		@param String $file archivo del que se quiere comprobar su existencia y si existe, incluir )
 	*/
-	public static function script($___file, $___args = [], $___base = _SCRIPT_) {
+	public static function script($___file, $___args = [], $___base = _APPS_) {
 		//\team\Debug::out("LOADING...".$file);
 		if(self::exists($___file, $___base) ) {
             extract($___args, EXTR_SKIP);
@@ -101,7 +101,7 @@ final  class Filesystem
 		@param String $file archivo que se quiere comprobar su existencia sin extension
 		@return booleean si existe(true) o no existe(false)
 	*/
-	public static function filename($file, $base = _SCRIPT_) {
+	public static function filename($file, $base = _APPS_) {
 		$exists = glob($base.$file.'.*');
 		return !empty($exists); 
 	}
@@ -152,7 +152,7 @@ final  class Filesystem
 		@param $_dir es la ruta de un directorio a partir del que se va a obtener el listado
 		@return array de directorios encontrados
 	*/
-	public static function getDirs($_dir = '/', $cache=true, $path = _SCRIPT_)
+	public static function getDirs($_dir = '/', $cache=true, $path = _APPS_)
 	{
 		$dir = rtrim($_dir, '//');
 		static $dirs_cache = [];
@@ -196,7 +196,7 @@ final  class Filesystem
         Hacemos notificación de algo ocurrido por sistema de archivos.
         Recordad que el nombre del evento es ucfirst. Ej: Initialize
      */
-    public static  function notify($path, $eventname, $subpath= null,  $dirs_filter = null, $base = _SCRIPT_) {
+    public static  function notify($path, $eventname, $subpath= null,  $dirs_filter = null, $base = _APPS_) {
 
         $dirs =  self::getDirs($path, $cache=true, $base);
 
@@ -227,7 +227,7 @@ final  class Filesystem
 		return number_format($size / pow(1024, $power), 2, '.', ',') . ' ' . $units[$power];
 	}
 
-	public static function getSize($file, $base = _SCRIPT_) {
+	public static function getSize($file, $base = _APPS_) {
 		return filesize($base.$file);
 	}
 
