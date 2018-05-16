@@ -28,17 +28,18 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
+
 namespace Team\Builder;
 
-require_once(_TEAM_ . '/Controller/Gui.php');
-require_once(_TEAM_ . '/Controller/Widgets.php');
+
+require_once(_TEAM_ . '/Controller/Api.php');
+require_once(_TEAM_ . '/Controller/Actions.php');
 
 
-class Gui extends Widgets {
-
-
+class Api extends Actions {
+	
 	public function checkParent($class) {
-		return is_subclass_of($this->controller, '\team\controller\Gui');
+		return is_subclass_of($this->controller, '\team\controller\Api');
 	}
 
 
@@ -47,18 +48,21 @@ class Gui extends Widgets {
       que debe de instanciar
 	*/
     public function getTypeController() {
-        return 'Gui';
+        return 'Api';
     }
 
 
 
-
+    /**
+    Mandamos al navegador los header necesarios
+     */
     function sendHeader() {
         //header("Content-Type: application/x-www-form-urlencoded;charset=".CHARSET);
         //setlocale(LC_ALL,"es_ES",  "es_ES.UTF-8", "es", "spanish");
 
 
-        $this->sendHeaderHTTP('text/html');
+        $this->sendHeaderHTTP('application/'.$this->out);
 
     }
+
 }

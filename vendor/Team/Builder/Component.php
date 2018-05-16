@@ -197,10 +197,17 @@ class Component   implements \ArrayAccess{
 		$builders = array(
 			'command' => '\Team\Builder\Commands',
 			'html' 	  => '\Team\Builder\Gui',
-			'action' => '\Team\Builder\Actions'
+			'action' => '\Team\Builder\Api'
 		 );
 
-		//Filtramos por el tipo de salida
+        $sub_builders = array(
+            'command' => '\Team\Builder\Commands',
+            'html' 	  => '\Team\Builder\Widgets',
+            'action' => '\Team\Builder\Actions'
+        );
+
+
+        //Filtramos por el tipo de salida
 	  if(\Team\System\Context::get('CLI_MODE')) {
        $params->out = \Team\Data\Check::key($params->out, 'command');
 	  }else if($params->is_main) {
@@ -210,8 +217,14 @@ class Component   implements \ArrayAccess{
      }
 
 
-		//Cogemos dependiendo del tipo de salida. Sino el predeterminado será el de acciones
-		$class = isset($builders[$params->out])?  $builders[$params->out] : $builders['action'];
+        if($params->is_main) {
+            //Cogemos dependiendo del tipo de salida. Sino el predeterminado será el de acciones
+		    $class = isset($builders[$params->out])?  $builders[$params->out] : $builders['action'];
+        }else {
+            $class = isset($sub_builders[$params->out])?  $sub_builders[$params->out] : $sub_builders['action'];
+        }
+
+
 		\Team\System\Context::set("out", $params->out);
         \Team\System\Context::set("AJAX",  $params->out != 'html' && $params->out != 'array');
 

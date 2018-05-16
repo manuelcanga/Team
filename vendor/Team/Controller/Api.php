@@ -32,13 +32,14 @@ namespace Team\Controller;
 
 
 /**
-Representa los datos que llegaran a utilizarse en la vista para formar la web
-Es la base para las acciones tipo GUI
+Son los controladores con response que devuelven un formato distinto de html
  */
-class Gui extends Widgets {
-    use \Team\Gui\Seo;
+abstract class Api extends Controller
+{
+    const TYPE = 'Api';
 
-    const TYPE = 'Gui';
+
+    public function __toString() { return $this->data->out("json");}
 
 
 }
