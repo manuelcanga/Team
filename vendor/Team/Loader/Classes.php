@@ -207,25 +207,8 @@ class  Classes{
 			 if( self::findClass($name, '/', $subpath ,$class_name_full,  _TEAM_) ) {
 				return self::newClass($class_name_full, $instance);
 			 }
-
-
 		}
 
-
-		//Comprobamos si no existe un package acorde al primer elemento del namespace de la clase
-		if(!isset($package)  || ! \Team\System\FileSystem::exists("/$package") )  {
-			$subpath = '/';
-			if(!empty($namespace) ) {
-				$subpath = '/'.implode('/', $namespace).'/';
-			}
-
-			//Tiene que ser una clase de root
-		 	 if( self::findClass($name, '/commons/', $subpath, $class_name_full ) ) {
-		        return self::newClass($class_name_full, $instance);
-	   	     }
-
-
-		}
 
 		$component = null;
 		if(!empty($namespace) ) {
@@ -251,6 +234,7 @@ class  Classes{
 			if(!empty($namespace) ) {
 				$subpath = '/'.implode('/', $namespace).'/';
 			}
+
 
 			if( self::findClass($name,"/{$package}/commons/" , $subpath, $class_name_full ) ) {
 		        return self::newClass($class_name_full, $instance);
