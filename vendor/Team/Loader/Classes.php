@@ -189,27 +189,6 @@ class  Classes{
 		}
 
 
-
-
-        /* Si es de nivel 0 ( sin namespace ) entonces es una clase:
-           - del raiz/root
-           - de la más utilizadas de Team
-
-            @deprecated mode
-        */
-      	//buscamos bajo Team
-		if('team' == $package  ) {
-			$subpath = '/';
-			if(!empty($namespace) ) {
-				$subpath = '/'.implode('/', $namespace).'/';
-			}
-
-			 if( self::findClass($name, '/', $subpath ,$class_name_full,  _TEAM_) ) {
-				return self::newClass($class_name_full, $instance);
-			 }
-		}
-
-
 		$component = null;
 		if(!empty($namespace) ) {
 			$component = array_shift($namespace);
