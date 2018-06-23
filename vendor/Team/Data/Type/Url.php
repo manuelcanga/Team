@@ -34,6 +34,8 @@ namespace Team\Data\Type;
 class Url extends Type
 {
 
+    protected $args = [];
+
 
     /**
      * Parseamos direcciones amigables a partir de una url
@@ -58,98 +60,107 @@ class Url extends Type
 								 'item_ext' => null
                             ];
 
-        $args =  $main_data;
+        $this->args =  $main_data;
 
 		/** El programador no quiere el parseo por defecto de este store */
-		if(isset($_options['parse_url']) && !$_options['parse_url'])  {
-			$this->data = $args;
+		if(empty($_options['parse_url']))  {
+			$this->data = $this->args;
 	        return $this->data;
 		}
 
         //Extraemos toda la informacion de la url
-        $url = parse_url($args["raw"]);
+        $url = $this->getUrlParams();
 
         //Asignamos los parámetros get por si no los ha cogido bien por la configuracion de apache
-        if (isset($url['query'])) {
-            parse_str($url["query"], $query);
-            $args =  $args + $query;
-
-            //Si hay ancla la añadimos tambien al get
-            if (isset($url['fragment'])) {
-                $args["anchor"] = \Team\Data\Check::key($url["fragment"]);
-            }
-        }
+        $query_strings = $this->parseQueryString($url['query']?? []);
+        $this->args = $this->args + $query_strings;
 
         //Assign defaults params
-        $args = $args + $this->data;
+        $this->args =  $this->args + $this->data;
 
-        if(isset($url["path"])) {
-            $args['url_path_list'] = explode('/', trim($url["path"], '/'));
+        $this->parsePath($url['path']?? '');
 
-            //Quitamos todo lo que no sea adecuado
-            $args['url_path_list'] = array_filter($args['url_path_list'], ['\team\data\Sanitize', 'key']);
-
-            //Vamos a analizar el último elemento
-            $last = end( $args['url_path_list']);
-
-
-			if($last) {
-		        //¿Es un elemento?
-				$ext_position = strpos($last, '.');
-                $item_extension = null;
-                if (false !== $ext_position) {
-                    $extension = strtolower(substr($last, $ext_position + /* point */ 1) );
-                    $extensions = \Team\Data\Filter::apply('\team\url\extensions', ['html' => 'html', 'htm' => 'html', 'json' => 'json', 'php' => 'html', 'xml' => 'xml']);
-                    if(isset($extensions[$extension])) {
-                        $out = $extensions[$extension];
-                        $item_extension = $extension;
-                    }
-                }
-
-
-		        if ($item_extension) {
-		            $item = array_pop( $args['url_path_list']);
-
-					$args['item_ext'] = $item_extension;
-
-		            $item = \Team\Data\Sanitize::urlFriendly($item);
-
-
-		            $item_expression = '/(?<item_name>[a-z0-9\-\_\+]+?)(-(?<item_id>\d+))?$/x';
-
-		            if (preg_match($item_expression, $item, $result)) {
-                        if(!isset($args['out']))
-                             $args['out'] = $out;
-
-		                if (isset($result['item_name']))
-		                    $args['item_name'] = $result['item_name'];
-
-		                if (isset($result['item_id']))
-		                    $args['item_id'] = \Team\Data\Check::id($result['item_id']);
-		            }
-		            $last = end( $args['url_path_list']);
-		        }
-
-			}
-
-            $args['location'] = '/'.implode('/', (array)$args["url_path_list"]);
-
-            if (!empty($args['item_name'])) {
-               $args['location'] .= '/'.$args['item_name'];
-
-		   		if (!empty($args['item_id']))
-		           $args['location'] .= '-'.$args['item_id'];
-
-		   		if (!empty($args['item_ext']))
-		           $args['location'] .= '.'.$args['item_ext'];
-			}
-        }
-
-
-
-		$this->data = $args;
+		$this->data = $this->args;
     }
 
+    protected function getUrlParams() {
+       return parse_url($this->args["raw"]);
+    }
+
+    protected function parseQueryString($query_string) {
+        if (!empty($query_string)) {
+            parse_str($query_string, $query);
+        }
+
+        return (array) $query_string;
+    }
+
+    protected function parsePath($path) {
+        if(!empty($path)) {
+            $url_path_list = explode('/', trim($path, '/'));
+
+            //Quitamos todo lo que no sea adecuado
+            $this->args['url_path_list'] = array_filter( $url_path_list, ['\team\data\Sanitize', 'key']);
+
+            //Vamos a analizar el último elemento
+            $last = end(  $this->args['url_path_list']);
+
+            $this->parseLastElement($last);
+
+            $this->args['location'] = '/'.implode('/', (array)$this->args["url_path_list"]);
+
+            if (!empty($this->args['item_name'])) {
+                $this->args['location'] .= '/'.$this->args['item_name'];
+
+                if (!empty($this->args['item_id']))
+                    $this->args['location'] .= '-'.$this->args['item_id'];
+
+                if (!empty($args['item_ext']))
+                    $this->args['location'] .= '.'.$this->args['item_ext'];
+            }
+        }
+    }
+
+    protected function parseLastElement($last) {
+        if(!empty($last)) {
+            //¿Es un elemento?
+            $ext_position = strpos($last, '.');
+            $item_extension = null;
+            if (false !== $ext_position) {
+                $extension = strtolower(substr($last, $ext_position + /* point */ 1) );
+                $extensions = \Team\Data\Filter::apply('\team\url\extensions', ['html' => 'html', 'htm' => 'html', 'json' => 'json', 'php' => 'html', 'xml' => 'xml']);
+                if(isset($extensions[$extension])) {
+                    $out = $extensions[$extension];
+                    $item_extension = $extension;
+                }
+            }
+
+
+            if ($item_extension) {
+                $item = array_pop( $this->args['url_path_list']);
+
+                $this->args['item_ext'] = $item_extension;
+
+                $item = \Team\Data\Sanitize::urlFriendly($item);
+
+
+                $item_expression = '/(?<item_name>[a-z0-9\-\_\+]+?)(-(?<item_id>\d+))?$/x';
+
+                if (preg_match($item_expression, $item, $result)) {
+                    if(!isset( $this->args['out']))
+                        $this->args['out'] = $out;
+
+                    if (isset($result['item_name']))
+                        $this->args['item_name'] = $result['item_name'];
+
+                    if (isset($result['item_id']))
+                        $this->args['item_id'] = \Team\Data\Check::id($result['item_id']);
+                }
+                $last = end(  $this->args['url_path_list']);
+            }
+
+        }
+    }
 
 
 	public function check($pattern, &$new_args = [], $defaults = []) {
