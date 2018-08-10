@@ -60,7 +60,7 @@ class Less
     }
 
     protected function isDevEnvironment() {
-	return  "dev" !== \Team\Config::get('ENVIRONMENT') ;
+	return  "dev" === \Team\Config::get('ENVIRONMENT') ;
     }
 
     public function parser() {
