@@ -50,7 +50,7 @@ class Less
     }
 
     protected function fileOutCanBeUsed() {
-        $file_out_can_be_used = file_exists($this->base.$this->file_out) &&  "env" !== \Team\Config::get('ENVIROMENT') ;
+        $file_out_can_be_used = file_exists($this->base.$this->file_out) &&  "dev" !== \Team\Config::get('ENVIROMENT') ;
         $force_generation = \Team\Config::get('ASSETS_NEED_GENERATION');
         if( $file_out_can_be_used || $force_generation) {
             return true;
