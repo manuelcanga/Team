@@ -7,14 +7,14 @@ All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright
-      notice, this list of conditions and the following disclaimer in the
-      documentation and/or other materials provided with the distribution.
-    * Neither the name of the trasweb.net nor the
-      names of its contributors may be used to endorse or promote products
-      derived from this software without specific prior written permission.
+ * Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in the
+documentation and/or other materials provided with the distribution.
+ * Neither the name of the trasweb.net nor the
+names of its contributors may be used to endorse or promote products
+derived from this software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -27,22 +27,21 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-*/
+ */
 
 namespace Team\Loader;
 
 /**
-	Gestiona de la autocarga de clases.
-*/
+Gestiona de la autocarga de clases.
+ */
 class  Classes{
-    protected static $base;
 
-	/**
-		Others es una lista de otros autoloaders que se pueden anexar, mediante el método addLoader,
-		para la busqueda de clase. En próximas versiones esto dejará de tener sentido ya que está
-		pediente de aprobación autoloaders sin devolución de error
-	*/
-	private static $loaders = array();
+    /**
+    Others es una lista de otros autoloaders que se pueden anexar, mediante el método addLoader,
+    para la busqueda de clase. En próximas versiones esto dejará de tener sentido ya que está
+    pediente de aprobación autoloaders sin devolución de error
+     */
+    private static $loaders = array();
 
 
     /**
@@ -67,41 +66,41 @@ class  Classes{
 
 
     /**
-		Añade un Loader asociado
-		@param callable $func es la función que queremos que nos ayude en la carga de clases 
-	*/
-	public static function addLoader($func) {
-		self::$loaders[] = $func;
-	}
+    Añade un Loader asociado
+    @param callable $func es la función que queremos que nos ayude en la carga de clases
+     */
+    public static function addLoader($func) {
+        self::$loaders[] = $func;
+    }
 
 
-	/**
-		Añade una clase al registro de clases
-		@param String $class: Nombre de la clase con namespace completo
-		@param $path: Path relativo desde el raiz del framework del archivo donde se encuentra la clase.
-	*/
-	public static function add($class, $path = null, $base = _APPS_) {
+    /**
+    Añade una clase al registro de clases
+    @param String $class: Nombre de la clase con namespace completo
+    @param $path: Path relativo desde el raiz del framework del archivo donde se encuentra la clase.
+     */
+    public static function add($class, $path = null, $base = _APPS_) {
 
 
         $class = ltrim($class, '\\');;
-		if(!isset(self::$registers[$class]) ) {
+        if(!isset(self::$registers[$class]) ) {
 
             if(!isset($path)) {
                 $name = \Team\System\NS::basename($class);
                 $path = \Team\System\Context::get('_COMPONENT_').'/classes/'.$name.'.php';
             }
 
-			self::$registers[$class] = ['path' => $path, 'base' => $base, 'name'=> $class, 'initialized' => false ];
-			if(\team\Config::get("TRACE_AUTOLOAD_CLASS", false) ) {
-				\team\Debug::me("Registrada clase '$class' con path '$path' y base '$base'");
-			}
-			return true;
-		}
-		return false;
-	}
+            self::$registers[$class] = ['path' => $path, 'base' => $base, 'name'=> $class, 'initialized' => false ];
+            if(\team\Config::get("TRACE_AUTOLOAD_CLASS", false) ) {
+                \team\Debug::me("Registrada clase '$class' con path '$path' y base '$base'");
+            }
+            return true;
+        }
+        return false;
+    }
 
-	public static function get($class_name_full) {
-	    return self::factory($class_name_full, $instance = true, $with_alias = true);
+    public static function get($class_name_full) {
+        return self::factory($class_name_full, $instance = true, $with_alias = true);
     }
 
     public static function alias($_alias, $class, $path = null, $base = _APPS_) {
@@ -113,16 +112,16 @@ class  Classes{
     }
 
     /**
-		Metodo que se encarga de buscar clases para autocargarlas. 
-		Normalmente será el autoloader del sistema ( en ese caso $_intance será false ), 
-		pero podemos llamarlo nosotros mismos( en ese caso es conveniente pasar true para $instance )
+    Metodo que se encarga de buscar clases para autocargarlas.
+    Normalmente será el autoloader del sistema ( en ese caso $_intance será false ),
+    pero podemos llamarlo nosotros mismos( en ese caso es conveniente pasar true para $instance )
 
-		@param String $class_name_full nombre de la clase, con namespace, a buscar
-		@param boolean $instance decidimos que después de encontrar la clase nos devuelva una instancia.
-        @param boolean $with_alias se permite alias de clases o no
+    @param String $class_name_full nombre de la clase, con namespace, a buscar
+    @param boolean $instance decidimos que después de encontrar la clase nos devuelva una instancia.
+    @param boolean $with_alias se permite alias de clases o no
 
      */
-	public static function factory($class_name_full, $instance = false, $with_alias = false) {
+    public static function factory($class_name_full, $instance = false, $with_alias = false) {
         $class_name_full = ltrim($class_name_full,'\\');
 
         if($with_alias) {
@@ -176,10 +175,13 @@ class  Classes{
         }
 
 
+
+
         /* direct mode  */
         $direct_mode = false;
 
         $filename = implode("/",  $namespace) ."/{$name}.php";
+
 
         if('theme' == $app) {
             $direct_mode = self::load($class_name_full, $filename, _SCRIPTS_.\Team\Config::get('_THEME_'));
@@ -197,154 +199,163 @@ class  Classes{
         }
 
         /** ------ framework mode on------- */
+        if('theme' == $app) {
+            $base =  _SCRIPTS_.\Team\Config::get('_THEME_');
+        }else {
+            $base = \Team\Config::get(strtoupper($app).'_APP_PATH', \_APPS_.'/'.$app);
+        }
 
 
 
 
-
-		$component = null;
-		if(!empty($namespace) ) {
-			$component = array_shift($namespace);
-		}
-
-		if(!isset($component) ) {
-				//Comprobamos si es una pseudo clase
-				if(self::isPseudoClass($app, $name) ) {
-				    return self::newClass($class_name_full, $instance);
-				}
-
-		}
+        $component = null;
+        if(!empty($namespace) ) {
+            $component = array_shift($namespace);
+        }
 
 
-		//Comprobamos si es una clase de common pero con un subnamespace a partir de este.
-		 if(isset($app) && !isset($component) && ! \Team\System\FileSystem::exists("/{$app}/{$component}")  )  {
-			$subpath = '/';
-			if(!empty($namespace) ) {
-				$subpath = '/'.implode('/', $namespace).'/';
-			}
+
+        if(!isset($component) ) {
+            //Comprobamos si es una pseudo clase
+            if(self::isPseudoClass($app, $name) ) {
+                return self::newClass($class_name_full, $instance);
+            }
+
+        }
+
+        $component_exists =  \Team\System\FileSystem::exists("/{$component}", $base);
 
 
-			if( self::findClass($name,"/{$app}/commons/" , $subpath, $class_name_full, self::$base ) ) {
-		        return self::newClass($class_name_full, $instance);
-	   	   }
-		}
-
-		if(isset($component) &&  \Team\System\FileSystem::exists("/{$app}/{$component}") ) {
-			$subpath = '/';
-			if(!empty($namespace) ) {
-				$subpath = '/'.implode('/', $namespace).'/';
-			}
+        //Comprobamos si es una clase de common pero con un subnamespace a partir de este.
+        if(isset($app) && ( !isset($component)  || !$component_exists ) )  {
+            $subpath = '/';
+            if(!empty($namespace) ) {
+                $subpath = '/'.implode('/', $namespace).'/';
+            }
 
 
-			if( self::findClass($name, "/{$app}/{$component}/", $subpath, $class_name_full ) ) {
-				    return self::newClass($class_name_full, $instance);
-		   	}
+            if( self::findClass($name,"/commons/" , $subpath, $class_name_full, $base ) ) {
+                return self::newClass($class_name_full, $instance);
+            }
+        }
 
-		}
-		
+        if(isset($component) && $component_exists ) {
+            $subpath = '/';
+
+            if(!empty($namespace) ) {
+                $subpath = '/'.implode('/', $namespace).'/';
+            }
+
+
+            if( self::findClass($name, "/{$component}/", $subpath, $class_name_full, $base ) ) {
+                return self::newClass($class_name_full, $instance);
+            }
+
+        }
+
 
         //Mostramos una traza si asi lo quiere el programador
-		//De que hubo algún error porque no hemos encontrado la clase
-		if(\team\Config::get("TRACE_AUTOLOAD_CLASS", false) ) {
-			\team\Debug::me("Loading class....false", $class_name_full);
-		}
-	}
+        //De que hubo algún error porque no hemos encontrado la clase
+        if(\team\Config::get("TRACE_AUTOLOAD_CLASS", false) ) {
+            \team\Debug::me("Loading class....false", $class_name_full);
+        }
+    }
 
-	
-	/**
-		Comprobamos si existe el archivo de una clase y si es así lo cargamos
-		@param $file es el fichero que contiene la clase
-		@param $path es el path que nos servirá de base para encontrar la clase
-	*/
-	public static function classExists($file, $path = _APPS_, $className = null) {
 
-	    $class_exists = false;
+    /**
+    Comprobamos si existe el archivo de una clase y si es así lo cargamos
+    @param $file es el fichero que contiene la clase
+    @param $path es el path que nos servirá de base para encontrar la clase
+     */
+    public static function classExists($file, $path = _APPS_, $className = null) {
 
-		if(!empty($file) && file_exists($path.$file) ) {
+        $class_exists = false;
+
+        if(!empty($file) && file_exists($path.$file) ) {
             $class_exists = true;
 
-			 include_once($path.$file);
+            include_once($path.$file);
 
-			/** hay muchos tipos de elemtos que se carga con el autoload: clases, excepciones, trait, ...
-				para los casos en que sea una clase podemos comprobar si el nombre de la clase
-				existe sino para avisar que en el archivo incluido no estaba
-			*/
+            /** hay muchos tipos de elemtos que se carga con el autoload: clases, excepciones, trait, ...
+            para los casos en que sea una clase podemos comprobar si el nombre de la clase
+            existe sino para avisar que en el archivo incluido no estaba
+             */
             if(isset($className)) {
                 $class_exists = class_exists($className, false);
 
                 if(!$class_exists) {
                     \Team\Debug::me("Not class found in {$path}{$file}", $className);
                 }
-			}
-		}
+            }
+        }
 
         if(\team\Config::get('TRACE_AUTOLOAD_CLASS', false) ) {
-                \Team\Debug::me($path.$file, "Loading file....".($class_exists? "FOUND" : "Not FOUND") );
+            \Team\Debug::me($path.$file, "Loading file....".($class_exists? "FOUND" : "Not FOUND") );
         }
 
         return $class_exists;
-	}
+    }
 
 
-	/**
-		Inicializamos e "Instanciamos" una  clase. 
+    /**
+    Inicializamos e "Instanciamos" una  clase.
 
-		@param $class_name: nombre de Clase a inicializar y/o instanciar
-		@param $instance indicador que nos especifica si instanciamos una nueva clase
-	*/
-	public static function newClass($class_name, $instance = true) {
+    @param $class_name: nombre de Clase a inicializar y/o instanciar
+    @param $instance indicador que nos especifica si instanciamos una nueva clase
+     */
+    public static function newClass($class_name, $instance = true) {
 
-		if(class_exists($class_name, false)) {
+        if(class_exists($class_name, false)) {
 
-			if(method_exists($class_name, "__initialize") ) {
-				$class_name::__initialize($class_name);
-			}
+            if(method_exists($class_name, "__initialize") ) {
+                $class_name::__initialize($class_name);
+            }
 
-			if(method_exists($class_name, "__load") ) {
-				$class_name::__load($class_name);
-			}
+            if(method_exists($class_name, "__load") ) {
+                $class_name::__load($class_name);
+            }
 
-			if($instance) {
-				return new $class_name();
-			}
+            if($instance) {
+                return new $class_name();
+            }
 
-			//Mostramos una traza si asi lo quiere el programador
-			if(\team\Config::get("TRACE_AUTOLOAD_CLASS", false) ) {
-				\team\Debug::me($class_name, "Loading class....true" );
-			}
+            //Mostramos una traza si asi lo quiere el programador
+            if(\team\Config::get("TRACE_AUTOLOAD_CLASS", false) ) {
+                \team\Debug::me($class_name, "Loading class....true" );
+            }
 
-			return true;
-		}
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-		Una mezcla entre los métodos classExists y newClass
-		Muy útil para clases que se han de cargar si o si, y se quiere
-		inicializar y llevar un control sobre ellas. 
-		Si se da el caso de que la clase no se sabe bien si se a utilizar, es mejor registrarla(\Classes::add )
-		@param $class_name nombre clase a cargar 
-		@param $file es el fichero, con path relativo, a donde se encuentra
-	*/
+    /**
+    Una mezcla entre los métodos classExists y newClass
+    Muy útil para clases que se han de cargar si o si, y se quiere
+    inicializar y llevar un control sobre ellas.
+    Si se da el caso de que la clase no se sabe bien si se a utilizar, es mejor registrarla(\Classes::add )
+    @param $class_name nombre clase a cargar
+    @param $file es el fichero, con path relativo, a donde se encuentra
+     */
 
-	public static function load($class_name, $file, $base = _APPS_) {
-		if(self::classExists($file, $base) ) {
-			if(self::newClass($class_name, false) ) {
-				return true;
-			}
-		}
+    public static function load($class_name, $file, $base = _APPS_) {
+        if(self::classExists($file, $base) ) {
+            if(self::newClass($class_name, false) ) {
+                return true;
+            }
+        }
 
-		return false;
-	}
-	
-	/**
-		Comprobamos si es una clase de componente virtual. 
-		Ya que en Team Framework simulamos los componentes como si fueran clases y sus métodos son las acciones.
-		@param $paquete es el nombre del paquete al que pertenece el componente
-		@param $component es el nombre del componente que se cargará virtualmente, este será también el nombre de la nueva clase.
-	*/
-	public static  function isPseudoClass($app, $component) {
+        return false;
+    }
+
+    /**
+    Comprobamos si es una clase de componente virtual.
+    Ya que en Team Framework simulamos los componentes como si fueran clases y sus métodos son las acciones.
+    @param $paquete es el nombre del paquete al que pertenece el componente
+    @param $component es el nombre del componente que se cargará virtualmente, este será también el nombre de la nueva clase.
+     */
+    public static  function isPseudoClass($app, $component) {
 
         $base = \Team\Config::get(strtoupper($app).'_APP_PATH', _APPS_.'/'.$app);
 
@@ -355,43 +366,43 @@ class  Classes{
         $is_pseudo_class = \Team\System\FileSystem::exists("/{$component}", $base);
 
 
-		if($is_pseudo_class ) {
-			//Creamos una clase de componente
-			$new_class = "Namespace {$app}; class {$component} extends \\team\\Builder\\Component { }";
+        if($is_pseudo_class ) {
+            //Creamos una clase de componente
+            $new_class = "Namespace {$app}; class {$component} extends \\team\\Builder\\Component { }";
 
-			eval($new_class);
-			return true;
-		}
-		return false;
-	}
+            eval($new_class);
+            return true;
+        }
+        return false;
+    }
 
 
-	/**
-		Buscamos en las rutas más comunes la clase especificada
-		(Lo mejor, siempre que se pueda, es registrar una clase )
+    /**
+    Buscamos en las rutas más comunes la clase especificada
+    (Lo mejor, siempre que se pueda, es registrar una clase )
 
-		@param $name es el nombre de la clase a buscar
-		@param $path hacia el paquete, componente o acción al que pertecene la clase
-		@param $subpath es el path hacia la clases tomando como base el parámetro anterior y quitando los directorios comunes intermedios
-		@TOOD: ¿Añadir los modelos?
-	*/
-	public static  function findClass($name, $path = "", $subpath = "/",  $class_name = null, $root = _APPS_) {
+    @param $name es el nombre de la clase a buscar
+    @param $path hacia el paquete, componente o acción al que pertecene la clase
+    @param $subpath es el path hacia la clases tomando como base el parámetro anterior y quitando los directorios comunes intermedios
+    @TOOD: ¿Añadir los modelos?
+     */
+    public static  function findClass($name, $path = "", $subpath = "/",  $class_name = null, $root = _APPS_) {
 
-		if(!isset($class_name) ) {
-			$class_name = $name;
-		}
+        if(!isset($class_name) ) {
+            $class_name = $name;
+        }
 
-		$classes_class 	 =	"{$path}classes{$subpath}{$name}.php"; 					//model class
-		$templates_class  =  "{$path}includes{$subpath}{$name}.php";  				//traits, exceptions, interfaces, vendors, ...
+        $classes_class 	 =	"{$path}classes{$subpath}{$name}.php"; 					//model class
+        $templates_class  =  "{$path}includes{$subpath}{$name}.php";  				//traits, exceptions, interfaces, vendors, ...
 
-		//echo "<br>{$name} in {$root}<br>{$root}{$classes_class}<br>{$root}|{$templates_class}<br><br>";
+      //echo "<br>{$name} in {$root}<br>{$root}{$classes_class}<br>{$root}|{$templates_class}<br><br>";
 
-		if(     self::classExists($classes_class, $root, $class_name) ||   self::classExists($templates_class, $root) ){
-			return true;
-		}else {
-			return false;
-		}
-		
-	}
+        if(     self::classExists($classes_class, $root, $class_name) ||   self::classExists($templates_class, $root) ){
+            return true;
+        }else {
+            return false;
+        }
+
+    }
 
 }

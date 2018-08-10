@@ -35,7 +35,6 @@ Simple ActiveRecord class for Team Framework
 abstract class ActiveRecord  implements \ArrayAccess{
     use \Team\Data\Storage, \Team\Db\Database;
 
-    const DETAILS_URL = '';
     const ID = '';
     const TABLE = '';
 
@@ -94,11 +93,6 @@ abstract class ActiveRecord  implements \ArrayAccess{
         $this->safeId = $this->checkId($newId, 0);
     }
 
-    public function getGeneratedUrl($data = null, &$matches = null) {
-        if(!isset($data) ) $data = $this->data;
-
-        return \Team\Client\Url::to(self::DETAILS_URL, $data, $matches);
-    }
 
     protected function loadData(array $data = []) {
         if(!empty($data) ) {
@@ -110,20 +104,7 @@ abstract class ActiveRecord  implements \ArrayAccess{
     }
 
     /* ----------------- Results----------------- */
-    public function pagination(int $elements_for_page = 10, $current_page = 1 ,string $base_url = null) {
-        $pagination = new \Team\Gui\Pagination($elements_for_page, $current_page,  $this->data);
 
-        $pagination->setModel($this);
-
-        if(isset($base_url) ) {
-            $pagination->setBaseUrl($base_url);
-        }
-
-        $pagination->setFrom(static::TABLE)
-            ->setOrderBy(static::ID);
-
-        return $pagination;
-    }
 
     /**
     Create a iterator for registers
