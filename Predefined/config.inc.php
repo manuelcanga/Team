@@ -84,7 +84,7 @@ Config::addSanitizer('_TEMPORARY_',
 Config::set('_TEMPORARY_',\Team\_SERVER_.'/tmp/'.Config::get('SCRIPT_ID'));
 
 
-Config::set('ENVIROMENT', 'dev');
+Config::set('ENVIRONMENT', getenv('ENVIRONMENT')?: 'env');
 Config::set('VERSION',   '0.1');
 Config::set('_THEME_', '/theme');
 Config::set('LANG', 'es_ES');

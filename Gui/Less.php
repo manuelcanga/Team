@@ -50,7 +50,7 @@ class Less
     }
 
     protected function fileOutCanBeUsed() {
-        $file_out_can_be_used = file_exists($this->base.$this->file_out) &&  "dev" !== \Team\Config::get('ENVIROMENT') ;
+        $file_out_can_be_used = file_exists($this->base.$this->file_out) &&  !$this->isDevEnvironment();
         $force_generation = \Team\Config::get('ASSETS_NEED_GENERATION');
         if( $file_out_can_be_used || $force_generation) {
             return true;
@@ -59,6 +59,9 @@ class Less
         return false;
     }
 
+    protected function isDevEnvironment() {
+	return  "dev" !== \Team\Config::get('ENVIRONMENT') ;
+    }
 
     public function parser() {
         $out = $this->file_out;
@@ -71,7 +74,9 @@ class Less
             $file_in = $this->base.$this->file_in.$this->file_in_extension;
             $file_out = $this->base.$this->file_out;
 
-            Debug::me("Gnerating css file for {$file_in}", 4);
+	    if(!$this->isDevEnvironment() ) {
+            	Debug::me("Gnerating css file for {$file_in}", 4);
+	    }
 
             $parser = $this->getParser();
             $parser->compileFile($file_in, $file_out);

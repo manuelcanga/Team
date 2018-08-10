@@ -94,7 +94,7 @@ try {
 
     //Llamamos para que el proyecto inicie sus config, tasks, filters, ...
     \Team\System\FileSystem::load('/config/setup.php', \Team\_SERVER_);
-    \Team\System\FileSystem::load('/'. \Team\Config::get('ENVIROMENT').'/setup.php', \Team\_CONFIG_);
+    \Team\System\FileSystem::load('/'. \Team\Config::get('ENVIRONMENT').'/setup.php', \Team\_CONFIG_);
 
     require \_TEAM_. '/Predefined/system.inc.php';
 
