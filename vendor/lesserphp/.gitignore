@@ -1,0 +1,14 @@
+*.swp
+*~
+/*.less
+/*.css
+tests/bootstrap
+tests/tmp
+vendor
+composer.lock
+
+.idea/
+bin
+
+# ignore generated stuff
+docs/docs.md.htm
