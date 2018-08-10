@@ -45,7 +45,7 @@ class Less
         $current_version = \Team\System\Context::get('VERSION');
         $extension = self::CSS_EXTENSION;
 
-        $file_out = "{$this->file_in}-{$current_version}.{$extension}";
+        $file_out = "{$this->file_in}-{$current_version}{$extension}";
         return '/'.ltrim($file_out,'/');
     }
 
@@ -60,7 +60,7 @@ class Less
     }
 
     protected function isDevEnvironment() {
-	return  "dev" === \Team\Config::get('ENVIRONMENT') ;
+    	return  "dev" === \Team\Config::get('ENVIRONMENT') ;
     }
 
     public function parser() {
