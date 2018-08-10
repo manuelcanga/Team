@@ -15,6 +15,7 @@ No esperes que Team te proporcione nuevas herramientas o gran cantidad de mejora
 
 # INSTALL
 
+* Use https://github.com/trasweb/Team-starter-project
 * It works out of box. Maybe you'll need to give write permission to /commons/Team-framework/data directory.
 
 # Enlaces de soporte
