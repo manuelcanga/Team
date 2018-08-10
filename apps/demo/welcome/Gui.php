@@ -12,5 +12,9 @@ namespace demo\welcome;
 class Gui extends \Team\Controller\Gui
 {
     public function index() {
+        \Team\Config::add('theme', 'color', 'grey');
+
+        $this->addCss('main.less');
+        $this->setTitle("Welcome to my new web");
     }
 }

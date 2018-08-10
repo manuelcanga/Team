@@ -41,28 +41,29 @@ trait Assets {
      *
      */
     public function addCss(string $file,  string $position = 'top', string $idfile = null) {
-        $file = str_replace('.css','',$file);
+        $CSS_EXTENSION = '.css';
+
+        $file = str_replace($CSS_EXTENSION,'',$file);
 
         // maybe double slash(//) is used  => '//file.css'
         $is_external_css = strpos('//', $file) !== false;
 
         $idfile = $idfile??  \Team\Data\Sanitize::identifier($file);
 
-        if(!$is_external_css) {
-
+        if($is_external_css) {
+            $file = $file.$CSS_EXTENSION;
+        }else {
             $file = \Team\System\Context::get('_THEME_').'/'.ltrim($file, '/');
+
+             $less = new Less();
+             $less->addFile($file);
+             $file = $less->parser();
 
         }
 
-        //normalize
-        $file = $file.'.css';
 
-
-        if($is_external_css || \Team\System\FileSystem::exists($file, _SCRIPTS_) ) {
+        if($file ) {
             \Team\Config::add("\\team\\css\\{$position}", $idfile, $file);
-
-        }else {
-            \Team\Debug::me("Css file[$position] $file not found", 3);
         }
     }
 
@@ -96,6 +97,7 @@ trait Assets {
         }
 
     }
+
 
 
 }
