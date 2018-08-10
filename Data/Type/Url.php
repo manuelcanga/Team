@@ -62,12 +62,6 @@ class Url extends Type
 
         $this->args =  $main_data;
 
-		/** El programador no quiere el parseo por defecto de este store */
-		if(empty($_options['parse_url']))  {
-			$this->data = $this->args;
-	        return $this->data;
-		}
-
         //Extraemos toda la informacion de la url
         $url = $this->getUrlParams();
 
