@@ -39,7 +39,7 @@ if(!defined('_APPS_') ) {
 }
 
 if(!defined('Team\_VENDOR_') ) {
-    define('Team\_VENDOR_', \Team\_SERVER_.'/vendor');
+    define('Team\_VENDOR_', _TEAM_.'/vendor');
 }
 
 /**

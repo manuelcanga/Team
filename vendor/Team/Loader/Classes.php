@@ -190,7 +190,7 @@ class  Classes{
         $filename = "/".str_replace('\\', '/', $class_name_full).".php";
 
         if( self::load($class_name_full, $filename, \_APPS_)
-            ||  self::load($class_name_full, $filename, \Team\_VENDOR_ ) ) {
+            ||  self::load($class_name_full, $filename, dirname(_TEAM_) ) ) {
             $direct_mode  = true;
         }
 
