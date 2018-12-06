@@ -28,65 +28,79 @@ final class Filesystem
     const GB_IN_BYTES = 1024 * self::MB_IN_BYTES;
     const TB_IN_BYTES = 1024 * self::GB_IN_BYTES;
 
-    public static function ping($file, $base = _APPS_)
+    /**
+     * Include a file( using a basepath ) if this exists wasn't included before
+     *
+     * @param string $file File to include.
+     * @param string $base Basepath to use.
+     * @return bool|mixed
+     */
+    public static function ping(string $file, string $base = _APPS_)
     {
-        //\team\Debug::out("LOADING...".$file);
         if (self::exists($file, $base)) {
             return include_once($base . $file);
         }
+
         return false;
     }
 
-    /*
-        Comprueba si existe un archivo dentro de la ruta del servior y si es así,
-        lo carga
-        @param String $file archivo del que se quiere comprobar su existencia y si existe, cargar )
-    */
+    /**
+     * Include a file(  using a basepath ) if this exists
+     *
+     * @param string $file File to include.
+     * @param string $base Basepath to use.
+     * @return bool|mixed
+     */
+    public static function load($file, $base = _APPS_)
+    {
+        if (self::exists($file, $base)) {
+            return include($base . $file);
+        }
+    }
+
 
     /**
-     * Comprobamos si existe un archivo dentro de la ruta del sitio web
+     * Check if a file exists using a basepath
      * @param String $file archivo que se quiere comprobar su existencia
-     * @return booleean si existe(true) o no existe(false)
+     * @return bool si existe(true) o no existe(false)
      */
-    public static function exists($file, $base = _APPS_)
+    public static function exists(string $file, string $base = _APPS_): bool
     {
-        if (!is_string($file) || '/' !== $file[0]) {
+        if ('/' !== $file[0]) {
             return false;
         }
 
         return file_exists($base . $file);
     }
 
-    /*
-    Comprueba si existe un archivo dentro de la ruta del servior y si es así,
-    lo carga sólo una vez
-    @param String $file archivo del que se quiere comprobar su existencia y si existe, cargar )
-*/
-
-    public static function script($___file, $___args = [], $___base = _APPS_)
+    /**
+     * Check if a view exists. If this exists, args are extracted and then it is the view included
+     *
+     * @param string $___view File to use as view.
+     * @param array $___args Arguments to pass to view.
+     * @param string $___base Basepath to use.
+     *
+     * @return string A view should return a string always.
+     */
+    public static function view(string $___view, array $___args = [], string $___base = _APPS_): string
     {
-        //\team\Debug::out("LOADING...".$file);
-        if (self::exists($___file, $___base)) {
+        if (self::exists($___view, $___base)) {
             extract($___args, EXTR_SKIP);
 
-            return include($___base . $___file);
+            return include($___base . $___view);
         }
-    }
 
-    /*
-        Comprueba si existe un archivo script dentro de la ruta del servior y si es así,
-        lo incluye pasándole todos los argumentos
-        @param String $file archivo del que se quiere comprobar su existencia y si existe, incluir )
-    */
+        return '';
+    }
 
     /**
      * Comprobamos si existe un archivo, independientemente de la extension, dentro de la ruta del sitio web
      * @param String $file archivo que se quiere comprobar su existencia sin extension
      * @return bool si existe(true) o no existe(false)
      */
-    public static function filename(string $file, $base = _APPS_): bool
+    public static function filename(string $filename, string $base = _APPS_): bool
     {
-        $exists = glob($base . $file . '.*');
+        $exists = glob($base . $filename . '.*');
 
         return !empty($exists);
     }
@@ -98,6 +112,15 @@ final class Filesystem
     public static function basename(string $file): string
     {
         return self::stripExtension(basename($file));
+    }
+
+    /**
+     * Devuelve la extensión del archivo $file
+     * @param $file
+     */
+    public static function getFileExtension($file)
+    {
+        return pathinfo($file, PATHINFO_EXTENSION);
     }
 
     /**
@@ -117,55 +140,21 @@ final class Filesystem
 
     /**
      * Obtiene el nombre o ruta del archivo sin rutas relativas al principio
-     * @param string $_file archivo o ruta del que se quitará la ruta relativa del principio
+     * @param string $file archivo o ruta del que se quitará la ruta relativa del principio
      * @example  ./noticias/prueba.tpl => noticias/prueba.tpl
      */
-    public static function stripRelativePath($_file)
+    public static function stripRelativePath(string $file): string
     {
-        return ltrim($_file, './\\');
+        return ltrim($file, './\\');
     }
 
-    /*
-        Elimina una extensión de un archivo y le añade $new_extension si se le especifica
-        @param string $_file: nombre del archivo al que se le quiere quiar la extensión
-        @param string $_new_extension: nueva extensión, prefijada por punto, que se quiera añadir.
-        @example \Team\System\FileSystem::stripExtension('mivista.tpl'); //mivista
-        @example \Team\System\FileSystem::stripExtension('styles.min.css', '.css'); //style.css
-    */
-
-    /**
-     * Hacemos notificación de algo ocurrido por sistema de archivos.
-     * Recordad que el nombre del evento es ucfirst. Ej: Initialize
-     */
-    public static function notify($path, $eventname, $subpath = null, $dirs_filter = null, $base = _APPS_)
-    {
-        $dirs = self::getDirs($path, $cache = true, $base);
-
-        if (!isset($subpath)) {
-            $subpath = '/events/';
-        }
-
-        if (isset($dirs_filter)) {
-            $dirs = \Team\Data\Filter::apply($dirs_filter, $dirs);
-        }
-
-        if (!empty($dirs)) {
-            $path = rtrim($path, '/');
-            foreach ($dirs as $dir) {
-                //Cargamos el archivo de configuración
-                self::load("{$path}/{$dir}{$subpath}{$eventname}.php", $base);
-            }
-        }
-
-        return $dirs;
-    }
 
     /**
      * Devuelve un array con los directorios que hay en una ruta dada
      * @param $_dir es la ruta de un directorio a partir del que se va a obtener el listado
      * @return array de directorios encontrados
      */
-    public static function getDirs($_dir = '/', $cache = true, $path = _APPS_)
+    public static function getDirs(string $_dir = '/',bool $cache = true, string $path = _APPS_): array
     {
         $dir = rtrim($_dir, '//');
         static $dirs_cache = [];
@@ -206,14 +195,6 @@ final class Filesystem
         return $dirs;
     }
 
-    public static function load($file, $base = _APPS_)
-    {
-        //\team\Debug::out("LOADING...".$file);
-        if (self::exists($file, $base)) {
-            return include($base . $file);
-        }
-    }
-
     public static function toUnits($size)
     {
         $units = array('B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
@@ -223,7 +204,7 @@ final class Filesystem
 
     public static function getSize(string $file, string $base = _APPS_): int
     {
-        return (int) filesize($base . $file);
+        return (int)filesize($base . $file);
     }
 
     /**
@@ -249,7 +230,7 @@ final class Filesystem
         }
 
         extract($file);
-        $ext = self::getExtension($name);
+        $ext = self::getFileExtension($name);
         $name = self::stripExtension($name);
         $type = self::ext2type($ext);
 
@@ -311,15 +292,6 @@ final class Filesystem
             'path' => $uploads_path,
             'dir' => $base_upload
         ];
-    }
-
-    /**
-     * Devuelve la extensión del archivo $file
-     * @param $file
-     */
-    public static function getExtension($file)
-    {
-        return pathinfo($file, PATHINFO_EXTENSION);
     }
 
     /**
@@ -499,7 +471,7 @@ final class Filesystem
     public static function isStream($path)
     {
         $wrappers = stream_get_wrappers();
-        $wrappers_re = '(' . join('|', $wrappers) . ')';
+        $wrappers_re = '(' . implode('|', $wrappers) . ')';
 
         return preg_match("!^$wrappers_re://!", $path) === 1;
     }
@@ -524,7 +496,7 @@ final class Filesystem
         }
 
         $filename = $name ?: basename($file);
-        $extension = self::getExtension($filename);
+        $extension = self::getFileExtension($filename);
 
         $mimes = self::getMimeTypes();
 
