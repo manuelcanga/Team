@@ -82,11 +82,12 @@ final class Filesystem
     /**
      * Comprobamos si existe un archivo, independientemente de la extension, dentro de la ruta del sitio web
      * @param String $file archivo que se quiere comprobar su existencia sin extension
-     * @return booleean si existe(true) o no existe(false)
+     * @return bool si existe(true) o no existe(false)
      */
-    public static function filename($file, $base = _APPS_)
+    public static function filename(string $file, $base = _APPS_): bool
     {
         $exists = glob($base . $file . '.*');
+
         return !empty($exists);
     }
 
@@ -94,9 +95,9 @@ final class Filesystem
      * Obtiene el nombre de un archivo( sin ruta y sin extensión ).
      * @param string $_file archivo del que se extraerá el nombre
      */
-    public static function basename($_file)
+    public static function basename(string $file): string
     {
-        return self::stripExtension(basename($_file));
+        return self::stripExtension(basename($file));
     }
 
     /**
@@ -220,21 +221,23 @@ final class Filesystem
         return number_format($size / pow(1024, $power), 2, '.', ',') . ' ' . $units[$power];
     }
 
-    public static function getSize($file, $base = _APPS_)
+    public static function getSize(string $file, string $base = _APPS_): int
     {
-        return filesize($base . $file);
+        return (int) filesize($base . $file);
     }
 
     /**
      * Sube un archivo enviado por formulario al sistema de archivo
      * @param $identifier
      * @param null $options
-     * @return array|bool
+     * @return array|null
      */
-    public static function upload($identifier, $options = null)
+    public static function upload(string $identifier, ?array $options = null): array
     {
+        $uploaded_file = array();
+
         if (empty($_FILES[$identifier]['name'])) {
-            return false;
+            return $uploaded_file;
         }
 
         $file =& $_FILES[$identifier];
@@ -242,7 +245,7 @@ final class Filesystem
         if ($file['error'] != UPLOAD_ERR_OK && $file['size']) {
             \Team::warning('Archivo no se pudo subir', 'ERROR_' . $file['error']);
 
-            return false;
+            return $uploaded_file;
         }
 
         extract($file);
@@ -252,19 +255,19 @@ final class Filesystem
 
         if (!$ext) {
             \Team::warning('No se permiten archivos sin extension', 'ERROR_NO_EXTENSION');
-            return false;
+            return $uploaded_file;
         }
 
         if (isset($options['allow']) && is_array($options['allow']) && !in_array($type, $options['allow'])) {
             \Team::warning('Archivo no se encuentra entre los permitidos', 'ERROR_ALLOW_' . $type);
 
-            return false;
+            return $uploaded_file;
         }
 
         if (isset($options['disallow']) && is_array($options['disallow']) && in_array($type, $options['disallow'])) {
             \Team::warning('Archivo se encuentra entre los no permitidos', 'ERROR_DISALLOW_' . $type);
 
-            return false;
+            return $uploaded_file;
         }
 
         $base_upload = $options['dir'] ?? \Team\System\Context::get(
@@ -276,7 +279,7 @@ final class Filesystem
         self::mkdirRecursive($uploads_path . $base_upload);
 
         if (!empty($options['keep_name'])) {
-            $new_name = \Team\Data\Sanitize::identifier(\team\data\Sanitize::chars($name));
+            $new_name = \Team\Data\Sanitize::filename($name);
         } else {
             $new_name = md5(\Team\System\Date::current('timestamp') . '_' . $tmp_name);
         }
@@ -296,10 +299,10 @@ final class Filesystem
         if (!move_uploaded_file($tmp_name, $uploads_path . $file)) {
             \Team::warning('Archivo no se pudo mover al destino', 'ERROR_MOVING');
 
-            return false;
+            return $uploaded_file;
         }
 
-        return [
+        return $uploaded_file = [
             'file' => $file,
             'name' => $new_name,
             'size' => $size,
