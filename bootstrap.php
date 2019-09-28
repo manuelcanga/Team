@@ -40,7 +40,7 @@ require(\_TEAM_ . '/System/FileSystem.php');
 //Cargamos la clase Filter que se encarga de las validaciones
 require(\_TEAM_ . '/Data/Check.php');
 //Filter, permite el filtrado de datos de modo desacoplado.
-require(\_TEAM_ . '/Data/Filter.php');
+require_once(\_TEAM_ . '/Data/Filter.php');
 //Trait para las clases que manejan variables de configuración: Config y Context
 require(\_TEAM_ . '/Data/Vars.php');
 //La clase que gestiona opciones de configuración
@@ -81,7 +81,7 @@ require(\_TEAM_ . '/Controller/Controller.php');
 //Clase que hace funciones de limpieza
 require(\_TEAM_ . '/Data/Sanitize.php');
 //Clase que maneja cabeceras http
-require(\_TEAM_ . '/Client/Http.php');
+require_once(\_TEAM_ . '/Client/Http.php');
 //Clase que maneja base de datos
 require(\_TEAM_ . '/System/DB.php');
 

@@ -22,23 +22,20 @@ namespace Team\Db;
  */
 abstract class ActiveRecord implements \ArrayAccess
 {
-
     use \Team\Data\Storage, \Team\Db\Database;
 
-    const ID    = '';
+    const ID = '';
     const TABLE = '';
 
     protected $safeId = 0;
 
     /**
      * Construct a ActiveRecord
-     *
-     * @param mixed $id   :  primary key or key used in order to initialize
+     * @param mixed $id :  primary key or key used in order to initialize
      * @param array $data : data for initializing
      */
-    public function __construct($id = 0, array $data = [])
+    function __construct($id = 0, array $data = [])
     {
-
         $this->setSafeId($id);
 
         if ($this->safeId) {
@@ -48,21 +45,21 @@ abstract class ActiveRecord implements \ArrayAccess
         $this->onImport($data, $id);
     }
 
+
     /* ----------------- Checks----------------- */
 
-    public function setSafeId($newId)
+    function setSafeId($newId)
     {
+
         $this->safeId = $this->checkId($newId, 0);
     }
 
     /**
      * Validamos el campo clave ID del activerecord
-     *
      * @param $id es el valor a usar como campo clave
      */
-    public function checkId($id, $default = 0)
+    function checkId($id, $default = 0)
     {
-
         return \Team\Data\Check::key($id, $default);
     }
 
@@ -71,10 +68,9 @@ abstract class ActiveRecord implements \ArrayAccess
      */
     protected function initializeIt($id)
     {
-
-        $query          = $this->newQuery([static::ID => $id]);
+        $query = $this->newQuery([static::ID => $id]);
         $query->where[] = [static::ID => ':' . static::ID];
-        $record         = $query->getRow(static::TABLE);
+        $record = $query->getRow(static::TABLE);
 
         $this->onInitialize($id, (array)$record);
     }
@@ -83,16 +79,14 @@ abstract class ActiveRecord implements \ArrayAccess
 
     protected function onInitialize($id, $data = [])
     {
-
         $this->loadData($data);
     }
 
     protected function loadData(array $data = [])
     {
-
-        if (! empty($data)) {
+        if (!empty($data)) {
             $this->set($data);
-            $this->safeId = $this[ static::ID ];
+            $this->safeId = $this[static::ID];
         }
 
         $this->onUnserialize();
@@ -119,18 +113,17 @@ abstract class ActiveRecord implements \ArrayAccess
 
     /**
      * Retrieve all rows from table TABLE
-     *
      * @param array $sentences list of params to query. Excepcionally, you can pass a 'order' params(ASC or DESC)
-     * @param array $data      list of data to query
+     * @param array $data list of data to query
      */
     public static function findAll(array $sentences = [], array $data = [], $result_type = null)
     {
-        $sentences = $sentences??[];
+        $sentences = $sentences ?? [];
 
         $order = 'DESC';
-        if (isset($sentences[ 'order' ])) {
-            $order = $sentences[ 'order' ];
-            unset($sentences[ 'order' ]);
+        if (isset($sentences['order'])) {
+            $order = $sentences['order'];
+            unset($sentences['order']);
         }
 
         $default = ['select' => '*', 'limit' => -1, 'order_by' => [static::ID => $order]];
@@ -145,28 +138,28 @@ abstract class ActiveRecord implements \ArrayAccess
             return $records;
         }
 
-        if (! isset($result_type)) {
+        if (!isset($result_type)) {
             $result_type = static::CLASS;
         }
 
         return new \Team\Db\Collection($records, $result_type);
     }
 
-    public function isSafe()
+    function isSafe()
     {
         return (bool)$this->safeId;
     }
 
     public function exists($name = null)
     {
-        if (! isset($name)) {
+        if (!isset($name)) {
             return $this->exists(static::ID);
         }
 
-        return isset($this->data[ $name ]);
+        return isset($this->data[$name]);
     }
 
-    public function & getId()
+    function & getId()
     {
         return $this->safeId;
     }
@@ -195,9 +188,9 @@ abstract class ActiveRecord implements \ArrayAccess
         $this->onSerialize('update');
         $this->commons('update');
 
-        $this->data[ static::ID ] = $this->safeId;
+        $this->data[static::ID] = $this->safeId;
 
-        $query          = $this->newQuery($this->data);
+        $query = $this->newQuery($this->data);
         $query->where[] = [static::ID => ':' . static::ID];
 
         $result = $query->update(static::TABLE, $secure);
@@ -228,8 +221,8 @@ abstract class ActiveRecord implements \ArrayAccess
         $this->onSerialize('insert');
         $this->commons('insert');
 
-        if (! isset($this[ static::ID ])) {
-            $this[ static::ID ] = null;
+        if (!isset($this[static::ID])) {
+            $this[static::ID] = null;
         }
 
         $query = $this->newQuery($this->data);
@@ -237,7 +230,7 @@ abstract class ActiveRecord implements \ArrayAccess
 
         if ($newId) {
             $this->setSafeId($newId);
-            $this->data[ static::ID ] = $this->safeId;
+            $this->data[static::ID] = $this->safeId;
 
             $this->custom('insert');
         }
@@ -249,10 +242,10 @@ abstract class ActiveRecord implements \ArrayAccess
 
     public function serializeIt($field)
     {
-        $this[ $field ] = '';
+        $this[$field] = '';
 
         if (is_array($this->$field)) {
-            $this[ $field ] = json_encode($this->$field);
+            $this[$field] = json_encode($this->$field);
         }
     }
 
@@ -262,8 +255,8 @@ abstract class ActiveRecord implements \ArrayAccess
     {
         $this->$field = [];
 
-        if (is_string($this[ $field ])) {
-            $array_with_values = json_decode($this[ $field ], $assoc = true);
+        if (is_string($this[$field])) {
+            $array_with_values = json_decode($this[$field], $assoc = true);
 
             if (json_last_error() == JSON_ERROR_NONE) {
                 $this->$field = $array_with_values;
@@ -277,7 +270,7 @@ abstract class ActiveRecord implements \ArrayAccess
      */
     public function removeIt($secure = true)
     {
-        if (! $this->safeId) {
+        if (!$this->safeId) {
             return false;
         }
 
@@ -295,21 +288,20 @@ abstract class ActiveRecord implements \ArrayAccess
     }
 
     /**
-     * This public function changes a value of database field in current record.
-     * Be careful, this public function does a eval with arguments
+     * This function changes a value of database field in current record.
+     * Be careful, this function does a eval with arguments
      *
      * @example  $this->changeIt('counter','+', 1)
      * This example add + 1 in counter field for current record
      *
-     * @param        $field
+     * @param $field
      * @param string $operation
-     * @param int    $amount
-     *
+     * @param int $amount
      * @return mixed
      */
-    public function changeIt($field, $operation = '+', $amount = 1)
+    function changeIt($field, $operation = '+', $amount = 1)
     {
-        if (! $this->safeId) {
+        if (!$this->safeId) {
             return false;
         }
 
@@ -323,7 +315,7 @@ abstract class ActiveRecord implements \ArrayAccess
 
         if ($query_result) {
             $initial_amount = $this->$field;
-            $result         = 0;
+            $result = 0;
             eval('$result  = ' . $initial_amount . ' ' . $operation . ' ' . $amount . ';');
             $this->$field = $result;
         }
@@ -337,14 +329,14 @@ abstract class ActiveRecord implements \ArrayAccess
     public function countAll(array $sentences = [], array $data = [])
     {
         $query = $this->newQuery($data, $sentences);
-
         return $query->getVar('total', static::TABLE, 'count(' . static::ID . ') as total');
     }
 
-    //This public function from Collection for everytime a newRecord is created
+    //This function from Collection for everytime a newRecord is created
 
-    public function onNewRecord(array $data = [])
+    function onNewRecord(array $data = [])
     {
         $this->loadData($data);
     }
-}
+
+} 
