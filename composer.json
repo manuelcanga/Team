@@ -1,0 +1,18 @@
+{
+    "name": "trasweb/team",
+    "description": "PHP 7 Framework focus on DRY( Don't Repeat Yourself ) and TEAM( together everyone achieves more )",
+    "type": "framework",
+    "require": {
+        "php": ">= 7.2"
+    },
+    "license": "GPLv2",
+    "authors": [
+        {
+            "name": "Manuel Canga",
+            "email": "dev@trasweb.net"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^8"
+    }
+}
